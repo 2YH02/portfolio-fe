@@ -1,0 +1,40 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+import React from "react";
+
+interface DelayedLinkProps {
+  href: string;
+  ms?: number;
+  replace?: boolean;
+  children: React.ReactNode;
+  className?: React.ComponentProps<"a">["className"];
+  onClick?: VoidFunction;
+}
+
+const DelayedLink = ({
+  href,
+  ms = 0,
+  replace = false,
+  children,
+  onClick,
+  className,
+}: DelayedLinkProps) => {
+  const router = useRouter();
+
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    onClick?.();
+    setTimeout(() => {
+      replace ? router.replace(href) : router.push(href);
+    }, ms);
+  };
+
+  return (
+    <a href={href} onClick={handleClick} className={className}>
+      {children}
+    </a>
+  );
+};
+
+export default DelayedLink;

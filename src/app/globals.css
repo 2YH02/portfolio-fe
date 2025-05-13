@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #111;
+  --foreground: #fff;
 }
 
 @theme inline {
@@ -13,6 +13,7 @@
   --font-nanum: "Nanum Pen Script", cursive;
   --animate-spotlight: spotlight 2s ease 0.75s 1 forwards;
   --animate-unspotlight: unspotlight 2s ease 0.75s 1 forwards;
+  --animate-leftToRight: leftToRight 1s ease;
   --animate-shake-rotate: shake-rotate 0.6s ease-in-out infinite;
   --shadow-light: 0 0 8px rgba(255, 255, 255, 0.6),
     0 0 16px rgba(255, 255, 255, 0.4), 0 0 24px rgba(255, 255, 255, 0.2);
@@ -33,6 +34,20 @@
   100% {
     opacity: 1;
     transform: translate(-50%, -40%) scale(2);
+  }
+}
+
+@keyframes leftToRight {
+  0% {
+    opacity: 0;
+    left: -24px;
+  }
+  40% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    left: 800px;
   }
 }
 
@@ -61,4 +76,22 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+button,
+a {
+  cursor: pointer;
+}
+
+a {
+  display: inline-block;
+}
+
+canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  width: 100dvw;
+  height: 100dvh;
 }

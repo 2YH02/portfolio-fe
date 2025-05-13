@@ -3,6 +3,7 @@
 import { cn } from "@/lib/utils";
 import { motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
+import ParticleCanvas from "./ParticleCanvas";
 
 export const MaskContainer = ({
   children,
@@ -36,10 +37,12 @@ export const MaskContainer = ({
       }
     };
   }, []);
+
   let maskSize = isHovered ? revealSize : size;
 
   return (
     <>
+      {isHovered && <ParticleCanvas x={mousePosition.x} y={mousePosition.y} />}
       <motion.div
         ref={containerRef}
         className={cn("relative h-screen", className)}
@@ -70,7 +73,7 @@ export const MaskContainer = ({
             onMouseLeave={() => {
               setIsHovered(false);
             }}
-            className="relative z-20 mx-auto max-w-4xl text-center text-4xl font-bold"
+            className="relative z-20 mx-auto text-center text-4xl font-bold"
           >
             {children}
           </div>
