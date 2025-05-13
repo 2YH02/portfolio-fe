@@ -257,3 +257,57 @@ Zustand 라이브러리를 활용한 전역 상태 관리를 도입했습니다.
 이번 프로젝트를 통해 얻은 깊은 교훈과 경험은 제 개발 실력을 한 단계 더 성장시키는 계기가 되었습니다. 테스트 코드의 중요성에 대한 깊은 이해뿐만 아니라, 다양한 역할과의 협업 과정에서 효과적인 커뮤니케이션과 문서화의 중요성을 체감했습니다. 이러한 경험은 앞으로 제가 참여할 모든 프로젝트에서 더 나은 결과를 도출하는 데 중요한 역할을 할 것입니다.`,
   },
 ];
+
+export type Skill = {
+  title: string;
+  description: string;
+};
+
+interface About {
+  name: string;
+  text: string;
+  skills: Skill[];
+}
+
+export const about: About = {
+  name: "이용훈",
+  text: `안녕하세요, 사용자와의 상호작용을 통해 매력적인 웹 경험을 만들어가는 웹 개발자입니다. 저는 인터랙티브한 UI와 최적화된 성능을 중요하게 생각하며, 새로운 기술에 대한 꾸준한 관심을 통해 사용자에게 최상의 경험을 제공하고자 합니다.
+
+기술을 통해 복잡한 문제를 해결하며, 사용자의 기억에 남는 순간을 만드는 것이 웹 개발자의 역할이라고 생각합니다. 끊임없는 호기심과 배움의 자세로 성장하고, 항상 사용자 중심의 서비스를 만드는 개발자가 되고자 합니다.`,
+  skills: [
+    {
+      title: "JavaScript, TypeScript",
+      description:
+        "개인 및 팀 프로젝트를 통해 지속적으로 익혀왔으며, 실무에 필요한 활용 방식에 익숙.",
+    },
+    {
+      title: "React, Next.js",
+      description:
+        "CSR에서 SSR로 전환 경험, SEO 최적화 및 퍼포먼스 개선 실적 보유.",
+    },
+    {
+      title: "Tailwind CSS",
+      description:
+        "UI 컴포넌트 라이브러리 개발 및 배포 경험, 반응형 UI 등 사용자 경험 개선에 적극 활용.",
+    },
+    {
+      title: "Zustand, React Query",
+      description:
+        "상황에 맞는 상태관리 방식 선택 가능, 비동기 처리와 글로벌 상태 관리에 능숙.",
+    },
+    {
+      title: "Node.js",
+      description: "Nest.js를 활용한 HTTP 서버 구축 경험 보유.",
+    },
+    {
+      title: "Rust",
+      description:
+        "WebAssembly를 활용한 이미지 처리 및 HTTP 서버 구축 경험 보유.",
+    },
+    {
+      title: "React Native Expo",
+      description:
+        "Webview 기반 앱 구축, 모바일-웹 연동(GPS 연동 및 postMessage 처리) 경험 보유.",
+    },
+  ],
+};

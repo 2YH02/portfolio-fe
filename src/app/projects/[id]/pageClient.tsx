@@ -35,7 +35,7 @@ export default function DetailClient({ project }: { project: Project }) {
               </DelayedLink>
             </li>
             <li className="shrink-0">
-              <DelayedLink className="py-4 px-8" href="/">
+              <DelayedLink className="py-4 px-8" href="/about">
                 ABOUT
               </DelayedLink>
             </li>

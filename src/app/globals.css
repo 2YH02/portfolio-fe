@@ -17,6 +17,7 @@
   --animate-shake-rotate: shake-rotate 0.6s ease-in-out infinite;
   --shadow-light: 0 0 8px rgba(255, 255, 255, 0.6),
     0 0 16px rgba(255, 255, 255, 0.4), 0 0 24px rgba(255, 255, 255, 0.2);
+  --drop-shadow-glow: 0 0 5px #ffffff, 0 0 10px #00ffff;
 }
 
 @media (prefers-color-scheme: dark) {

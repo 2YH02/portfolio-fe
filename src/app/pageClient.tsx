@@ -52,12 +52,21 @@ export default function HomeClient() {
             >
               projects
             </DelayedLink>
-            <Link href="/projects" className="hover:animate-shake-rotate">
+            <DelayedLink
+              href="/about"
+              className="hover:animate-shake-rotate"
+              ms={1100}
+              onClick={() => setActive(true)}
+            >
               about me
-            </Link>
-            <Link href="/projects" className="hover:animate-shake-rotate">
+            </DelayedLink>
+            <DelayedLink
+              href="/projects"
+              className="hover:animate-shake-rotate"
+              onClick={() => setActive(true)}
+            >
               post
-            </Link>
+            </DelayedLink>
           </nav>
         </div>
       </MaskContainer>

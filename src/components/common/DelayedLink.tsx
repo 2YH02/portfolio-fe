@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import React from "react";
 
@@ -31,7 +32,14 @@ const DelayedLink = ({
   };
 
   return (
-    <a href={href} onClick={handleClick} className={className}>
+    <a
+      href={href}
+      onClick={handleClick}
+      className={cn(
+        "hover:drop-shadow-glow transition duration-300",
+        className
+      )}
+    >
       {children}
     </a>
   );
