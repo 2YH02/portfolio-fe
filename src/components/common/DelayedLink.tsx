@@ -25,9 +25,13 @@ const DelayedLink = ({
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    onClick?.();
+    if (onClick) onClick();
     setTimeout(() => {
-      replace ? router.replace(href) : router.push(href);
+      if (replace) {
+        router.replace(href);
+      } else {
+        router.push(href);
+      }
     }, ms);
   };
 
