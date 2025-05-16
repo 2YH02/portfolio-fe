@@ -45,11 +45,14 @@ export const MaskContainer = ({
 
   const maskSize = isHovered ? revealSize : size;
 
-  if (!mousePosition.x || !mousePosition.y) return;
-
   return (
     <>
-      {isHovered && <ParticleCanvas x={mousePosition.x} y={mousePosition.y} />}
+      {isHovered && (
+        <ParticleCanvas
+          x={mousePosition?.x || undefined}
+          y={mousePosition?.y || undefined}
+        />
+      )}
       <motion.div
         ref={containerRef}
         className={cn("relative h-screen", className)}
@@ -62,8 +65,8 @@ export const MaskContainer = ({
             "absolute flex h-full w-full items-center justify-center text-6xl bg-black [mask-image:url(/mask.svg)] [mask-repeat:no-repeat] [mask-size:40px] dark:bg-white"
           )}
           animate={{
-            maskPosition: `${mousePosition.x - maskSize / 2}px ${
-              mousePosition.y - maskSize / 2
+            maskPosition: `${(mousePosition?.x || 0) - maskSize / 2}px ${
+              (mousePosition?.y || 0) - maskSize / 2
             }px`,
             maskSize: `${maskSize}px`,
           }}
