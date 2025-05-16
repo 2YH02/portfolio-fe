@@ -32,7 +32,7 @@ export default function HomeClient() {
             <div className="flex gap-8 justify-center text-white text-base mt-3">
               <span>projects</span>
               <span>about me</span>
-              <span>post</span>
+              <span>posts</span>
             </div>
           </div>
         }
@@ -61,11 +61,11 @@ export default function HomeClient() {
               about me
             </DelayedLink>
             <DelayedLink
-              href="/projects"
+              href="/posts"
               className="hover:animate-shake-rotate"
               onClick={() => setActive(true)}
             >
-              post
+              posts
             </DelayedLink>
           </nav>
         </div>
@@ -81,11 +81,11 @@ export default function HomeClient() {
             <Link href="/projects" className="active:animate-shake-rotate">
               projects
             </Link>
-            <Link href="/projects" className="active:animate-shake-rotate">
+            <Link href="/about" className="active:animate-shake-rotate">
               about me
             </Link>
-            <Link href="/projects" className="active:animate-shake-rotate">
-              post
+            <Link href="/posts" className="active:animate-shake-rotate">
+              posts
             </Link>
           </nav>
         </div>

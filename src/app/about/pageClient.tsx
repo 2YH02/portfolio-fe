@@ -9,7 +9,7 @@ export default function AboutClient() {
   return (
     <main className="relative w-screen h-screen font-mono overflow-auto">
       {/* 상단 링크 */}
-      <nav className="fixed left-1/2 top-10 -translate-x-1/2">
+      <nav className="fixed left-1/2 top-10 -translate-x-1/2 z-10">
         <GlassBox className="py-0 rounded-full">
           <ul className="flex">
             <li className="shrink-0">
@@ -23,8 +23,8 @@ export default function AboutClient() {
               </DelayedLink>
             </li>
             <li className="shrink-0">
-              <DelayedLink className="py-4 px-8" href="/post">
-                POST
+              <DelayedLink className="py-4 px-8" href="/posts">
+                POSTS
               </DelayedLink>
             </li>
           </ul>

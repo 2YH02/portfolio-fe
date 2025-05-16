@@ -40,8 +40,8 @@ export default function DetailClient({ project }: { project: Project }) {
               </DelayedLink>
             </li>
             <li className="shrink-0">
-              <DelayedLink className="py-4 px-8" href="/">
-                POST
+              <DelayedLink className="py-4 px-8" href="/posts">
+                POSTS
               </DelayedLink>
             </li>
           </ul>
@@ -138,7 +138,7 @@ export default function DetailClient({ project }: { project: Project }) {
                             hover:[transform:perspective(800px)_rotateX(4deg)_rotateY(-4deg)_scale(1.05)] 
                             relative border border-solid w-full rounded-lg"
                 >
-                  <h3 className="text-lg font-semibold text-indigo-200">
+                  <h3 className="text-lg font-semibold text-indigo-200 mb-4">
                     {sec.title}
                   </h3>
                   <ul className="list-disc list-inside space-y-1 text-gray-400  group-hover:text-white">

@@ -41,8 +41,8 @@ export default function ProjectsClient() {
               </DelayedLink>
             </li>
             <li className="shrink-0">
-              <DelayedLink ms={1100} className="py-4 px-8" href="/">
-                POST
+              <DelayedLink ms={1100} className="py-4 px-8" href="/posts">
+                POSTS
               </DelayedLink>
             </li>
           </ul>
