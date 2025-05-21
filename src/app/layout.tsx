@@ -1,3 +1,4 @@
+import InitHLJS from "@/components/provider/InitHLJS";
 import PathListener from "@/components/provider/PathListener";
 import NoiseBackground from "@/components/ui/NoiseBackground";
 import { Spotlight } from "@/components/ui/Spotlight";
@@ -33,14 +34,12 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${geistNanum} antialiased overflow-hidden`}
+        className={`${geistMono.variable} ${geistSans.variable} ${geistNanum} antialiased overflow-hidden`}
       >
+        <InitHLJS />
         <PathListener />
         <NoiseBackground />
-        <Spotlight
-          className="-top-40 left-0 md:-top-20 md:left-60"
-          fill="#a8a8a8"
-        />
+        <Spotlight className="-top-40 left-0 md:-top-20 md:left-60" />
         {children}
       </body>
     </html>

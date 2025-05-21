@@ -1,6 +1,6 @@
 "use client";
 
-import DelayedLink from "@/components/common/DelayedLink";
+import Nav from "@/components/common/Nav";
 import { GlassBox } from "@/components/ui/GlassBox";
 import { about } from "@/data";
 import { motion } from "motion/react";
@@ -9,27 +9,7 @@ export default function AboutClient() {
   return (
     <main className="relative w-screen h-screen font-mono overflow-auto">
       {/* 상단 링크 */}
-      <nav className="fixed left-1/2 top-10 -translate-x-1/2 z-10">
-        <GlassBox className="py-0 rounded-full">
-          <ul className="flex">
-            <li className="shrink-0">
-              <DelayedLink className="py-4 px-8" href="/">
-                HOME
-              </DelayedLink>
-            </li>
-            <li className="shrink-0">
-              <DelayedLink className="py-4 px-8" href="/projects">
-                PROJECTS
-              </DelayedLink>
-            </li>
-            <li className="shrink-0">
-              <DelayedLink className="py-4 px-8" href="/posts">
-                POSTS
-              </DelayedLink>
-            </li>
-          </ul>
-        </GlassBox>
-      </nav>
+      <Nav />
 
       {/* 소개 */}
       <motion.div

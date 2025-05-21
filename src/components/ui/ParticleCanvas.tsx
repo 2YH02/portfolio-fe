@@ -74,7 +74,6 @@ const ParticleCanvas = ({
       then = now - (delta % INTERVAL);
     };
 
-    // 👇 2초 뒤 파티클 생성 및 애니메이션 시작
     const delayId = setTimeout(() => {
       createParticles();
       animationFrameId = requestAnimationFrame(frame);

@@ -1,15 +1,39 @@
+"use client";
+
 import { cn } from "@/lib/utils";
+import { usePathname } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
 
 type SpotlightProps = {
   className?: string;
-  fill?: string;
 };
 
-export const Spotlight = ({ className, fill }: SpotlightProps) => {
+export const Spotlight = ({ className }: SpotlightProps) => {
+  const pathname = usePathname();
+
+  const [lightColor, setLightColor] = useState("#a8a8a8");
+
+  const changeColor = useCallback((color: string) => {
+    setTimeout(() => {
+      setLightColor(color);
+    }, 500);
+  }, []);
+
+  useEffect(() => {
+    if (pathname.includes("/projects")) {
+      changeColor("yellow");
+    } else if (pathname.includes("/about")) {
+      changeColor("purple");
+    } else if (pathname.includes("/posts")) {
+      changeColor("red");
+    } else {
+      changeColor("white");
+    }
+  }, [pathname]);
   return (
     <svg
       className={cn(
-        "animate-spotlight pointer-events-none absolute left-1/3 z-[1]  h-[169%] w-[138%] lg:w-[84%] opacity-0",
+        "animate-spotlight pointer-events-none absolute left-1/3 h-[169%] w-[138%] lg:w-[84%] opacity-0 -z-10",
         className
       )}
       xmlns="http://www.w3.org/2000/svg"
@@ -18,12 +42,13 @@ export const Spotlight = ({ className, fill }: SpotlightProps) => {
     >
       <g filter="url(#filter)">
         <ellipse
+          className="transition-colors duration-500 ease-in-out"
           cx="1924.71"
           cy="273.501"
           rx="1924.71"
           ry="273.501"
           transform="matrix(-0.822377 -0.568943 -0.568943 0.822377 3631.88 2291.09)"
-          fill={fill || "white"}
+          fill={lightColor}
           fillOpacity="0.21"
         ></ellipse>
       </g>

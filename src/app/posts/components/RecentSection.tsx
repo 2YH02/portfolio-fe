@@ -1,34 +1,70 @@
-"use client";
-
+import Button from "@/components/common/Button";
 import { GlassBox } from "@/components/ui/GlassBox";
-import { motion } from "motion/react";
+import { recent_post } from "@/data";
+import { cn } from "@/lib/utils";
+import Image from "next/image";
+import Link from "next/link";
 
 const RecentSection = () => {
   return (
     <section className="max-w-[1280px] p-10 mx-auto py-40">
-      {/* 블로그 이전 안내 */}
-      <motion.div
-        className="max-w-[804px] p-10 mx-auto py-40 text-center"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        <GlassBox className="p-8 space-y-6">
-          <h2 className="text-2xl font-bold text-indigo-400">
-            블로그 기능을 현재 개발 중입니다.
-          </h2>
-          <p className="text-gray-300">
-            아래 버튼을 누르시면 기존 블로그로 안내해 드립니다.
-          </p>
-          <a
-            href="https://2yh-develop4jeon.tistory.com"
-            target="_blank"
-            className="inline-block py-3 px-6 bg-indigo-400 text-white rounded-lg hover:bg-indigo-500 transition"
-          >
-            블로그 이동
-          </a>
-        </GlassBox>
-      </motion.div>
+      <div className="mb-6 text-center">
+        <Link
+          className="relative backdrop-blur-lg bg-white/10 shadow-2xl inline-block py-3 px-6 text-white rounded-lg active:scale-95"
+          href={"/posts/add"}
+        >
+          글 작성
+        </Link>
+      </div>
+      <div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {recent_post.posts.map((post) => {
+            return (
+              <Link
+                href={`/posts/${post.id}`}
+                key={post.id}
+                className="text-left"
+              >
+                <GlassBox
+                  className="h-96 p-0 transform transition-transform duration-300 ease-in-out hover:z-10
+                            hover:[transform:perspective(800px)_rotateX(4deg)_rotateY(-4deg)_scale(1.05)] 
+                            relative border border-solid w-full rounded-lg"
+                  withAction
+                >
+                  <div className={cn("relative w-full overflow-hidden h-1/2")}>
+                    <Image
+                      src={post.thumbnail}
+                      alt={`thumbnail`}
+                      fill
+                      className={cn("object-cover")}
+                    />
+                  </div>
+                  <div className="w-full h-1/2 p-4 flex flex-col justify-center">
+                    <p className="shrink-0 text-xs flex gap-2 text-indigo-200">
+                      {post.tags.join(", ")}
+                    </p>
+                    <p className="shrink-0 text-xl mb-1 truncate">
+                      {post.title}
+                    </p>
+                    <div>
+                      <p className="shrink-0 grow text-gray-400 text-sm line-clamp-3">
+                        {post.description}
+                      </p>
+                    </div>
+                    <div className="grow" />
+                    <div className="text-gray-400 text-xs">
+                      {post.createdAt}
+                    </div>
+                  </div>
+                </GlassBox>
+              </Link>
+            );
+          })}
+        </div>
+        <div className="mt-6 text-center">
+          <Button>더보기</Button>
+        </div>
+      </div>
     </section>
   );
 };

@@ -349,3 +349,233 @@ export const about: About = {
     },
   ],
 };
+
+interface PostListItem {
+  id: number;
+  thumbnail: string;
+  title: string;
+  description: string;
+  tags: string[];
+  createdAt: string;
+}
+
+interface RecentPost {
+  posts: PostListItem[];
+}
+
+export const recent_post: RecentPost = {
+  posts: [
+    {
+      id: 0,
+      thumbnail: "/hey-2.png",
+      title: "포스팅 1",
+      description: "포스팅 1 입니다.",
+      tags: ["리액트", "Next.js"],
+      createdAt: "2025-05-19",
+    },
+    {
+      id: 1,
+      thumbnail: "/lets-2.png",
+      title: "포스팅 2",
+      description: "포스팅 2 입니다.",
+      tags: ["리액트", "Next.js"],
+      createdAt: "2025-05-19",
+    },
+    {
+      id: 2,
+      thumbnail: "/pullup-1.png",
+      title: "포스팅 3",
+      description: "포스팅 3 입니다.",
+      tags: ["리액트", "Next.js"],
+      createdAt: "2025-05-19",
+    },
+    {
+      id: 3,
+      thumbnail: "/pullup-2.png",
+      title:
+        "포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4",
+      description:
+        "포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.",
+      tags: ["리액트", "Next.js"],
+      createdAt: "2025-05-19",
+    },
+    {
+      id: 4,
+      thumbnail: "/lets-2.png",
+      title: "포스팅 5",
+      description: "포스팅 5 입니다.",
+      tags: ["리액트", "Next.js"],
+      createdAt: "2025-05-19",
+    },
+    {
+      id: 5,
+      thumbnail: "/hey-2.png",
+      title: "포스팅 6",
+      description: "포스팅 6 입니다.",
+      tags: ["리액트", "Next.js"],
+      createdAt: "2025-05-19",
+    },
+    {
+      id: 6,
+      thumbnail: "/hey-1.png",
+      title:
+        "post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7",
+      description:
+        "hello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is apple",
+      tags: ["리액트", "Next.js"],
+      createdAt: "2025-05-19",
+    },
+    {
+      id: 7,
+      thumbnail: "/lets-1.png",
+      title: "포스팅 8",
+      description: "포스팅 8 입니다.",
+      tags: ["리액트", "Next.js"],
+      createdAt: "2025-05-19",
+    },
+    {
+      id: 8,
+      thumbnail: "/pullup-3.png",
+      title: "포스팅 9",
+      description: "포스팅 9 입니다.",
+      tags: ["리액트", "Next.js"],
+      createdAt: "2025-05-19",
+    },
+    {
+      id: 9,
+      thumbnail: "/hey-2.png",
+      title: "포스팅 10",
+      description: "포스팅 10 입니다.",
+      tags: ["리액트", "Next.js"],
+      createdAt: "2025-05-19",
+    },
+    {
+      id: 10,
+      thumbnail: "/lets-2.png",
+      title: "포스팅 11",
+      description: "포스팅 11 입니다.",
+      tags: ["리액트", "Next.js"],
+      createdAt: "2025-05-19",
+    },
+    {
+      id: 11,
+      thumbnail: "/hey-2.png",
+      title: "포스팅 1",
+      description: "포스팅 1 입니다.",
+      tags: ["리액트", "Next.js"],
+      createdAt: "2025-05-19",
+    },
+  ],
+};
+
+export interface Post {
+  id: number;
+  title: string;
+  thumbnail: string;
+  tags: string[];
+  createdAt: string;
+  htmlBody: string;
+}
+
+export const post_detail_list: Post[] = [
+  {
+    id: 0,
+    title: "포스팅 1",
+    thumbnail: "/hey-2.png",
+    tags: ["리액트", "Next.js"],
+    createdAt: "2025-05-19",
+    htmlBody: "포스팅 1 입니다.",
+  },
+  {
+    id: 1,
+    thumbnail: "/lets-2.png",
+    title: "포스팅 2",
+    htmlBody: "포스팅 2 입니다.",
+    tags: ["리액트", "Next.js"],
+    createdAt: "2025-05-19",
+  },
+  {
+    id: 2,
+    thumbnail: "/pullup-1.png",
+    title: "포스팅 3",
+    htmlBody: "포스팅 3 입니다.",
+    tags: ["리액트", "Next.js"],
+    createdAt: "2025-05-19",
+  },
+  {
+    id: 3,
+    thumbnail: "/pullup-2.png",
+    title:
+      "포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4",
+    htmlBody:
+      "포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.",
+    tags: ["리액트", "Next.js"],
+    createdAt: "2025-05-19",
+  },
+  {
+    id: 4,
+    thumbnail: "/lets-2.png",
+    title: "포스팅 5",
+    htmlBody: "포스팅 5 입니다.",
+    tags: ["리액트", "Next.js"],
+    createdAt: "2025-05-19",
+  },
+  {
+    id: 5,
+    thumbnail: "/hey-2.png",
+    title: "포스팅 6",
+    htmlBody: "포스팅 6 입니다.",
+    tags: ["리액트", "Next.js"],
+    createdAt: "2025-05-19",
+  },
+  {
+    id: 6,
+    thumbnail: "/hey-1.png",
+    title:
+      "post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7",
+    htmlBody:
+      "hello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is apple",
+    tags: ["리액트", "Next.js"],
+    createdAt: "2025-05-19",
+  },
+  {
+    id: 7,
+    thumbnail: "/lets-1.png",
+    title: "포스팅 8",
+    htmlBody: "포스팅 8 입니다.",
+    tags: ["리액트", "Next.js"],
+    createdAt: "2025-05-19",
+  },
+  {
+    id: 8,
+    thumbnail: "/pullup-3.png",
+    title: "포스팅 9",
+    htmlBody: "포스팅 9 입니다.",
+    tags: ["리액트", "Next.js"],
+    createdAt: "2025-05-19",
+  },
+  {
+    id: 9,
+    thumbnail: "/hey-2.png",
+    title: "포스팅 10",
+    htmlBody: "포스팅 10 입니다.",
+    tags: ["리액트", "Next.js"],
+    createdAt: "2025-05-19",
+  },
+  {
+    id: 10,
+    thumbnail: "/lets-2.png",
+    title: "포스팅 11",
+    htmlBody: "포스팅 11 입니다.",
+    tags: ["리액트", "Next.js"],
+    createdAt: "2025-05-19",
+  },
+  {
+    id: 11,
+    thumbnail: "/hey-2.png",
+    title: "포스팅 1",
+    htmlBody: "포스팅 1 입니다.",
+    tags: ["리액트", "Next.js"],
+    createdAt: "2025-05-19",
+  },
+];

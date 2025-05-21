@@ -1,6 +1,6 @@
 "use client";
 
-import DelayedLink from "@/components/common/DelayedLink";
+import Nav from "@/components/common/Nav";
 import { GlassBox } from "@/components/ui/GlassBox";
 import { projects } from "@/data";
 import { cn } from "@/lib/utils";
@@ -18,36 +18,9 @@ export default function ProjectsClient() {
   const [clickDetail, setClickDetail] = useState(false);
 
   return (
-    <main className="relative w-screen h-screen font-mono">
+    <main className="relative w-screen h-screen">
       {/* 상단 링크 */}
-      <motion.nav
-        initial={{ top: 40 }}
-        animate={{ top: clickDetail ? -300 : 40 }}
-        transition={{
-          duration: 0.3,
-        }}
-        className="absolute left-1/2 top-10 -translate-x-1/2"
-      >
-        <GlassBox className="py-0 rounded-full">
-          <ul className="flex">
-            <li className="shrink-0">
-              <DelayedLink className="py-4 px-8" href="/">
-                HOME
-              </DelayedLink>
-            </li>
-            <li className="shrink-0">
-              <DelayedLink className="py-4 px-8" href="/about">
-                ABOUT
-              </DelayedLink>
-            </li>
-            <li className="shrink-0">
-              <DelayedLink ms={1100} className="py-4 px-8" href="/posts">
-                POSTS
-              </DelayedLink>
-            </li>
-          </ul>
-        </GlassBox>
-      </motion.nav>
+      <Nav />
 
       {/* 이미지 */}
       <motion.section

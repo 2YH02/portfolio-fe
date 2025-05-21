@@ -1,6 +1,6 @@
 "use client";
 
-import DelayedLink from "@/components/common/DelayedLink";
+import Nav from "@/components/common/Nav";
 import { GlassBox } from "@/components/ui/GlassBox";
 import type { Members, Project } from "@/data";
 import { cn } from "@/lib/utils";
@@ -12,41 +12,9 @@ export default function DetailClient({ project }: { project: Project }) {
   const [curImage, setCurImage] = useState<string | null>(null);
 
   return (
-    <main className="relative w-screen h-screen font-mono overflow-auto">
+    <main className="relative w-screen h-screen overflow-auto">
       {/* 상단 링크 */}
-      <motion.nav
-        initial={{ top: -300 }}
-        animate={{ top: 40 }}
-        transition={{
-          duration: 0.3,
-        }}
-        className="fixed left-1/2 -translate-x-1/2 z-10"
-      >
-        <GlassBox className="py-0 rounded-full bg-black/40">
-          <ul className="flex">
-            <li className="shrink-0">
-              <DelayedLink className="py-4 px-8" href="/projects">
-                PROJECTS
-              </DelayedLink>
-            </li>
-            <li className="shrink-0">
-              <DelayedLink className="py-4 px-8" href="/">
-                HOME
-              </DelayedLink>
-            </li>
-            <li className="shrink-0">
-              <DelayedLink className="py-4 px-8" href="/about">
-                ABOUT
-              </DelayedLink>
-            </li>
-            <li className="shrink-0">
-              <DelayedLink className="py-4 px-8" href="/posts">
-                POSTS
-              </DelayedLink>
-            </li>
-          </ul>
-        </GlassBox>
-      </motion.nav>
+      <Nav className="bg-black/40" />
 
       {/* 메인 이미지 */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 h-[80%] w-[90%] rounded-bl-4xl rounded-br-4xl overflow-hidden">
@@ -157,7 +125,9 @@ export default function DetailClient({ project }: { project: Project }) {
           <h3 className="text-left text-2xl text-indigo-400 font-bold my-6">
             회고
           </h3>
-          <div className="whitespace-pre-wrap text-gray-300">{project.reflection}</div>
+          <div className="whitespace-pre-wrap text-gray-300">
+            {project.reflection}
+          </div>
         </div>
 
         {/* 이미지 */}
