@@ -161,6 +161,7 @@ p {
 .ql-code-block-container code {
   padding: 0 !important;
   background-color: transparent !important;
+  overflow: visible !important;
 }
 
 .ql-code-block-container {
@@ -169,6 +170,8 @@ p {
   border-radius: 1rem !important;
   padding: 1rem !important;
   transition: all 0.2s !important;
+
+  overflow: auto !important;
 }
 
 .blog-post img {

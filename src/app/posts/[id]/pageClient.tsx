@@ -24,10 +24,10 @@ export default function PostClient({ post }: { post: Post }) {
           <p className="shrink-0 text-sm flex gap-2 text-indigo-200">
             {post.tags.join(", ")}
           </p>
-          <p className="text-gray-400 text-xs">{post.createdAt}</p>
+          <p className="text-gray-400 text-xs">{post.created_at}</p>
         </div>
         <div className="p-2 mt-8">
-          <QuillCodeRenderer htmlString={newHtml} />
+          <QuillCodeRenderer htmlString={post.body} />
         </div>
       </div>
     </div>
