@@ -1,4 +1,5 @@
-import { post_detail_list } from "@/data";
+import { getPostById } from "@/lib/api/blog";
+import { notFound } from "next/navigation";
 import PostClient from "./pageClient";
 
 export default async function PostDetail({
@@ -8,9 +9,9 @@ export default async function PostDetail({
 }) {
   const { id } = await params;
 
-  const post = post_detail_list.find((post) => post.id === ~~id);
+  const data = await getPostById(Number(id));
 
-  if (!post) return <div>asd</div>;
+  if (!data) notFound();
 
-  return <PostClient post={post} />;
+  return <PostClient post={data} />;
 }

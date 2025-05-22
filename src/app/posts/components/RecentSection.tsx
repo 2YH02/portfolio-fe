@@ -1,11 +1,11 @@
 import Button from "@/components/common/Button";
 import { GlassBox } from "@/components/ui/GlassBox";
-import { recent_post } from "@/data";
+import type { PostsResponse } from "@/lib/api/blog";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 
-const RecentSection = () => {
+const RecentSection = ({ data }: { data: PostsResponse }) => {
   return (
     <section className="max-w-[1280px] p-10 mx-auto py-40">
       <div className="mb-6 text-center">
@@ -18,7 +18,7 @@ const RecentSection = () => {
       </div>
       <div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {recent_post.posts.map((post) => {
+          {data.posts.map((post) => {
             return (
               <Link
                 href={`/posts/${post.id}`}
@@ -33,7 +33,7 @@ const RecentSection = () => {
                 >
                   <div className={cn("relative w-full overflow-hidden h-1/2")}>
                     <Image
-                      src={post.thumbnail}
+                      src={"/lets.png"}
                       alt={`thumbnail`}
                       fill
                       className={cn("object-cover")}
@@ -48,12 +48,12 @@ const RecentSection = () => {
                     </p>
                     <div>
                       <p className="shrink-0 grow text-gray-400 text-sm line-clamp-3">
-                        {post.description}
+                        여기 디스크립션 요약 적어야 됨
                       </p>
                     </div>
                     <div className="grow" />
                     <div className="text-gray-400 text-xs">
-                      {post.createdAt}
+                      {post.created_at}
                     </div>
                   </div>
                 </GlassBox>
