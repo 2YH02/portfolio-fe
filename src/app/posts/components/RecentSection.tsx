@@ -1,7 +1,6 @@
-import Button from "@/components/common/Button";
 import { GlassBox } from "@/components/ui/GlassBox";
 import type { PostsResponse } from "@/lib/api/blog";
-import { cn } from "@/lib/utils";
+import { cn, formatDate } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -33,7 +32,7 @@ const RecentSection = ({ data }: { data: PostsResponse }) => {
                 >
                   <div className={cn("relative w-full overflow-hidden h-1/2")}>
                     <Image
-                      src={"/lets.png"}
+                      src={post.thumbnail}
                       alt={`thumbnail`}
                       fill
                       className={cn("object-cover")}
@@ -48,21 +47,18 @@ const RecentSection = ({ data }: { data: PostsResponse }) => {
                     </p>
                     <div>
                       <p className="shrink-0 grow text-gray-400 text-sm line-clamp-3">
-                        여기 디스크립션 요약 적어야 됨
+                        {post.description}
                       </p>
                     </div>
                     <div className="grow" />
                     <div className="text-gray-400 text-xs">
-                      {post.created_at}
+                      {formatDate(post.created_at)}
                     </div>
                   </div>
                 </GlassBox>
               </Link>
             );
           })}
-        </div>
-        <div className="mt-6 text-center">
-          <Button>더보기</Button>
         </div>
       </div>
     </section>

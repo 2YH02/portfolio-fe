@@ -64,7 +64,7 @@ const Editor = ({ initialHTML = "", onChange }: EditorProps) => {
             ["bold", "italic", "underline", "strike"],
             [{ list: "ordered" }, { list: "bullet" }],
             [{ color: [] }, { background: [] }],
-            ["code-block"],
+            ["blockquote", "code-block"],
             ["link", "image"],
             ["clean"],
           ],
@@ -78,7 +78,7 @@ const Editor = ({ initialHTML = "", onChange }: EditorProps) => {
               .upload(filePath, file);
 
             if (uploadError) {
-              console.error("upload error:", uploadError);
+              console.error("이미지 업로드 에러: ", uploadError);
               return;
             }
 
@@ -105,6 +105,7 @@ const Editor = ({ initialHTML = "", onChange }: EditorProps) => {
         "link",
         "image",
         "imageBlot",
+        "blockquote",
       ],
     });
 

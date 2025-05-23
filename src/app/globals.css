@@ -100,8 +100,53 @@ canvas {
   height: 100dvh;
 }
 
+pre {
+  white-space: pre-wrap; /* 개행(\n)을 줄바꿈으로 */
+  word-break: keep-all; /* 단어 잘림 방지 */
+}
+.code-block {
+  white-space: pre-wrap;
+  word-break: keep-all;
+}
+
+li[data-list="bullet"] {
+  list-style-type: disc;
+}
+
+blockquote {
+  border-left: 4px solid rgba(80, 80, 80, 0.2);
+  background-color: rgba(80, 80, 80, 0.4);
+  backdrop-filter: blur(30px);
+  color: #eee;
+  padding: 1.25rem 1.8rem;
+  font-style: normal;
+  font-size: 1rem;
+  line-height: 1.6;
+  border-radius: 0.5rem;
+  position: relative;
+}
+
+blockquote::before {
+  content: "“";
+  font-size: 2rem;
+  color: #fff;
+  position: absolute;
+  top: 0px;
+  left: 10px;
+  opacity: 0.4;
+  font-weight: bold;
+}
+
+blockquote p {
+  margin: 0;
+}
+
 .blog-post h1 {
-  font-size: 36px;
+  font-size: 32px;
+}
+
+.blog-post {
+  color: #f5f5f5;
 }
 
 .blog-post h2 {
@@ -109,18 +154,49 @@ canvas {
 }
 
 .blog-post h3 {
-  font-size: 16px;
+  font-size: 20px;
 }
 
 .blog-post p {
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .blog-post ul,
 .blog-post ol {
   list-style: revert;
   padding-left: revert;
-  font-size: 14px;
+  font-size: 16px;
+}
+
+.blog-post a {
+  position: relative;
+  display: inline-block;
+  color: #7c86ff;
+  text-decoration: none;
+  padding-bottom: 4px;
+  transition: color 0.3s ease;
+}
+
+.blog-post a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #fff;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.blog-post a:hover {
+  color: #fff;
+  text-shadow: var(--drop-shadow-glow);
+}
+
+.blog-post a:hover::after {
+  transform: scaleX(1);
 }
 
 .ql-container {

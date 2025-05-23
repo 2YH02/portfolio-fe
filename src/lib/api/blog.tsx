@@ -6,6 +6,7 @@ const BASE_URL =
 export type Post = {
   id: number;
   title: string;
+  description: string;
   body: string;
   tags: string[];
   thumbnail: string;
@@ -17,8 +18,8 @@ export type PostsResponse = {
   posts: Post[];
 };
 
-export async function getAllPosts() {
-  return apiClient<PostsResponse>(`${BASE_URL}/posts`);
+export async function getAllPosts(page: number) {
+  return apiClient<PostsResponse>(`${BASE_URL}/posts?page=${page}`);
 }
 
 export async function getPostById(id: number) {

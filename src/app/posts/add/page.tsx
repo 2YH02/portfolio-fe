@@ -12,7 +12,10 @@ export default function AddPostPage() {
   const [html, setHtml] = useState("");
 
   const savePost = () => {
+    const htmlString = JSON.stringify(html);
+    
     console.log(JSON.stringify(html));
+    console.log(stripHtml(htmlString));
   };
 
   return (
@@ -26,4 +29,11 @@ export default function AddPostPage() {
       </div>
     </div>
   );
+}
+
+function stripHtml(html: string) {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, "text/html");
+
+  return doc.body.textContent || "";
 }

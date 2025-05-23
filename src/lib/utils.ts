@@ -8,3 +8,12 @@ export function cn(...inputs: ClassValue[]) {
 export function randomNumBetween(min: number, max: number) {
   return Math.random() * (max - min) + min;
 }
+
+export function formatDate(isoString: string) {
+  const date = new Date(isoString);
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+
+  return `${year}.${month}.${day}`;
+}

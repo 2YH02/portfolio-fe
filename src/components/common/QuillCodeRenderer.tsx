@@ -21,7 +21,7 @@ export default function QuillCodeRenderer({
         .forEach((el) => el.remove());
 
       prevEl.querySelectorAll(".ql-code-block").forEach((div) => {
-        const codeText = div.textContent || "";
+        const codeText = div.textContent || "\n";
         const pre = document.createElement("pre");
         const code = document.createElement("code");
         code.textContent = codeText;
