@@ -6,15 +6,7 @@ import Link from "next/link";
 
 const RecentSection = ({ data }: { data: PostsResponse }) => {
   return (
-    <section className="max-w-[1280px] p-10 mx-auto py-40">
-      <div className="mb-6 text-center">
-        <Link
-          className="relative backdrop-blur-lg bg-white/10 shadow-2xl inline-block py-3 px-6 text-white rounded-lg active:scale-95"
-          href={"/posts/add"}
-        >
-          글 작성
-        </Link>
-      </div>
+    <section className="max-w-[1280px] p-10 mx-auto pt-40 pb-10">
       <div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {data.posts.map((post) => {
@@ -26,7 +18,7 @@ const RecentSection = ({ data }: { data: PostsResponse }) => {
               >
                 <GlassBox
                   className="h-96 p-0 transform transition-transform duration-300 ease-in-out hover:z-10
-                            hover:[transform:perspective(800px)_rotateX(4deg)_rotateY(-4deg)_scale(1.05)] 
+                            hover:[transform:perspective(800px)_rotateX(4deg)_rotateY(-4deg)_scale(1.05)]
                             relative border border-solid w-full rounded-lg"
                   withAction
                 >
