@@ -1,5 +1,8 @@
 import { projects } from "@/data";
+import { notFound } from "next/navigation";
 import DetailClient from "./pageClient";
+
+export const dynamic = "force-static";
 
 export default async function Page({
   params,
@@ -10,7 +13,9 @@ export default async function Page({
 
   const project = projects.find((project) => project.id === ~~id);
 
-  if (!project) return <div>asd</div>;
+  if (!project) {
+    notFound();
+  }
 
   return <DetailClient project={project} />;
 }
