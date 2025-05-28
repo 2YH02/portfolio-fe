@@ -10,6 +10,7 @@ export type Post = {
   body: string;
   tags: string[];
   thumbnail: string;
+  thumbnail_blur: string;
   created_at: string;
 };
 

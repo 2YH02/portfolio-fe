@@ -9,7 +9,6 @@ export async function apiClient<T>(
       ...(options.headers || {}),
     },
     ...options,
-    cache: "no-store",
   });
 
   if (!res.ok) {

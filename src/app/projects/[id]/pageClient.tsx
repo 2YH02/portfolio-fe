@@ -27,7 +27,7 @@ export default function DetailClient({ project }: { project: Project }) {
 
       {/* 프로젝트 정보 */}
       <motion.div
-        className="absolute top-[85%] w-[90%] left-1/2 -translate-x-1/2 pb-20"
+        className="absolute top-[85%] w-[90%] max-w-[1280px] left-1/2 -translate-x-1/2 pb-20"
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
