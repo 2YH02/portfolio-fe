@@ -26,25 +26,20 @@ export default function Pagination({
   const showRightEllipsis = currentPage < totalPages - siblingCount;
 
   return (
-    <nav aria-label="Pagination" className="flex justify-center mt-6 space-x-2">
+    <nav className="flex justify-center mt-6 space-x-2">
       <Link
         href={`/posts?page=1`}
         className={cn(
           glassBtn,
           currentPage === 1 && "opacity-50 pointer-events-none"
         )}
-        aria-label="Go to first page"
       >
         «
       </Link>
 
       {showLeftEllipsis && (
         <>
-          <Link
-            href={`/posts?page=1`}
-            className={glassBtn}
-            aria-label="Go to page 1"
-          >
+          <Link href={`/posts?page=1`} className={glassBtn}>
             1
           </Link>
           <span className="px-3 py-1 text-white">…</span>
@@ -55,7 +50,6 @@ export default function Pagination({
         <Link
           key={page}
           href={`/posts?page=${page}`}
-          aria-current={page === currentPage ? "page" : undefined}
           className={cn(
             glassBtn,
             page === currentPage
@@ -70,11 +64,7 @@ export default function Pagination({
       {showRightEllipsis && (
         <>
           <span className="px-3 py-1 text-white">…</span>
-          <Link
-            href={`/posts?page=${totalPages}`}
-            className={glassBtn}
-            aria-label={`Go to page ${totalPages}`}
-          >
+          <Link href={`/posts?page=${totalPages}`} className={glassBtn}>
             {totalPages}
           </Link>
         </>
@@ -86,7 +76,6 @@ export default function Pagination({
           glassBtn,
           currentPage === totalPages && "opacity-50 pointer-events-none"
         )}
-        aria-label="Go to last page"
       >
         »
       </Link>

@@ -1,6 +1,6 @@
 import { getPostById } from "@/lib/api/blog";
 import { notFound } from "next/navigation";
-import PostClient from "./pageClient";
+import PostDetailClient from "./pageClient";
 
 export default async function PostDetail({
   params,
@@ -13,5 +13,5 @@ export default async function PostDetail({
 
   if (!data) notFound();
 
-  return <PostClient post={data} />;
+  return <PostDetailClient post={data} />;
 }

@@ -4,7 +4,7 @@ import { type Post } from "@/lib/api/blog";
 import { formatDate } from "@/lib/utils";
 import Image from "next/image";
 
-export default function PostClient({ post }: { post: Post }) {
+export default function PostDetailClient({ post }: { post: Post }) {
   return (
     <div className="relative h-dvh overflow-auto">
       <Nav className="bg-black/40" />

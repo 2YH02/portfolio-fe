@@ -1,8 +1,6 @@
-import Nav from "@/components/common/Nav";
 import { getAllPosts } from "@/lib/api/blog";
 import { notFound } from "next/navigation";
-import Pagination from "./components/Pagination";
-import RecentSection from "./components/RecentSection";
+import PostClient from "./pageClient";
 
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
 
@@ -16,15 +14,5 @@ export default async function Posts(props: { searchParams: SearchParams }) {
     notFound();
   }
 
-  return (
-    <main className="relative w-screen h-screen font-mono overflow-auto pb-20">
-      <Nav className="bg-black/40" />
-
-      <RecentSection data={data} />
-      <Pagination
-        currentPage={page}
-        totalPages={Math.ceil(data.total_count / 12)}
-      />
-    </main>
-  );
+  return <PostClient data={data} page={page} />;
 }
