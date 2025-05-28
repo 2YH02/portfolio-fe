@@ -11,7 +11,7 @@ export default function PostClient({
   page,
 }: {
   data: PostsResponse;
-  page: Number;
+  page: number;
 }) {
   const mainRef = useRef<HTMLElement>(null);
 
