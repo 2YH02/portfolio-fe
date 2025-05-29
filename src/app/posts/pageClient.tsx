@@ -2,9 +2,27 @@
 
 import Nav from "@/components/common/Nav";
 import { type PostsResponse } from "@/lib/api/blog";
-import { useEffect, useRef } from "react";
+import { createContext, useContext, useRef, useState } from "react";
 import Pagination from "./components/Pagination";
 import RecentSection from "./components/RecentSection";
+
+interface LoadingContextType {
+  isLoading: boolean;
+  setLoading: (loading: boolean) => void;
+  body: React.RefObject<HTMLElement | null>;
+}
+
+const LoadingContext = createContext<LoadingContextType | undefined>(undefined);
+
+export function useLoading() {
+  const context = useContext(LoadingContext);
+  if (!context) {
+    throw new Error(
+      "useLoading은 LoadingProvider 안에서만 호출될 수 있습니다."
+    );
+  }
+  return context;
+}
 
 export default function PostClient({
   data,
@@ -15,22 +33,24 @@ export default function PostClient({
 }) {
   const mainRef = useRef<HTMLElement>(null);
 
-  useEffect(() => {
-    mainRef.current?.scrollTo({ top: 0, behavior: "smooth" });
-  }, [page, mainRef.current]);
+  const [isLoading, setIsLoading] = useState(false);
 
   return (
-    <main
-      ref={mainRef}
-      className="relative w-screen h-screen font-mono overflow-auto pb-20"
+    <LoadingContext.Provider
+      value={{ isLoading, setLoading: setIsLoading, body: mainRef }}
     >
-      <Nav className="bg-black/40" />
+      <main
+        ref={mainRef}
+        className="relative w-screen h-screen font-mono overflow-auto pb-20"
+      >
+        <Nav className="bg-black/40" />
 
-      <RecentSection data={data} />
-      <Pagination
-        currentPage={Number(page)}
-        totalPages={Math.ceil(data.total_count / 12)}
-      />
-    </main>
+        <RecentSection data={data} />
+        <Pagination
+          currentPage={Number(page)}
+          totalPages={Math.ceil(data.total_count / 12)}
+        />
+      </main>
+    </LoadingContext.Provider>
   );
 }

@@ -1,8 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 import { useMemo } from "react";
+import { useLoading } from "../pageClient";
 
 export const glassBtn =
   "px-3 py-1 rounded-lg border border-white/20 bg-white/5 backdrop-blur-sm text-white text-sm hover:bg-white/10 ";
@@ -18,38 +19,48 @@ export default function Pagination({
   totalPages,
   siblingCount = 3,
 }: PaginationProps) {
+  const router = useRouter();
+  const { setLoading, body } = useLoading();
+
   const pages = useMemo(
     () => getSurrounding(currentPage, totalPages, siblingCount),
     [currentPage, totalPages, siblingCount]
   );
+
+  const goToPage = (page: number) => {
+    setLoading(true);
+    body.current?.scrollTo({ top: 0, behavior: "smooth" });
+    router.push(`/posts?page=${page}`);
+  };
+
   const showLeftEllipsis = currentPage > siblingCount + 1;
   const showRightEllipsis = currentPage < totalPages - siblingCount;
 
   return (
     <nav className="flex justify-center mt-6 space-x-2">
-      <Link
-        href={`/posts?page=1`}
+      <button
+        onClick={() => goToPage(1)}
         className={cn(
           glassBtn,
           currentPage === 1 && "opacity-50 pointer-events-none"
         )}
       >
         «
-      </Link>
+      </button>
 
       {showLeftEllipsis && (
         <>
-          <Link href={`/posts?page=1`} className={glassBtn}>
+          <button onClick={() => goToPage(1)} className={glassBtn}>
             1
-          </Link>
+          </button>
           <span className="px-3 py-1 text-white">…</span>
         </>
       )}
 
       {pages.map((page) => (
-        <Link
+        <button
           key={page}
-          href={`/posts?page=${page}`}
+          onClick={() => goToPage(page)}
           className={cn(
             glassBtn,
             page === currentPage
@@ -58,27 +69,27 @@ export default function Pagination({
           )}
         >
           {page}
-        </Link>
+        </button>
       ))}
 
       {showRightEllipsis && (
         <>
           <span className="px-3 py-1 text-white">…</span>
-          <Link href={`/posts?page=${totalPages}`} className={glassBtn}>
+          <button onClick={() => goToPage(totalPages)} className={glassBtn}>
             {totalPages}
-          </Link>
+          </button>
         </>
       )}
 
-      <Link
-        href={`/posts?page=${totalPages}`}
+      <button
+        onClick={() => goToPage(totalPages)}
         className={cn(
           glassBtn,
           currentPage === totalPages && "opacity-50 pointer-events-none"
         )}
       >
         »
-      </Link>
+      </button>
     </nav>
   );
 }
