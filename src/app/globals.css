@@ -251,7 +251,8 @@ blockquote p {
 }
 
 .blog-post img {
-  transition: all 0.2s !important;
+  cursor: zoom-in;
+  transition: all 0.2s;
 }
 
 .blog-post img:hover {
