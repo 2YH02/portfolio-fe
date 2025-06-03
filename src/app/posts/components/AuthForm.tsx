@@ -37,8 +37,6 @@ const AuthForm = ({ setRole }: AuthFormProps) => {
     if (data.role === "Guest") {
       setMessage("사용자 정보를 확인해주세요.");
     }
-
-    console.log("로그인 정보:", data);
   };
 
   return (

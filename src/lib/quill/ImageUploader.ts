@@ -39,7 +39,6 @@ export default class ImageUploader {
   }
 
   private selectLocalImage(): void {
-    console.log("select");
     this.quill.focus();
     this.range = this.quill.getSelection();
 
@@ -65,7 +64,6 @@ export default class ImageUploader {
       evt.preventDefault();
       evt.stopPropagation();
 
-      console.log("drop");
       this.setCursorFromPoint(evt.clientX, evt.clientY);
       this.quill.focus();
       this.range = this.quill.getSelection();
