@@ -3,6 +3,7 @@
 import Nav from "@/components/common/Nav";
 import { GlassBox } from "@/components/ui/GlassBox";
 import { projects } from "@/data";
+import useImagePreload from "@/hooks/useImagePreload";
 import { cn } from "@/lib/utils";
 import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
@@ -16,6 +17,14 @@ export default function ProjectsClient() {
   const [prevImg, setPrevImg] = useState<null | string>(null);
 
   const [clickDetail, setClickDetail] = useState(false);
+
+  useImagePreload([
+    "/heynolja.png",
+    "/lets.png",
+    "/pullup.png",
+    "/img-toolkit.png",
+    "/portfolio.png",
+  ]);
 
   return (
     <main className="relative w-screen h-screen">

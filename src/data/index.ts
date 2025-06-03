@@ -14,9 +14,9 @@ export interface Project {
   id: number;
   title: string;
   thumbnail: string;
-  members?: Members;
+  members?: Members | null;
   role: string;
-  repository: string;
+  repository: string[];
   deployUrl?: string;
   techStack: string[];
   description: string;
@@ -28,7 +28,7 @@ export interface Project {
 
 export const projects: Project[] = [
   {
-    id: 0,
+    id: 1,
     title: "대한민국 철봉 지도",
     thumbnail: "/pullup.png",
     members: {
@@ -36,7 +36,7 @@ export const projects: Project[] = [
       be: 1,
     },
     role: "프론트엔드",
-    repository: "https://github.com/2YH02/k-pullup",
+    repository: ["https://github.com/2YH02/k-pullup"],
     deployUrl: "https://www.k-pullup.com",
     techStack: [
       "Next.js",
@@ -118,7 +118,7 @@ export const projects: Project[] = [
 이번 프로젝트는 저에게 정말 의미 있는 프로젝트입니다. 사용자는 많지 않지만 개발자로서 어떤 기능을 제공하고, 어떤 노력을 해야 사용자에게 만족감을 주는지, 기존 비슷한 서비스와 비교하여 어떤 부분을 장점으로 가져갈지, 어떤 식으로 코드를 작성하고 프로젝트를 만들어야 검색엔진에서 다른 사이트들보다 우선순위가 높아질지, 이런 고민들은 저를 제가 꿈꾸고 이상적으로 생각하는 개발자로 성장하기 위한 작지만, 매우 의미 있는 한걸음이었습니다. 볼수록 개선해야 될 것들이 눈에 보이고, 불편한 점들도 많이 남아있습니다. 저는 계속해서 해당 프로젝트를 조금씩 바꿔 나가려 합니다.`,
   },
   {
-    id: 1,
+    id: 2,
     title: "Let's",
     thumbnail: "/lets.png",
     period: "2023.12.26 ~ 2024.01.29 (약 5주)",
@@ -129,7 +129,7 @@ export const projects: Project[] = [
       pm: 2,
     },
     role: "프론트엔드",
-    repository: "https://github.com/WinnerOne-LETS/LETS_FE",
+    repository: ["https://github.com/WinnerOne-LETS/LETS_FE"],
     techStack: [
       "Next.js",
       "Typescript",
@@ -192,7 +192,7 @@ Zustand 라이브러리를 활용한 전역 상태 관리를 도입했습니다.
 또한, 이번 프로젝트는 디자이너, PM 과 함께 다양한 역할의 전문가들과의 첫 협업 기회였습니다. 이 과정에서 개발자로서 단순히 코드 작성에만 집중하는 것이 아니라, 디자인과 기획 단계에 적극 참여하고 의견을 나누며 프로젝트의 방향성에 기여하는 것의 중요성을 깨달았습니다. 이는 프로젝트가 보다 통합적이고 조화로운 방향으로 전진하는 데 필수적이며, 최종 제품의 품질과 사용자 경험을 향상시키는 데 중요한 역할을 한다는 것을 이해하였습니다.`,
   },
   {
-    id: 2,
+    id: 3,
     title: "Hey 놀자",
     thumbnail: "/heynolja.png",
     period: "2023.11.20 ~ 2023.11.30 (약 2주)",
@@ -201,7 +201,7 @@ Zustand 라이브러리를 활용한 전역 상태 관리를 도입했습니다.
       be: 1,
     },
     role: "프론트엔드",
-    repository: "https://github.com/Yanolza-Miniproject/Heynolja_FE",
+    repository: ["https://github.com/Yanolza-Miniproject/Heynolja_FE"],
     techStack: [
       "React",
       "Typescript",
@@ -260,11 +260,12 @@ Zustand 라이브러리를 활용한 전역 상태 관리를 도입했습니다.
     id: 4,
     title: "img-toolkit",
     thumbnail: "/img-toolkit.png",
-    members: {
-      fe: 1,
-    },
-    role: "개발자",
-    repository: "https://github.com/2YH02/img-toolkit",
+    members: null,
+    role: "프론트엔드",
+    repository: [
+      "https://github.com/2YH02/img-toolkit",
+      "https://github.com/2YH02/img-toolkit-rust",
+    ],
     deployUrl: "https://2yh02.github.io/img-toolkit",
     techStack: [
       "JavaScript",
@@ -294,6 +295,67 @@ Zustand 라이브러리를 활용한 전역 상태 관리를 도입했습니다.
     reflection:
       "라이브러리 개발을 통해 범용적으로 재사용 가능한 코드를 작성하고 유지보수하는 경험을 쌓았습니다. 처음으로 npm에 직접 라이브러리를 배포하면서, 오픈소스로 프로젝트를 관리하고 사용자와 소통하는 과정의 중요성을 배웠습니다. 특히 Rust WebAssembly를 도입하면서 이미지 압축 과정에서 성능과 품질 모두를 최적화할 수 있었습니다.",
   },
+  {
+    id: 0,
+    title: "개인 포트폴리오 및 블로그 웹사이트",
+    thumbnail: "/portfolio.png",
+    members: null,
+    role: "풀스택",
+    repository: [
+      "https://github.com/2YH02/portfolio-fe",
+      "https://github.com/2YH02/portfolio-be",
+    ],
+    deployUrl: "https://www.yonghun.me",
+    techStack: [
+      "Next.js",
+      "Rust",
+      "Actix Web",
+      "Typescript",
+      "TailwindCSS",
+      "Zustand",
+      "Docker Compose",
+      "PostgreSQL",
+    ],
+    images: [
+      "/portfolio-1.png",
+      "/portfolio-2.png",
+      "/portfolio-3.png",
+      "/portfolio-4.png",
+      "/portfolio-5.png",
+    ],
+    description:
+      "개인 포트폴리오와 기술 블로그를 하나의 웹사이트로 통합하여, 기술적 경험과 프로젝트를 효과적으로 공유할 수 있도록 구성하였습니다. Next.js 기반의 프론트엔드와 Rust 및 Actix Web 기반의 백엔드로 구성된 풀스택 웹사이트이며 포트폴리오, 블로그 글 관리, 사용자 경험(UX) 중심의 애니메이션과 UI를 구현했습니다",
+    sections: [
+      {
+        title: "Docker Compose 기반 일관된 개발 환경 구성",
+        bullets: [
+          "Docker Compose를 활용하여 Rust 백엔드와 PostgreSQL 데이터베이스가 포함된 로컬 개발 환경을 구축함으로써, 환경 차이에 따른 오류를 줄이고 개발과 배포의 일관성을 유지했습니다.",
+        ],
+      },
+      {
+        title: "커스텀 Quill 에디터 구현 및 이미지 업로드 처리",
+        bullets: [
+          "Quill.js를 기반으로 프로젝트 디자인에 맞춘 블로그 작성 에디터를 커스텀 구현하였고, 이미지 업로드 시 로딩 UI가 표시되도록 Quill 블록을 확장했습니다.",
+          "이미지는 Supabase Storage와 연동하여 업로드 및 삭제를 처리하며, 업로드된 이미지에 대한 blur 이미지도 함께 저장하여 UX를 향상시켰습니다.",
+        ],
+      },
+      {
+        title: "블로그 포스트 렌더링 컴포넌트 및 코드 하이라이팅",
+        bullets: [
+          "Quill 에디터에서 저장된 HTML 콘텐츠를 파싱하여 렌더링하는 컴포넌트를 구현하고, highlight.js를 사용하여 코드 블럭에 프로젝트 스타일을 적용한 커스텀 하이라이팅을 구현했습니다.",
+        ],
+      },
+      {
+        title: "Framer Motion 기반 인터랙티브 UI 구성",
+        bullets: [
+          "페이지 전환 및 요소 등장 시 애니메이션을 Framer Motion으로 구성하여 사이트 전반에 자연스러운 인터랙션을 더했고, 주요 콘텐츠 이미지에 blur placeholder를 적용해 사용자 체감 성능을 높였습니다.",
+        ],
+      },
+    ],
+    reflection: `사용자에게 과하지 않은 자연스러운 인터랙션을 제공하고자 많은 고민을 했습니다. Framer Motion과 Canvas API 등을 통해 시각적인 효과를 주되, 사용자가 불편함을 느끼지 않도록 세심하게 조절했습니다. 특히 정보 제공 목적의 웹사이트에서는 인터랙션의 강도와 빈도가 사용자 경험에 큰 영향을 미친다는 점을 새삼 느낄 수 있었고, 이 과정에서 인터페이스 설계에 대한 감각을 키울 수 있었습니다.
+
+또한 단순한 블로그 글 CRUD 기능이더라도, 프론트엔드에서 어떤 구조로 데이터를 다루면 사용자에게 유용할지, 백엔드에서는 어떤 형식으로 응답을 보내야 하는지를 고민하며 전체적인 데이터 흐름을 직접 설계해보는 경험이 매우 뜻깊었습니다. 데이터베이스 구조와 API 설계, 프론트엔드 렌더링 방식까지 웹 서비스 전반에 대한 이해를 넓힐 수 있는 기회였고, 기술적인 성장을 체감할 수 있던 프로젝트였습니다.`,
+  },
 ];
 
 export type Skill = {
@@ -316,266 +378,36 @@ export const about: About = {
     {
       title: "JavaScript, TypeScript",
       description:
-        "개인 및 팀 프로젝트를 통해 지속적으로 익혀왔으며, 실무에 필요한 활용 방식에 익숙.",
+        "개인 및 팀 프로젝트를 통해 지속적으로 익혀왔으며, 타입스크립트를 사용하여 개발할 수 있습니다.",
     },
     {
       title: "React, Next.js",
       description:
-        "CSR에서 SSR로 전환 경험, SEO 최적화 및 퍼포먼스 개선 실적 보유.",
-    },
-    {
-      title: "Tailwind CSS",
-      description:
-        "UI 컴포넌트 라이브러리 개발 및 배포 경험, 반응형 UI 등 사용자 경험 개선에 적극 활용.",
-    },
-    {
-      title: "Zustand, React Query",
-      description:
-        "상황에 맞는 상태관리 방식 선택 가능, 비동기 처리와 글로벌 상태 관리에 능숙.",
-    },
-    {
-      title: "Node.js",
-      description: "Nest.js를 활용한 HTTP 서버 구축 경험 보유.",
+        "SSR, CSR, SSG, ISR에 대한 개념을 이해하고, CSR에서 SSR로 전환 경험, SEO 최적화 및 퍼포먼스 개선 경험이 있습니다.",
     },
     {
       title: "Rust",
       description:
-        "WebAssembly를 활용한 이미지 처리 및 HTTP 서버 구축 경험 보유.",
+        "WebAssembly를 활용한 이미지 처리 라이브러리 개발 및 HTTP 서버 구축 경험이 있습니다.",
+    },
+    {
+      title: "Tailwind CSS",
+      description:
+        "UI 컴포넌트 라이브러리 개발 및 배포 경험이 있고, 반응형 UI 등 사용자 경험 개선에 적극 활용할 수 있습니다.",
+    },
+    {
+      title: "Zustand, React Query",
+      description:
+        "Flux패턴을 이해할 수 있으며, 데이터의 캐싱, 동기화 등을 이해하고 상황에 맞는 상태관리 방식을 선택할 수 있습니다.",
+    },
+    {
+      title: "Node.js",
+      description: "Nest.js를 활용한 HTTP 서버 구축 경험이 있습니다.",
     },
     {
       title: "React Native Expo",
       description:
-        "Webview 기반 앱 구축, 모바일-웹 연동(GPS 연동 및 postMessage 처리) 경험 보유.",
+        "Webview 기반 앱 구축, 모바일-웹 연동(GPS 연동 및 postMessage 처리) 경험이 있습니다.",
     },
   ],
 };
-
-interface PostListItem {
-  id: number;
-  thumbnail: string;
-  title: string;
-  description: string;
-  tags: string[];
-  created_at: string;
-}
-
-interface RecentPost {
-  posts: PostListItem[];
-}
-
-export const recent_post: RecentPost = {
-  posts: [
-    {
-      id: 0,
-      thumbnail: "/hey-2.png",
-      title: "포스팅 1",
-      description: "포스팅 1 입니다.",
-      tags: ["리액트", "Next.js"],
-      created_at: "2025-05-19",
-    },
-    {
-      id: 1,
-      thumbnail: "/lets-2.png",
-      title: "포스팅 2",
-      description: "포스팅 2 입니다.",
-      tags: ["리액트", "Next.js"],
-      created_at: "2025-05-19",
-    },
-    {
-      id: 2,
-      thumbnail: "/pullup-1.png",
-      title: "포스팅 3",
-      description: "포스팅 3 입니다.",
-      tags: ["리액트", "Next.js"],
-      created_at: "2025-05-19",
-    },
-    {
-      id: 3,
-      thumbnail: "/pullup-2.png",
-      title:
-        "포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4",
-      description:
-        "포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.",
-      tags: ["리액트", "Next.js"],
-      created_at: "2025-05-19",
-    },
-    {
-      id: 4,
-      thumbnail: "/lets-2.png",
-      title: "포스팅 5",
-      description: "포스팅 5 입니다.",
-      tags: ["리액트", "Next.js"],
-      created_at: "2025-05-19",
-    },
-    {
-      id: 5,
-      thumbnail: "/hey-2.png",
-      title: "포스팅 6",
-      description: "포스팅 6 입니다.",
-      tags: ["리액트", "Next.js"],
-      created_at: "2025-05-19",
-    },
-    {
-      id: 6,
-      thumbnail: "/hey-1.png",
-      title:
-        "post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7",
-      description:
-        "hello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is apple",
-      tags: ["리액트", "Next.js"],
-      created_at: "2025-05-19",
-    },
-    {
-      id: 7,
-      thumbnail: "/lets-1.png",
-      title: "포스팅 8",
-      description: "포스팅 8 입니다.",
-      tags: ["리액트", "Next.js"],
-      created_at: "2025-05-19",
-    },
-    {
-      id: 8,
-      thumbnail: "/pullup-3.png",
-      title: "포스팅 9",
-      description: "포스팅 9 입니다.",
-      tags: ["리액트", "Next.js"],
-      created_at: "2025-05-19",
-    },
-    {
-      id: 9,
-      thumbnail: "/hey-2.png",
-      title: "포스팅 10",
-      description: "포스팅 10 입니다.",
-      tags: ["리액트", "Next.js"],
-      created_at: "2025-05-19",
-    },
-    {
-      id: 10,
-      thumbnail: "/lets-2.png",
-      title: "포스팅 11",
-      description: "포스팅 11 입니다.",
-      tags: ["리액트", "Next.js"],
-      created_at: "2025-05-19",
-    },
-    {
-      id: 11,
-      thumbnail: "/hey-2.png",
-      title: "포스팅 1",
-      description: "포스팅 1 입니다.",
-      tags: ["리액트", "Next.js"],
-      created_at: "2025-05-19",
-    },
-  ],
-};
-
-export interface Post {
-  id: number;
-  title: string;
-  thumbnail: string;
-  tags: string[];
-  created_at: string;
-  body: string;
-}
-
-export const post_detail_list: Post[] = [
-  {
-    id: 0,
-    title: "포스팅 1",
-    thumbnail: "/hey-2.png",
-    tags: ["리액트", "Next.js"],
-    created_at: "2025-05-19",
-    body: "포스팅 1 입니다.",
-  },
-  {
-    id: 1,
-    thumbnail: "/lets-2.png",
-    title: "포스팅 2",
-    body: "포스팅 2 입니다.",
-    tags: ["리액트", "Next.js"],
-    created_at: "2025-05-19",
-  },
-  {
-    id: 2,
-    thumbnail: "/pullup-1.png",
-    title: "포스팅 3",
-    body: "포스팅 3 입니다.",
-    tags: ["리액트", "Next.js"],
-    created_at: "2025-05-19",
-  },
-  {
-    id: 3,
-    thumbnail: "/pullup-2.png",
-    title:
-      "포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4포스팅 4",
-    body:
-      "포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.포스팅 4 입니다.",
-    tags: ["리액트", "Next.js"],
-    created_at: "2025-05-19",
-  },
-  {
-    id: 4,
-    thumbnail: "/lets-2.png",
-    title: "포스팅 5",
-    body: "포스팅 5 입니다.",
-    tags: ["리액트", "Next.js"],
-    created_at: "2025-05-19",
-  },
-  {
-    id: 5,
-    thumbnail: "/hey-2.png",
-    title: "포스팅 6",
-    body: "포스팅 6 입니다.",
-    tags: ["리액트", "Next.js"],
-    created_at: "2025-05-19",
-  },
-  {
-    id: 6,
-    thumbnail: "/hey-1.png",
-    title:
-      "post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7post 7",
-    body:
-      "hello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is applehello my name is apple",
-    tags: ["리액트", "Next.js"],
-    created_at: "2025-05-19",
-  },
-  {
-    id: 7,
-    thumbnail: "/lets-1.png",
-    title: "포스팅 8",
-    body: "포스팅 8 입니다.",
-    tags: ["리액트", "Next.js"],
-    created_at: "2025-05-19",
-  },
-  {
-    id: 8,
-    thumbnail: "/pullup-3.png",
-    title: "포스팅 9",
-    body: "포스팅 9 입니다.",
-    tags: ["리액트", "Next.js"],
-    created_at: "2025-05-19",
-  },
-  {
-    id: 9,
-    thumbnail: "/hey-2.png",
-    title: "포스팅 10",
-    body: "포스팅 10 입니다.",
-    tags: ["리액트", "Next.js"],
-    created_at: "2025-05-19",
-  },
-  {
-    id: 10,
-    thumbnail: "/lets-2.png",
-    title: "포스팅 11",
-    body: "포스팅 11 입니다.",
-    tags: ["리액트", "Next.js"],
-    created_at: "2025-05-19",
-  },
-  {
-    id: 11,
-    thumbnail: "/hey-2.png",
-    title: "포스팅 1",
-    body: "포스팅 1 입니다.",
-    tags: ["리액트", "Next.js"],
-    created_at: "2025-05-19",
-  },
-];

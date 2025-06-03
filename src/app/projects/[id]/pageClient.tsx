@@ -52,14 +52,20 @@ export default function DetailClient({ project }: { project: Project }) {
             </DetailRow>
             <DetailRow label="담당 역할">{project.role}</DetailRow>
             <DetailRow label="깃허브 저장소">
-              <a
-                href={project.repository}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[rgba(0,123,255,0.7)] hover:underline"
-              >
-                {project.repository}
-              </a>
+              {project.repository.map((url) => {
+                return (
+                  <div key={url}>
+                    <a
+                      href={url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[rgba(0,123,255,0.7)] hover:underline"
+                    >
+                      {url}
+                    </a>
+                  </div>
+                );
+              })}
             </DetailRow>
             {project.deployUrl && (
               <DetailRow label="배포 주소">
@@ -202,7 +208,9 @@ const DetailRow = ({
   </motion.div>
 );
 
-function formatMembers(members: Members = {}): string {
+function formatMembers(members: Members | null = {}): string {
+  if (!members) return "1명";
+
   const labelMap = {
     fe: "FE",
     be: "BE",
