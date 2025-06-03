@@ -1,8 +1,11 @@
 "use client";
 
 import Nav from "@/components/common/Nav";
+import { GlassBox } from "@/components/ui/GlassBox";
 import { type PostsResponse } from "@/lib/api/blog";
+import { useRouter } from "next/navigation";
 import { createContext, useContext, useRef, useState } from "react";
+import { BsPencilSquare } from "react-icons/bs";
 import Pagination from "./components/Pagination";
 import RecentSection from "./components/RecentSection";
 
@@ -31,6 +34,7 @@ export default function PostClient({
   data: PostsResponse;
   page: number;
 }) {
+  const router = useRouter();
   const mainRef = useRef<HTMLElement>(null);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -50,6 +54,29 @@ export default function PostClient({
           currentPage={Number(page)}
           totalPages={Math.ceil(data.total_count / 12)}
         />
+
+        <div className="flex justify-center items-center mt-10 gap-4 font-bold text-indigo-400">
+          2YH02
+          <div className="flex gap-2">
+            <GlassBox className="w-10 h-10 p-1">
+              <a
+                href="https://github.com/2YH02"
+                target="_blank"
+                className="w-full h-full"
+              >
+                <img src="/github-mark-white.png" alt="github button" />
+              </a>
+            </GlassBox>
+            <GlassBox className="w-10 h-10 p-1 flex items-center justify-center">
+              <button
+                className="w-full h-full flex items-center justify-center"
+                onClick={() => router.push("/posts/add")}
+              >
+                <BsPencilSquare color="white" size={26} />
+              </button>
+            </GlassBox>
+          </div>
+        </div>
       </main>
     </LoadingContext.Provider>
   );
