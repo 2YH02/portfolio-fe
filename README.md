@@ -1,36 +1,39 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 📝 Yonghun's Portfolio Blog
 
-## Getting Started
+> 기술 블로그 및 프로젝트 회고, 개인 작업물을 정리하며 기록하는 포트폴리오 사이트 입니다.
 
-First, run the development server:
+## 🌐 사이트 주소
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+👉 [https://www.yonghun.me](https://www.yonghun.me)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🔧 기술 스택
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Frontend**: [Next.js](https://nextjs.org/) (App Router), [Zustand](https://zustand-demo.pmnd.rs/), [TanStack Query](https://tanstack.com/query/latest), 
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/), [Framer Motion](https://motion.dev/)
+- **Backend**: [Rust (Actix-web)](https://actix.rs/) + PostgreSQL
+- **Storage**: [Supabase Storage](https://supabase.com/)
+- **CI/CD**: GitHub Actions
+- **SEO**: Next.js의 SSG/SSR, robots.txt 및 동적 sitemap.xml 구성
+- **Analytics**: Google Analytics 연동
+- **infra**: Docker Compose
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## ✨ 주요 기능
 
-## Learn More
+### 🔹 블로그 기능
 
-To learn more about Next.js, take a look at the following resources:
+- 글 작성/수정/삭제 기능 (서버 연동)
+- 이미지 업로드 및 Supabase Storage 연동
+- 썸네일 및 blur 처리 이미지 지원
+- Quill.js를 커스터마이징하여 직관적인 에디터 제공
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 🔹 사용자 경험 개선
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Framer Motion을 활용한 부드러운 페이지 전환 애니메이션
+- 주요 콘텐츠 이미지에 Blur Placeholder 적용 (LCP 최적화)
+- Skeleton UI 적용
 
-## Deploy on Vercel
+### 🔹 SEO 및 성능
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- 주요 페이지 SSR, 블로그 페이지 SSG 구성
+- robots.txt, sitemap.xml 자동 생성
+- Open Graph / Twitter 메타 태그 구성
