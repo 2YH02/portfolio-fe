@@ -29,13 +29,13 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     url: "https://www.yonghun.me",
-    title: "Yonghun - 포트폴리오",
+    title: "웹 개발자 이용훈 포트폴리오",
     description: "기억에 남는 순간을 만들고 싶은 웹 개발자 이용훈입니다.",
     images: "/metaimg.png",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Yonghun - 포트폴리오",
+    title: "웹 개발자 이용훈 포트폴리오",
     description: "기억에 남는 순간을 만들고 싶은 웹 개발자 이용훈입니다.",
     images: "/metaimg.png",
   },
