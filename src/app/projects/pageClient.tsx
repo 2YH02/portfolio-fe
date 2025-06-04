@@ -58,7 +58,7 @@ export default function ProjectsClient() {
             duration: 0.4,
           },
         }}
-        className="absolute bottom-0 left-0 overflow-hidden"
+        className="hidden md:block absolute bottom-0 left-0 overflow-hidden"
       >
         <motion.img
           key={curData.thumbnail}
@@ -95,12 +95,12 @@ export default function ProjectsClient() {
           },
         }}
         animate={{
-          x: clickDetail ? 600 : 0,
+          x: clickDetail ? 1000 : 0,
           transition: {
             duration: 0.4,
           },
         }}
-        className="absolute bottom-0 right-4 w-[30%] h-[70%]"
+        className="glass-scroll bottom-0 top-32 md:top-auto absolute md:right-4 w-full h-full md:h-[70%] md:w-[30%] overflow-x-auto px-6 md:px-1 pb-4 "
       >
         <h1 className="text-xl mb-6">Projects</h1>
         <div className="flex flex-col gap-4">

@@ -17,7 +17,7 @@ export default function DetailClient({ project }: { project: Project }) {
       <Nav className="bg-black/40" />
 
       {/* 메인 이미지 */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 h-[80%] w-[90%] rounded-bl-4xl rounded-br-4xl overflow-hidden">
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 h-[40%] md:h-[80%] w-[90%] rounded-bl-4xl rounded-br-4xl overflow-hidden">
         <img
           src={project.thumbnail}
           alt="thumbnail"
@@ -27,7 +27,7 @@ export default function DetailClient({ project }: { project: Project }) {
 
       {/* 프로젝트 정보 */}
       <motion.div
-        className="absolute top-[85%] w-[90%] max-w-[1280px] left-1/2 -translate-x-1/2 pb-20"
+        className="absolute top-[45%] md:top-[85%] w-[90%] max-w-[1280px] left-1/2 -translate-x-1/2 pb-20"
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
@@ -109,13 +109,13 @@ export default function DetailClient({ project }: { project: Project }) {
                   withAction
                   key={sec.title}
                   className="transform transition-transform duration-300 ease-in-out hover:z-10
-                            hover:[transform:perspective(800px)_rotateX(4deg)_rotateY(-4deg)_scale(1.05)] 
+                            md:hover:[transform:perspective(800px)_rotateX(4deg)_rotateY(-4deg)_scale(1.05)] 
                             relative border border-solid w-full rounded-lg"
                 >
                   <h3 className="text-lg font-semibold text-indigo-200 mb-4">
                     {sec.title}
                   </h3>
-                  <ul className="list-disc list-inside space-y-1 text-gray-400  group-hover:text-white">
+                  <ul className="list-disc list-inside space-y-1 text-white md:text-gray-300  md:group-hover:text-white">
                     {sec.bullets.map((b, i) => (
                       <li key={i}>{b}</li>
                     ))}
