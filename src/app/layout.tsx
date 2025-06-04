@@ -39,6 +39,9 @@ export const metadata: Metadata = {
     description: "기억에 남는 순간을 만들고 싶은 웹 개발자 이용훈입니다.",
     images: "/metaimg.png",
   },
+  verification: {
+    other: { naver: "a0b35ac99fea6cb5da0a0b6051930cb906c357ef" },
+  },
 };
 
 export default function RootLayout({
