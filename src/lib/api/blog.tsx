@@ -25,8 +25,12 @@ export type AddPostsRequest = {
   thumbnail_blur: string;
 };
 
-export async function getAllPosts(page: number) {
-  return apiClient<PostsResponse>(`${BASE_URL}/posts?page=${page}`);
+export async function getAllPosts(page?: number) {
+  if (page) {
+    return apiClient<PostsResponse>(`${BASE_URL}/posts?page=${page}`);
+  } else {
+    return apiClient<PostsResponse>(`${BASE_URL}/posts`);
+  }
 }
 
 export async function getPostById(id: number) {
