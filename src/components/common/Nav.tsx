@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 import { GlassBox } from "../ui/GlassBox";
+import HamburgerMenu from "../ui/HamburgerMenu";
 import DelayedLink from "./DelayedLink";
 
 interface NavProps {
@@ -18,8 +19,9 @@ const Nav = ({
   className,
 }: NavProps) => {
   return (
-    <nav className="fixed left-1/2 top-10 -translate-x-1/2 z-20 font-main">
-      <GlassBox className={cn("py-0 rounded-full", className)}>
+    <nav className="absolute top-10 left-10 sm:fixed sm:left-1/2 sm:top-10 sm:-translate-x-1/2 z-20 font-main">
+      <HamburgerMenu />
+      <GlassBox className={cn("py-0 rounded-full hidden sm:block", className)}>
         <ul className="flex">
           <li className="shrink-0">
             <DelayedLink ms={homeDelay} className="py-4 px-8" href="/">

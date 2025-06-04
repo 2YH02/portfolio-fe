@@ -59,7 +59,7 @@ export default function DetailClient({ project }: { project: Project }) {
                       href={url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-[rgba(0,123,255,0.7)] hover:underline"
+                      className="text-[rgb(0,123,255)] hover:underline"
                     >
                       {url}
                     </a>
@@ -73,7 +73,7 @@ export default function DetailClient({ project }: { project: Project }) {
                   href={project.deployUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-[rgba(0,123,255,0.7)] hover:underline"
+                  className="text-[rgb(0,123,255)] hover:underline"
                 >
                   {project.deployUrl}
                 </a>
@@ -139,7 +139,7 @@ export default function DetailClient({ project }: { project: Project }) {
         {/* 이미지 */}
         <div className="mb-10">
           <h3 className="text-left text-2xl text-indigo-400 font-bold my-6">
-            이미지
+            구현 이미지
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {project.images.map((src) => (

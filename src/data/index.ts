@@ -324,6 +324,7 @@ Zustand 라이브러리를 활용한 전역 상태 관리를 도입했습니다.
       "/portfolio-1.png",
       "/portfolio-2.png",
       "/portfolio-3.png",
+      "/portfolio-8.png",
     ],
     description:
       "개인 포트폴리오와 기술 블로그를 하나의 웹사이트로 통합하여, 기술적 경험과 프로젝트를 효과적으로 공유할 수 있도록 구성하였습니다. Next.js 기반의 프론트엔드와 Rust 및 Actix Web 기반의 백엔드로 구성된 풀스택 웹사이트이며 포트폴리오, 블로그 글 관리, 사용자 경험(UX) 중심의 애니메이션과 UI를 구현했습니다",
