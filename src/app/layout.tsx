@@ -40,7 +40,9 @@ export const metadata: Metadata = {
     images: "/metaimg.png",
   },
   verification: {
-    other: { naver: "a0b35ac99fea6cb5da0a0b6051930cb906c357ef" },
+    other: {
+      "naver-site-verification": "a0b35ac99fea6cb5da0a0b6051930cb906c357ef",
+    },
   },
 };
 
