@@ -2,15 +2,35 @@
 
 import Nav from "@/components/common/Nav";
 import QuillCodeRenderer from "@/components/common/QuillCodeRenderer";
+import { GlassBox } from "@/components/ui/GlassBox";
 import { type Post } from "@/lib/api/blog";
 import { formatDate } from "@/lib/utils";
 import useImageStore from "@/store/useImageStore";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { BsTrash, BsWrenchAdjustable } from "react-icons/bs";
+import AuthForm from "../components/AuthForm";
+
+const modalVariants = {
+  hidden: { opacity: 0, y: -20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.4, ease: "easeOut" },
+  },
+};
+
+const buttonVariants = {
+  hover: { scale: 1.03 },
+  tap: { scale: 0.97 },
+};
 
 export default function PostDetailClient({ post }: { post: Post }) {
   const { curImage, setCurImage } = useImageStore();
+
+  const [viewAuth, setViewAuth] = useState(false);
+  const [viewDelete, setViewDelete] = useState(false);
 
   useEffect(() => {
     const nodeList =
@@ -59,7 +79,51 @@ export default function PostDetailClient({ post }: { post: Post }) {
         <div className="p-2 mt-8">
           <QuillCodeRenderer htmlString={post.body} />
         </div>
+
+        <div className="flex gap-2">
+          <GlassBox className="w-10 h-10 p-1 flex items-center justify-center">
+            <button
+              className="w-full h-full flex items-center justify-center"
+              onClick={() => setViewAuth(true)}
+            >
+              <BsTrash color="white" size={20} />
+            </button>
+          </GlassBox>
+          <GlassBox className="w-10 h-10 p-1 flex items-center justify-center">
+            <button
+              className="w-full h-full flex items-center justify-center"
+              onClick={() => setViewAuth(true)}
+            >
+              <BsWrenchAdjustable color="white" size={20} />
+            </button>
+          </GlassBox>
+        </div>
       </div>
+
+      {viewAuth && (
+        <div
+          className="fixed w-screen h-screen bg-black/70 z-50"
+          onClick={() => setViewAuth(false)}
+        >
+          <AuthForm
+            onSuccess={() => {
+              setViewAuth(false);
+              setViewDelete(true);
+            }}
+          />
+        </div>
+      )}
+      {viewDelete && (
+        <div
+          className="fixed w-screen h-screen bg-black/70 z-50"
+          onClick={() => setViewDelete(false)}
+        >
+          <DeleteModal
+            close={() => setViewDelete(false)}
+            onSuccess={() => {}}
+          />
+        </div>
+      )}
 
       <AnimatePresence>
         {curImage && (
@@ -85,5 +149,52 @@ export default function PostDetailClient({ post }: { post: Post }) {
         )}
       </AnimatePresence>
     </div>
+  );
+}
+
+function DeleteModal({
+  close,
+  onSuccess,
+}: {
+  close: VoidFunction;
+  onSuccess: VoidFunction;
+}) {
+  return (
+    <motion.div
+      className="w-full max-w-sm mx-auto mt-32 p-6 backdrop-blur-lg bg-white/10 border border-white/10 shadow-2xl space-y-6"
+      variants={modalVariants}
+      initial="hidden"
+      animate="visible"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <h2 className="text-2xl font-bold text-center">삭제하기</h2>
+
+      <p className="text-center">정말 삭제하시겠습니까?</p>
+
+      <div className="flex gap-3 justify-center">
+        <GlassBox className="p-0 rounded-md" withAction>
+          <motion.button
+            className="w-full py-2 px-4 font-semibold"
+            variants={buttonVariants}
+            whileHover="hover"
+            whileTap="tap"
+            onClick={close}
+          >
+            취소
+          </motion.button>
+        </GlassBox>
+        <GlassBox className="p-0 rounded-md" withAction>
+          <motion.button
+            className="w-full py-2 px-4 font-semibold"
+            variants={buttonVariants}
+            whileHover="hover"
+            whileTap="tap"
+            onClick={onSuccess}
+          >
+            삭제
+          </motion.button>
+        </GlassBox>
+      </div>
+    </motion.div>
   );
 }

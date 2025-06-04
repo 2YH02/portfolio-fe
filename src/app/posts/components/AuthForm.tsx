@@ -2,11 +2,12 @@
 
 import { GlassBox } from "@/components/ui/GlassBox";
 import { Auth, User } from "@/lib/api/auth";
-import { useState } from "react";
 import { motion } from "motion/react";
+import { useState } from "react";
 
 interface AuthFormProps {
-  setRole: (role: User) => void;
+  onSuccess?: VoidFunction;
+  setRole?: (role: User) => void;
 }
 
 const formVariants = {
@@ -23,7 +24,7 @@ const buttonVariants = {
   tap: { scale: 0.97 },
 };
 
-const AuthForm = ({ setRole }: AuthFormProps) => {
+const AuthForm = ({ onSuccess, setRole }: AuthFormProps) => {
   const [user, setUser] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
@@ -32,11 +33,13 @@ const AuthForm = ({ setRole }: AuthFormProps) => {
     e.preventDefault();
     const data = await Auth(user, password);
 
-    setRole(data.role);
+    setRole?.(data.role);
 
     if (data.role === "Guest") {
       setMessage("사용자 정보를 확인해주세요.");
     }
+
+    if (data.role === "Admin") onSuccess?.();
   };
 
   return (
@@ -46,6 +49,7 @@ const AuthForm = ({ setRole }: AuthFormProps) => {
       variants={formVariants}
       initial="hidden"
       animate="visible"
+      onClick={(e) => e.stopPropagation()}
     >
       <h2 className="text-2xl font-bold text-center">사용자 확인</h2>
 

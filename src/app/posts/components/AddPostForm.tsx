@@ -70,7 +70,7 @@ const AddPostForm = ({
       await addPost(payload);
     } catch (error) {
       console.error(error);
-      deleteFileFromStorage(filePath);
+      await deleteFileFromStorage(filePath);
     }
 
     onClose();

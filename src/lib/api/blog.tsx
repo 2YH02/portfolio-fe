@@ -42,3 +42,9 @@ export async function addPost(payload: AddPostsRequest) {
     body: JSON.stringify(payload),
   });
 }
+
+export async function deletePost(id: number) {
+  return apiClient<Post>(`${BASE_URL}/posts/${id}`, {
+    method: "DELETE",
+  });
+}

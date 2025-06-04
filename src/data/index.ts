@@ -297,7 +297,7 @@ Zustand 라이브러리를 활용한 전역 상태 관리를 도입했습니다.
   },
   {
     id: 0,
-    title: "개인 포트폴리오 및 블로그 웹사이트",
+    title: "포트폴리오 및 블로그",
     thumbnail: "/portfolio.png",
     members: null,
     role: "풀스택",
