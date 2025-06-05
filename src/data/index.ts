@@ -313,6 +313,7 @@ Zustand 라이브러리를 활용한 전역 상태 관리를 도입했습니다.
       "Typescript",
       "TailwindCSS",
       "Zustand",
+      "Docker",
       "Docker Compose",
       "PostgreSQL",
     ],
@@ -333,6 +334,13 @@ Zustand 라이브러리를 활용한 전역 상태 관리를 도입했습니다.
         title: "Docker Compose 기반 로컬 개발 환경 구축",
         bullets: [
           "Docker Compose를 활용해 Rust(Actix Web) 백엔드와 PostgreSQL 데이터베이스가 포함된 일관된 로컬 개발 환경을 구축하여 환경 차이에 따른 오류를 최소화했습니다.",
+        ],
+      },
+      {
+        title: "CI/CD 파이프라인 구축 및 자동화 배포",
+        bullets: [
+          "GitHub Actions를 사용하여 Rust 백엔드의 테스트 자동화 및 Docker 기반 PostgreSQL 세팅을 구성했습니다.",
+          "Railway와 연동하여 main 브랜치에 push 시 자동으로 빌드 및 배포가 진행되도록 설정하여 배포 과정을 효율화했습니다.",
         ],
       },
       {

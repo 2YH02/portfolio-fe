@@ -1,4 +1,4 @@
-# 📝 Yonghun's Portfolio Blog
+# 📝 Yonghun's Portfolio Blog - Frontend
 
 > 기술 블로그 및 프로젝트 회고, 개인 작업물을 정리하며 기록하는 포트폴리오 사이트 입니다.
 
@@ -8,14 +8,14 @@
 
 ## 🔧 기술 스택
 
-- **Frontend**: [Next.js](https://nextjs.org/) (App Router), [Zustand](https://zustand-demo.pmnd.rs/), [TanStack Query](https://tanstack.com/query/latest), 
+- **Frontend**: [Next.js](https://nextjs.org/) (App Router), [Zustand](https://zustand-demo.pmnd.rs/), [TanStack Query](https://tanstack.com/query/latest),
 - **Styling**: [Tailwind CSS](https://tailwindcss.com/), [Framer Motion](https://motion.dev/)
 - **Backend**: [Rust (Actix-web)](https://actix.rs/) + PostgreSQL
 - **Storage**: [Supabase Storage](https://supabase.com/)
-- **CI/CD**: GitHub Actions
-- **SEO**: Next.js의 SSG/SSR, robots.txt 및 동적 sitemap.xml 구성
-- **Analytics**: Google Analytics 연동
-- **infra**: Docker Compose
+- **CI/CD**(백엔드): GitHub Actions (Docker 기반 PostgreSQL 설정, Rust 테스트 실행, Railway 배포 자동화)
+- **SEO**: Next.js SSG/SSR, robots.txt 및 동적 sitemap.ts 구성
+- **Analytics**: Google Analytics
+- **Infrastructure**(백엔드): Docker, Docker Compose
 
 ## ✨ 주요 기능
 
