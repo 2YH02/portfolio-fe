@@ -76,7 +76,7 @@ export default function HomeClient() {
           <span className="text-blue-500">퍼포먼스 최적화</span>와{" "}
           <span className="text-blue-500">인터랙션</span>을 사랑하는
           <br />
-          <span className="text-blue-500">프론트엔드 개발자</span> 이용훈입니다.
+          <span className="text-blue-500">웹 개발자</span> 이용훈입니다.
           <nav className="flex gap-8 justify-center text-white mt-3 text-lg md:text-xl lg:text-2xl">
             <Link href="/projects" className="active:animate-shake-rotate">
               projects
