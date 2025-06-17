@@ -21,7 +21,6 @@ export const GlassBox = ({
 
     overlayRef.current.style.transition = "none";
     overlayRef.current.style.backgroundPosition = "-100% -100%, 0 0";
-    overlayRef.current.offsetHeight;
     overlayRef.current.style.transition = "650ms ease";
     overlayRef.current.style.backgroundPosition = "100% 100%, 0 0";
   };
@@ -53,7 +52,7 @@ export const GlassBox = ({
             inset: 0,
             background: `linear-gradient(-45deg,
             hsla(0,0%,0%,0) 60%,
-          rgba(200, 200, 200, 0.5) 70%,
+          rgba(200,200,200,0.5) 70%,
             hsla(0,0%,0%,0) 100%)`,
             backgroundSize: `250% 250%, 100% 100%`,
             backgroundRepeat: "no-repeat",

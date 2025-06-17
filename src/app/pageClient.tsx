@@ -38,7 +38,7 @@ export default function HomeClient() {
         }
         className="h-full w-full text-white dark:text-black hidden md:block"
       >
-        <div className="w-dvw text-center font-nanum text-2xl md:text-4xl lg:text-[44px]">
+        <div className="w-dvw text-center text-white font-nanum text-2xl md:text-4xl lg:text-[44px]">
           <span className="text-blue-500">퍼포먼스 최적화</span>와{" "}
           <span className="text-blue-500">인터랙션</span>을 사랑하는
           <br />
