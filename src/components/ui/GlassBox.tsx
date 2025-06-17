@@ -1,4 +1,7 @@
+"use client";
+
 import { cn } from "@/lib/utils";
+import { useRef } from "react";
 
 interface GlassBoxProps {
   children?: React.ReactNode;
@@ -11,6 +14,25 @@ export const GlassBox = ({
   withAction = false,
   className,
 }: GlassBoxProps) => {
+  const overlayRef = useRef<HTMLDivElement>(null);
+
+  const animateIn = () => {
+    if (!overlayRef.current) return;
+
+    overlayRef.current.style.transition = "none";
+    overlayRef.current.style.backgroundPosition = "-100% -100%, 0 0";
+    overlayRef.current.offsetHeight;
+    overlayRef.current.style.transition = "650ms ease";
+    overlayRef.current.style.backgroundPosition = "100% 100%, 0 0";
+  };
+
+  const animateOut = () => {
+    if (!overlayRef.current) return;
+
+    overlayRef.current.style.transition = "none";
+    overlayRef.current.style.backgroundPosition = "-100% -100%, 0 0";
+  };
+
   return (
     <div
       className={cn(
@@ -20,9 +42,25 @@ export const GlassBox = ({
         withAction && "overflow-hidden group transition-all duration-200",
         className
       )}
+      onMouseEnter={animateIn}
+      onMouseLeave={animateOut}
     >
       {withAction && (
-        <div className="absolute -top-3 left-0 w-2/12 opacity-0 h-[200%] group-hover:animate-leftToRight bg-[rgba(255,255,255,0.1)] rotate-12"></div>
+        <div
+          ref={overlayRef}
+          style={{
+            position: "absolute",
+            inset: 0,
+            background: `linear-gradient(-45deg,
+            hsla(0,0%,0%,0) 60%,
+          rgba(200, 200, 200, 0.5) 70%,
+            hsla(0,0%,0%,0) 100%)`,
+            backgroundSize: `250% 250%, 100% 100%`,
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "-100% -100%, 0 0",
+            pointerEvents: "none",
+          }}
+        />
       )}
       {children}
     </div>
