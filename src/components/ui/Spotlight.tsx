@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import useMaskRevealStore from "@/store/useMaskRevealStore";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
@@ -11,12 +12,14 @@ type SpotlightProps = {
 export const Spotlight = ({ className }: SpotlightProps) => {
   const pathname = usePathname();
 
+  const { isHover } = useMaskRevealStore();
+
   const [lightColor, setLightColor] = useState("#a8a8a8");
 
   const changeColor = useCallback((color: string) => {
     setTimeout(() => {
       setLightColor(color);
-    }, 500);
+    }, 350);
   }, []);
 
   useEffect(() => {
@@ -27,9 +30,14 @@ export const Spotlight = ({ className }: SpotlightProps) => {
     } else if (pathname.includes("/posts")) {
       changeColor("red");
     } else {
-      changeColor("white");
+      if (isHover) {
+        changeColor("#7d9fca");
+      } else {
+        changeColor("white");
+      }
     }
-  }, [pathname]);
+  }, [pathname, isHover]);
+
   return (
     <svg
       className={cn(

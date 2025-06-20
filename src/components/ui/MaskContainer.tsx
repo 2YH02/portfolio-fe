@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import useMaskRevealStore from "@/store/useMaskRevealStore";
 import { motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import ParticleCanvas from "./ParticleCanvas";
@@ -18,6 +19,8 @@ export const MaskContainer = ({
   revealSize?: number;
   className?: string;
 }) => {
+  const { setIsHover } = useMaskRevealStore();
+
   const [isHovered, setIsHovered] = useState(false);
   const [mousePosition, setMousePosition] = useState<{
     x: null | number;
@@ -43,6 +46,10 @@ export const MaskContainer = ({
     };
   }, []);
 
+  useEffect(() => {
+    setIsHover(isHovered);
+  }, [isHovered]);
+
   const maskSize = isHovered ? revealSize : size;
 
   return (
@@ -62,7 +69,9 @@ export const MaskContainer = ({
       >
         <motion.div
           className={cn(
-            "absolute flex h-full w-full items-center justify-center text-6xl bg-black [mask-image:url(/mask.svg)] [mask-repeat:no-repeat] [mask-size:40px] dark:bg-white"
+            `absolute flex h-full w-full items-center justify-center text-6xl 
+            backdrop-blur-sm bg-white/10 border border-white shadow-2xl 
+            [mask-image:url(/mask.svg)] [mask-repeat:no-repeat] [mask-size:40px] dark:bg-white`
           )}
           animate={{
             maskPosition: `${(mousePosition?.x || 0) - maskSize / 2}px ${
@@ -75,7 +84,7 @@ export const MaskContainer = ({
             maskPosition: { duration: 0.15, ease: "linear" },
           }}
         >
-          <div className="absolute inset-0 z-0 h-full w-full bg-black opacity-50 dark:bg-white" />
+          <div className="absolute inset-0 z-0 h-full w-full bg-transparent dark:bg-white" />
           <div
             onMouseEnter={() => {
               setIsHovered(true);
