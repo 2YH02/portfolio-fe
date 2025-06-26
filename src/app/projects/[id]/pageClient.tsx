@@ -6,10 +6,13 @@ import type { Members, Project } from "@/data";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 export default function DetailClient({ project }: { project: Project }) {
   const [curImage, setCurImage] = useState<string | null>(null);
+  const [curCard, setCurCard] = useState<number | null>(null);
+
+  const cardTitleRef = useRef<HTMLDivElement>(null);
 
   return (
     <main className="relative w-screen h-screen overflow-auto">
@@ -99,28 +102,89 @@ export default function DetailClient({ project }: { project: Project }) {
 
         {/* 성과 */}
         <div className="mb-10">
-          <h3 className="text-left text-2xl text-indigo-400 font-bold my-6">
+          <h3
+            className="text-left text-2xl text-indigo-400 font-bold my-6 scroll-m-6"
+            ref={cardTitleRef}
+          >
             핵심 기능 및 성과
           </h3>
           <div className="flex gap-8">
             <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {project.sections?.map((sec) => (
-                <GlassBox
-                  withAction
+              {project.sections?.map((sec, i) => (
+                <motion.div
                   key={sec.title}
-                  className="transform transition-transform duration-300 ease-in-out hover:z-10
-                            md:hover:[transform:perspective(800px)_rotateX(4deg)_rotateY(-4deg)_scale(1.05)] 
-                            relative border border-solid w-full rounded-lg"
+                  onClick={() => {
+                    if (window.innerWidth >= 768 && cardTitleRef.current) {
+                      cardTitleRef.current.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                      });
+                    }
+                    setCurCard(curCard === i ? null : i);
+                  }}
+                  layout
+                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                  className={`col-span-1 ${
+                    curCard === i
+                      ? "md:col-span-2 md:row-end-1 md:row-start-3 cursor-zoom-out"
+                      : "cursor-zoom-in"
+                  }`}
                 >
-                  <h3 className="text-lg font-semibold text-indigo-200 mb-4">
-                    {sec.title}
-                  </h3>
-                  <ul className="list-disc list-inside space-y-1 text-white md:text-gray-300  md:group-hover:text-white">
-                    {sec.bullets.map((b, i) => (
-                      <li key={i}>{b}</li>
-                    ))}
-                  </ul>
-                </GlassBox>
+                  <GlassBox
+                    withAction
+                    className={`transform transition-transform duration-300 ease-in-out hover:z-10
+                              ${
+                                curCard !== i &&
+                                "md:hover:[transform:perspective(800px)_rotateX(4deg)_rotateY(-4deg)_scale(1.05)]"
+                              }
+                              relative border border-solid rounded-lg w-full h-full`}
+                  >
+                    <h3 className="text-lg font-semibold text-indigo-200 mb-4">
+                      {curCard === i ? sec.title : sec.titleSum || sec.title}
+                    </h3>
+                    <ul className="list-disc list-inside space-y-1 text-white md:text-gray-300 md:group-hover:text-white">
+                      {curCard === i ? (
+                        <>
+                          {sec.content.text ? (
+                            <>
+                              {sec.content.text?.map((b, j) => (
+                                <li key={j} className="my-2">
+                                  {b}
+                                </li>
+                              ))}
+                            </>
+                          ) : (
+                            <>
+                              <p className="text-lg font-bold text-white">
+                                문제
+                              </p>
+                              {sec.content.problem?.map((b, j) => (
+                                <li key={j} className="my-2">
+                                  {b}
+                                </li>
+                              ))}
+                              <div className="my-4" />
+                              <p className="text-lg font-bold text-white">
+                                해결
+                              </p>
+                              {sec.content.solution?.map((b, j) => (
+                                <li key={j} className="my-2">
+                                  {b}
+                                </li>
+                              ))}
+                            </>
+                          )}
+                        </>
+                      ) : (
+                        <>
+                          {sec.summary.map((b, j) => (
+                            <li key={j}>{b}</li>
+                          ))}
+                        </>
+                      )}
+                    </ul>
+                  </GlassBox>
+                </motion.div>
               ))}
             </div>
           </div>
