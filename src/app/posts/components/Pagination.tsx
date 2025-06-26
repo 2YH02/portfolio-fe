@@ -27,9 +27,30 @@ export default function Pagination({
     [currentPage, totalPages, siblingCount]
   );
 
-  const goToPage = (page: number) => {
+  const goToPage = async (page: number) => {
     setLoading(true);
-    body.current?.scrollTo({ top: 0, behavior: "smooth" });
+    const el = body.current;
+
+    if (el) {
+      await new Promise<void>((resolve) => {
+        const onScroll = () => {
+          if (el.scrollTop === 0) {
+            el.removeEventListener("scroll", onScroll);
+            clearTimeout(fallback);
+            resolve();
+          }
+        };
+        el.addEventListener("scroll", onScroll, { passive: true });
+
+        const fallback = setTimeout(() => {
+          el.removeEventListener("scroll", onScroll);
+          resolve();
+        }, 500);
+
+        el.scrollTo({ top: 0, behavior: "smooth" });
+      });
+    }
+
     router.push(`/posts?page=${page}`);
   };
 

@@ -2,6 +2,9 @@ import { getPostById } from "@/lib/api/blog";
 import { notFound } from "next/navigation";
 import PostDetailClient from "./pageClient";
 
+export const dynamic = "force-static";
+export const revalidate = 3600;
+
 export const generateMetadata = async ({
   params,
 }: {

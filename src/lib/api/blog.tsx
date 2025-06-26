@@ -27,9 +27,13 @@ export type AddPostsRequest = {
 
 export async function getAllPosts(page?: number) {
   if (page) {
-    return apiClient<PostsResponse>(`${BASE_URL}/posts?page=${page}`);
+    return apiClient<PostsResponse>(`${BASE_URL}/posts?page=${page}`, {
+      next: { revalidate: 3600 },
+    });
   } else {
-    return apiClient<PostsResponse>(`${BASE_URL}/posts`);
+    return apiClient<PostsResponse>(`${BASE_URL}/posts`, {
+      next: { revalidate: 3600 },
+    });
   }
 }
 
