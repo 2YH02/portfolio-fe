@@ -32,6 +32,7 @@ export interface Project {
   sections?: Section[];
   images: string[];
   reflection: string;
+  architecture?: string[];
 }
 
 export const projects: Project[] = [
@@ -46,6 +47,7 @@ export const projects: Project[] = [
     role: "프론트엔드",
     repository: ["https://github.com/2YH02/k-pullup"],
     deployUrl: "https://www.k-pullup.com",
+    architecture: ["/pullup-ar.png"],
     techStack: [
       "Next.js",
       "Typescript",
@@ -220,6 +222,7 @@ export const projects: Project[] = [
     },
     role: "프론트엔드",
     repository: ["https://github.com/WinnerOne-LETS/LETS_FE"],
+    architecture: ["/lets-ar.png"],
     techStack: [
       "Next.js",
       "Typescript",
@@ -331,6 +334,7 @@ export const projects: Project[] = [
     },
     role: "프론트엔드",
     repository: ["https://github.com/Yanolza-Miniproject/Heynolja_FE"],
+    architecture: ["/heynolja-ar.png"],
     techStack: [
       "React",
       "Typescript",
@@ -462,6 +466,7 @@ export const projects: Project[] = [
       "https://github.com/2YH02/portfolio-be",
     ],
     deployUrl: "https://www.yonghun.me",
+    architecture: ["/portfolio-ar1.png", "/portfolio-ar2.png"],
     techStack: [
       "Next.js",
       "Rust",

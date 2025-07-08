@@ -200,6 +200,35 @@ export default function DetailClient({ project }: { project: Project }) {
           </div>
         </div>
 
+        {/* 아키텍처 */}
+        {project.architecture && (
+          <div className="mb-10">
+            <h3 className="text-left text-2xl text-indigo-400 font-bold my-6">
+              아키텍처
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {project.architecture.map((imageUrl) => {
+                return (
+                  <div
+                    key={imageUrl}
+                    className={cn(
+                      "relative w-full rounded-lg overflow-hidden aspect-[4/3] cursor-zoom-in"
+                    )}
+                    onClick={() => setCurImage(imageUrl)}
+                  >
+                    <Image
+                      src={imageUrl}
+                      alt={`architecture`}
+                      fill
+                      className={cn("object-contain")}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
         {/* 이미지 */}
         <div className="mb-10">
           <h3 className="text-left text-2xl text-indigo-400 font-bold my-6">
