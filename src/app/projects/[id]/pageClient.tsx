@@ -212,7 +212,7 @@ export default function DetailClient({ project }: { project: Project }) {
                   <div
                     key={imageUrl}
                     className={cn(
-                      "relative w-full rounded-lg overflow-hidden aspect-[4/3] cursor-zoom-in"
+                      "relative w-full rounded-lg overflow-hidden aspect-[4/3] cursor-zoom-in bg-white"
                     )}
                     onClick={() => setCurImage(imageUrl)}
                   >
