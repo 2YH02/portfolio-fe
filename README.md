@@ -37,7 +37,5 @@
 - 주요 페이지 SSR, 블로그 페이지 SSG 구성
 - robots.txt, sitemap.xml 자동 생성
 - Open Graph / Twitter 메타 태그 구성
-<br/>
-<br/>
-
-[자료](https://www.canva.com/design/DAGu0ygx574/yBTv7TO0-x4ycN3Po6jfgg/view?utm_content=DAGu0ygx574&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=hb822107587)
+  <br/>
+  <br/>
