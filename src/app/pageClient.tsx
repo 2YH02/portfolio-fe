@@ -24,7 +24,7 @@ export default function HomeClient() {
         revealSize={370}
         revealText={
           <div className="w-full flex flex-col">
-            <h1 className="mx-auto max-w-4xl text-center font-bold text-slate-500 dark:text-white text-sm md:text-2xl lg:text-4xl">
+            <h1 className="mx-auto max-w-4xl text-center font-bold text-slate-500 text-sm md:text-2xl lg:text-4xl">
               최적화된 코드로, 인터랙티브한 경험을 만들고,
               <br />
               사용자 중심의 웹을 고민합니다.
@@ -36,7 +36,7 @@ export default function HomeClient() {
             </div>
           </div>
         }
-        className="h-full w-full text-white dark:text-black hidden md:block"
+        className="h-full w-full text-white hidden md:block"
       >
         <div className="w-dvw text-center text-white font-nanum text-2xl md:text-4xl lg:text-[44px]">
           <span className="text-blue-500">퍼포먼스 최적화</span>와{" "}
@@ -71,7 +71,7 @@ export default function HomeClient() {
         </div>
       </MaskContainer>
 
-      <div className="absolute top-1/2 left-1/2 w-full -translate-1/2 text-center text-white dark:text-black">
+      <div className="absolute top-1/2 left-1/2 w-full -translate-1/2 text-center text-white">
         <div className="font-nanum text-2xl md:text-4xl lg:text-[44px] md:hidden lg:hidden">
           <span className="text-blue-500">퍼포먼스 최적화</span>와{" "}
           <span className="text-blue-500">인터랙션</span>을 사랑하는

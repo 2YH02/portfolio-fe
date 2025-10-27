@@ -126,12 +126,12 @@ const AddPostForm = ({
                     <img
                       src={previewUrl}
                       alt="selected preview"
-                      className="mt-1 w-40 h-40 rounded-lg object-cover border border-gray-200 dark:border-gray-700"
+                      className="mt-1 w-40 h-40 rounded-lg object-cover border border-gray-200"
                     />
                     <img
                       src={blurPreviewUrl}
                       alt="selected preview"
-                      className="mt-1 w-40 h-40 rounded-lg object-cover border border-gray-200 dark:border-gray-700"
+                      className="mt-1 w-40 h-40 rounded-lg object-cover border border-gray-200"
                     />
                   </div>
                 ) : (
