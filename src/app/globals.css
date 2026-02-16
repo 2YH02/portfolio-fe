@@ -13,7 +13,7 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-main: var(--font-body);
-  --font-nanum: "Nanum Pen Script", cursive;
+  --font-nanum: var(--font-nanum-pen), cursive;
   --animate-spotlight: spotlight 2s ease 0.75s 1 forwards;
   --animate-unspotlight: unspotlight 2s ease 0.75s 1 forwards;
   --animate-leftToRight: leftToRight 1s ease;

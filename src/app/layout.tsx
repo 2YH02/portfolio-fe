@@ -18,8 +18,11 @@ const geistMono = Geist_Mono({
 });
 
 const geistNanum = Nanum_Pen_Script({
+  variable: "--font-nanum-pen",
   weight: "400",
   subsets: ["latin"],
+  display: "swap",
+  preload: false,
 });
 
 export const metadata: Metadata = {
@@ -64,7 +67,7 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://api.yonghun.me" />
       </head>
       <body
-        className={`${geistMono.variable} ${geistSans.variable} ${geistNanum} antialiased overflow-hidden`}
+        className={`${geistMono.variable} ${geistSans.variable} ${geistNanum.variable} antialiased overflow-hidden`}
       >
         {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS ? (
           <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS} />
