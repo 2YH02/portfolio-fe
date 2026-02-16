@@ -11,9 +11,11 @@ export type Post = {
   created_at: string;
 };
 
+export type PostListItem = Omit<Post, "body">;
+
 export type PostsResponse = {
   total_count: number;
-  posts: Post[];
+  posts: PostListItem[];
 };
 
 export type AddPostsRequest = {

@@ -3,6 +3,7 @@
 import Nav from "@/components/common/Nav";
 import { GlassBox } from "@/components/ui/GlassBox";
 import { type PostsResponse } from "@/lib/api/blog";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { createContext, useContext, useRef, useState } from "react";
 import { BsPencilSquare } from "react-icons/bs";
@@ -62,9 +63,16 @@ export default function PostClient({
               <a
                 href="https://github.com/2YH02"
                 target="_blank"
+                rel="noopener noreferrer"
                 className="w-full h-full"
               >
-                <img src="/github-mark-white.png" alt="github button" />
+                <Image
+                  src="/github-mark-white.png"
+                  alt="github button"
+                  width={40}
+                  height={40}
+                  className="w-full h-full object-contain"
+                />
               </a>
             </GlassBox>
             <GlassBox className="w-10 h-10 p-1 flex items-center justify-center">

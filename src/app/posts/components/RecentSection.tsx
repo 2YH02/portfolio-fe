@@ -13,7 +13,7 @@ const RecentSection = ({ data }: { data: PostsResponse }) => {
 
   useEffect(() => {
     setLoading(false);
-  }, [data]);
+  }, [data, setLoading]);
 
   if (isLoading) return <Skeleton />;
 
@@ -21,7 +21,9 @@ const RecentSection = ({ data }: { data: PostsResponse }) => {
     <section className="max-w-[1280px] p-10 mx-auto pt-40 pb-10">
       <div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {data.posts.map((post) => {
+          {data.posts.map((post, index) => {
+            const isLcpCandidate = index === 0;
+            const isAboveTheFoldCandidate = index < 3;
             return (
               <Link
                 href={`/posts/${post.id}`}
@@ -40,8 +42,11 @@ const RecentSection = ({ data }: { data: PostsResponse }) => {
                       alt={`thumbnail`}
                       fill
                       className={cn("object-cover")}
-                      quality={50}
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      quality={45}
+                      sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 33vw"
+                      priority={isLcpCandidate}
+                      fetchPriority={isAboveTheFoldCandidate ? "high" : "auto"}
+                      loading={isAboveTheFoldCandidate ? "eager" : "lazy"}
                       placeholder="blur"
                       blurDataURL={post.thumbnail_blur}
                     />

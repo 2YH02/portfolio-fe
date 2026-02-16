@@ -28,6 +28,7 @@ const AddPostForm = ({
   const [blurPreviewUrl, setBlurPreviewUrl] = useState<string | null>(null);
 
   const [file, setFile] = useState<File | null>(null);
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     if (!isOpen) {
@@ -40,14 +41,24 @@ const AddPostForm = ({
     const selected = e.target.files?.[0] ?? null;
     if (!selected) return;
 
-    setFile(selected);
+    setMessage("");
+    try {
+      const optimizedFile = await optimizeThumbnailImage(selected);
+      setFile(optimizedFile);
 
-    const objectUrl = URL.createObjectURL(selected);
-    setPreviewUrl(objectUrl);
+      const objectUrl = URL.createObjectURL(optimizedFile);
+      setPreviewUrl(objectUrl);
 
-    const blurDataUrl = await generateBlurredDataUrl(selected, 40);
-    changeThumbnailBlur(blurDataUrl);
-    setBlurPreviewUrl(blurDataUrl);
+      const blurDataUrl = await generateBlurredDataUrl(optimizedFile);
+      changeThumbnailBlur(blurDataUrl);
+      setBlurPreviewUrl(blurDataUrl);
+    } catch (error) {
+      console.error(error);
+      setMessage("이미지 최적화에 실패했습니다. 다른 이미지를 시도해주세요.");
+      setFile(null);
+      setPreviewUrl(null);
+      setBlurPreviewUrl(null);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -120,6 +131,9 @@ const AddPostForm = ({
                   onChange={handleFileChange}
                   className="block w-full text-sm text-gray-300 mb-2 file:mr-4 file:py-2 file:px-4 file:cursor-pointer file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                 />
+                {message ? (
+                  <p className="text-xs text-red-300">{message}</p>
+                ) : null}
 
                 {previewUrl && blurPreviewUrl ? (
                   <div className="shrink-0 mt-2 flex gap-3">
@@ -160,16 +174,17 @@ const AddPostForm = ({
 };
 
 function generateBlurredDataUrl(
-  file: File,
-  blurAmount: number = 10
+  file: File
 ): Promise<string> {
   return new Promise((resolve, reject) => {
     const objectUrl = URL.createObjectURL(file);
     const img = new Image();
 
     img.onload = () => {
-      const width = img.naturalWidth;
-      const height = img.naturalHeight;
+      const targetWidth = 24;
+      const ratio = targetWidth / img.naturalWidth;
+      const width = targetWidth;
+      const height = Math.max(1, Math.round(img.naturalHeight * ratio));
       const canvas = document.createElement("canvas");
       canvas.width = width;
       canvas.height = height;
@@ -180,10 +195,10 @@ function generateBlurredDataUrl(
         return reject(new Error("Canvas 2D context를 가져올 수 없습니다."));
       }
 
-      ctx.filter = `blur(${blurAmount}px)`;
+      ctx.filter = "blur(8px)";
       ctx.drawImage(img, 0, 0, width, height);
 
-      const blurredDataUrl = canvas.toDataURL();
+      const blurredDataUrl = canvas.toDataURL("image/webp", 0.5);
 
       URL.revokeObjectURL(objectUrl);
       resolve(blurredDataUrl);
@@ -195,6 +210,60 @@ function generateBlurredDataUrl(
     };
 
     img.crossOrigin = "Anonymous";
+    img.src = objectUrl;
+  });
+}
+
+function optimizeThumbnailImage(file: File): Promise<File> {
+  return new Promise((resolve, reject) => {
+    const objectUrl = URL.createObjectURL(file);
+    const img = new Image();
+
+    img.onload = () => {
+      const maxWidth = 1280;
+      const scale = Math.min(1, maxWidth / img.naturalWidth);
+      const width = Math.max(1, Math.round(img.naturalWidth * scale));
+      const height = Math.max(1, Math.round(img.naturalHeight * scale));
+
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+
+      const ctx = canvas.getContext("2d");
+      if (!ctx) {
+        URL.revokeObjectURL(objectUrl);
+        reject(new Error("Canvas 2D context를 가져올 수 없습니다."));
+        return;
+      }
+
+      ctx.drawImage(img, 0, 0, width, height);
+
+      canvas.toBlob(
+        (blob) => {
+          URL.revokeObjectURL(objectUrl);
+          if (!blob) {
+            reject(new Error("썸네일 최적화에 실패했습니다."));
+            return;
+          }
+
+          const nextFile = new File(
+            [blob],
+            `${file.name.replace(/\.[^.]+$/, "")}.webp`,
+            { type: "image/webp" }
+          );
+
+          resolve(nextFile);
+        },
+        "image/webp",
+        0.82
+      );
+    };
+
+    img.onerror = () => {
+      URL.revokeObjectURL(objectUrl);
+      reject(new Error("이미지를 로드하는데 실패했습니다."));
+    };
+
     img.src = objectUrl;
   });
 }

@@ -11,6 +11,7 @@ const nextConfig: NextConfig = {
   },
   images: {
     domains: ["evcsbwqeetfvegvrtbny.supabase.co"],
+    formats: ["image/avif", "image/webp"],
   },
 };
 
