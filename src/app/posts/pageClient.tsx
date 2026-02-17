@@ -49,6 +49,7 @@ export default function PostClient({
         className="relative w-screen h-screen font-mono overflow-auto pb-20"
       >
         <Nav className="bg-black/40" />
+        <h1 className="sr-only">Yonghun 개발 블로그 글 목록</h1>
 
         <RecentSection data={data} />
         <Pagination
