@@ -34,7 +34,7 @@ export async function getAllPosts(page?: number) {
     });
   } else {
     return apiClient<PostsResponse>(`${BASE_URL}/posts`, {
-      next: { revalidate: 3600 },
+      cache: "no-store",
     });
   }
 }

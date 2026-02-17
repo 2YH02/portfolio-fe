@@ -26,6 +26,7 @@ const geistNanum = Nanum_Pen_Script({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.yonghun.me"),
   title: "Yonghun - 포트폴리오",
   description: "기억에 남는 순간을 만들고 싶은 웹 개발자 이용훈입니다.",
   keywords: "웹개발,프론트엔드,백엔드,포트폴리오,개발자,블로그",
