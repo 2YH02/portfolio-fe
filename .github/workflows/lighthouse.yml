@@ -19,8 +19,8 @@ jobs:
         include:
           - path: /posts
             path_key: posts
-          - path: /posts/91
-            path_key: posts-91
+          - path: /posts/100
+            path_key: posts-100
           - path: /projects/1
             path_key: projects-1
     env:
