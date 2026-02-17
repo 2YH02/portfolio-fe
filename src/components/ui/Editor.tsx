@@ -6,7 +6,7 @@ import ImageUploader from "@/lib/quill/ImageUploader";
 import { supabase } from "@/lib/supabase/supabasClient";
 import hljs from "highlight.js";
 import Quill from "quill";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import "quill/dist/quill.snow.css";
 
@@ -40,6 +40,7 @@ export type EditorProps = {
 const Editor = ({ initialHTML = "", onChange }: EditorProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const onChangeRef = useRef(onChange);
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     if (containerRef.current?.innerHTML !== "") return;
@@ -71,15 +72,20 @@ const Editor = ({ initialHTML = "", onChange }: EditorProps) => {
         },
         imageUploader: {
           upload: async (file: File) => {
+            setMessage("");
+            const optimizedFile = await optimizeEditorImage(file);
             const filePath = `yonghunblog/${Date.now()}`;
 
             const { error: uploadError } = await supabase.storage
               .from("blog-img")
-              .upload(filePath, file);
+              .upload(filePath, optimizedFile, {
+                contentType: optimizedFile.type,
+                upsert: false,
+              });
 
             if (uploadError) {
               console.error("이미지 업로드 에러: ", uploadError);
-              return;
+              throw new Error("이미지 업로드에 실패했습니다.");
             }
 
             const { data: urlData } = supabase.storage
@@ -89,6 +95,9 @@ const Editor = ({ initialHTML = "", onChange }: EditorProps) => {
             const publicUrl = urlData.publicUrl;
 
             return publicUrl;
+          },
+          onError: (error: Error) => {
+            setMessage(error.message);
           },
         },
       },
@@ -164,7 +173,76 @@ const Editor = ({ initialHTML = "", onChange }: EditorProps) => {
     };
   }, []);
 
-  return <div ref={containerRef} />;
+  return (
+    <div>
+      <div ref={containerRef} />
+      {message ? <p className="mt-2 text-sm text-red-300">{message}</p> : null}
+    </div>
+  );
 };
 
 export default Editor;
+
+async function optimizeEditorImage(file: File): Promise<File> {
+  const fileType = file.type.toLowerCase();
+
+  if (fileType === "image/gif") {
+    throw new Error(
+      "GIF 업로드는 지원하지 않습니다. mp4/webm 또는 정적 이미지로 업로드해주세요."
+    );
+  }
+
+  if (fileType === "image/svg+xml") {
+    return file;
+  }
+
+  return new Promise((resolve, reject) => {
+    const objectUrl = URL.createObjectURL(file);
+    const img = new Image();
+
+    img.onload = () => {
+      const maxWidth = 1600;
+      const scale = Math.min(1, maxWidth / img.naturalWidth);
+      const width = Math.max(1, Math.round(img.naturalWidth * scale));
+      const height = Math.max(1, Math.round(img.naturalHeight * scale));
+
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+
+      const ctx = canvas.getContext("2d");
+      if (!ctx) {
+        URL.revokeObjectURL(objectUrl);
+        reject(new Error("이미지 최적화 처리에 실패했습니다."));
+        return;
+      }
+
+      ctx.drawImage(img, 0, 0, width, height);
+
+      canvas.toBlob(
+        (blob) => {
+          URL.revokeObjectURL(objectUrl);
+          if (!blob) {
+            reject(new Error("이미지 최적화 처리에 실패했습니다."));
+            return;
+          }
+
+          resolve(
+            new File([blob], `${file.name.replace(/\.[^.]+$/, "")}.webp`, {
+              type: "image/webp",
+            })
+          );
+        },
+        "image/webp",
+        0.82
+      );
+    };
+
+    img.onerror = () => {
+      URL.revokeObjectURL(objectUrl);
+      reject(new Error("이미지 로드에 실패했습니다."));
+    };
+
+    img.src = objectUrl;
+  });
+}

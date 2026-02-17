@@ -5,6 +5,7 @@ import { LoadingImage } from "./LoadingImage";
 
 export interface ImageUploaderOptions {
   upload: (file: File) => Promise<string>;
+  onError?: (error: Error) => void;
 }
 
 export default class ImageUploader {
@@ -146,7 +147,14 @@ export default class ImageUploader {
 
     this.options.upload(file).then(
       (url) => this.replaceWithFinalImage(url),
-      () => this.removePlaceholder()
+      (error) => {
+        this.removePlaceholder();
+        if (error instanceof Error) {
+          this.options.onError?.(error);
+        } else {
+          this.options.onError?.(new Error("이미지 업로드에 실패했습니다."));
+        }
+      }
     );
   }
 
