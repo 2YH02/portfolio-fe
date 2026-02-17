@@ -26,7 +26,6 @@ const RecentSection = ({ data }: { data: PostsResponse }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {data.posts.map((post, index) => {
             const isLcpCandidate = index === 0;
-            const isAboveTheFoldCandidate = index < 3;
             const useBlurPlaceholder = Boolean(post.thumbnail_blur);
             return (
               <Link
@@ -50,8 +49,8 @@ const RecentSection = ({ data }: { data: PostsResponse }) => {
                       quality={45}
                       sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 33vw"
                       priority={isLcpCandidate}
-                      fetchPriority={isAboveTheFoldCandidate ? "high" : "auto"}
-                      loading={isAboveTheFoldCandidate ? "eager" : "lazy"}
+                      fetchPriority={isLcpCandidate ? "high" : "auto"}
+                      loading={isLcpCandidate ? "eager" : "lazy"}
                       placeholder={useBlurPlaceholder ? "blur" : "empty"}
                       blurDataURL={
                         useBlurPlaceholder ? post.thumbnail_blur : undefined

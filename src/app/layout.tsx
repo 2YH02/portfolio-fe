@@ -57,16 +57,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <head>
-        <link
-          rel="preconnect"
-          href="https://evcsbwqeetfvegvrtbny.supabase.co"
-          crossOrigin=""
-        />
-        <link rel="dns-prefetch" href="https://evcsbwqeetfvegvrtbny.supabase.co" />
-        <link rel="preconnect" href="https://api.yonghun.me" crossOrigin="" />
-        <link rel="dns-prefetch" href="https://api.yonghun.me" />
-      </head>
       <body
         className={`${geistMono.variable} ${geistSans.variable} ${geistNanum.variable} antialiased overflow-hidden`}
       >
