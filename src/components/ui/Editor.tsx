@@ -3,8 +3,8 @@
 "use client";
 
 import ImageUploader from "@/lib/quill/ImageUploader";
+import hljs from "@/lib/highlight/hljs";
 import { supabase } from "@/lib/supabase/supabasClient";
-import hljs from "highlight.js";
 import Quill from "quill";
 import { useEffect, useRef, useState } from "react";
 

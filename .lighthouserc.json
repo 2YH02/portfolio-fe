@@ -3,9 +3,21 @@
     "collect": {
       "startServerCommand": "npm run start -- --port=3000",
       "startServerReadyPattern": "Ready",
+      "settings": {
+        "preset": "desktop",
+        "formFactor": "desktop",
+        "screenEmulation": {
+          "mobile": false,
+          "width": 1350,
+          "height": 940,
+          "deviceScaleFactor": 1,
+          "disabled": false
+        },
+        "throttlingMethod": "devtools"
+      },
       "url": [
         "http://localhost:3000/posts",
-        "http://localhost:3000/posts/91",
+        "http://localhost:3000/posts/100",
         "http://localhost:3000/projects/1"
       ],
       "numberOfRuns": 3

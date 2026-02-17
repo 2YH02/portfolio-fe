@@ -1,6 +1,6 @@
 "use client";
 
-import hljs from "highlight.js";
+import hljs from "@/lib/highlight/hljs";
 import { useEffect, useRef } from "react";
 
 interface QuillCodeRendererProps {
@@ -39,6 +39,12 @@ export default function QuillCodeRenderer({
 
         pre.appendChild(code);
         div.replaceWith(pre);
+      });
+
+      prevEl.querySelectorAll("img").forEach((img) => {
+        img.setAttribute("loading", "lazy");
+        img.setAttribute("decoding", "async");
+        img.setAttribute("fetchpriority", "low");
       });
 
       containerRef.current.innerHTML = prevEl.innerHTML;

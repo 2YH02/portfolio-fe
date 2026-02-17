@@ -1,10 +1,10 @@
 import GoogleAnalytics from "@/components/provider/GoogleAnalytics";
-import InitHLJS from "@/components/provider/InitHLJS";
 import PathListener from "@/components/provider/PathListener";
 import NoiseBackground from "@/components/ui/NoiseBackground";
 import { Spotlight } from "@/components/ui/Spotlight";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Nanum_Pen_Script } from "next/font/google";
+import "highlight.js/styles/github-dark.css";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -63,7 +63,6 @@ export default function RootLayout({
         {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS ? (
           <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS} />
         ) : null}
-        <InitHLJS />
         <PathListener />
         <NoiseBackground />
         <Spotlight className="-top-40 left-0 md:-top-20 md:left-60" />
