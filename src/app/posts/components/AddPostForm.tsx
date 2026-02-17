@@ -3,6 +3,7 @@
 import { addPost, type AddPostsRequest } from "@/lib/api/blog";
 import { supabase } from "@/lib/supabase/supabasClient";
 import { AnimatePresence, motion } from "motion/react";
+import NextImage from "next/image";
 import { useEffect, useState } from "react";
 
 const sheetVariants = {
@@ -156,14 +157,20 @@ const AddPostForm = ({
 
                 {previewUrl && blurPreviewUrl ? (
                   <div className="shrink-0 mt-2 flex gap-3">
-                    <img
+                    <NextImage
                       src={previewUrl}
                       alt="selected preview"
+                      unoptimized
+                      width={160}
+                      height={160}
                       className="mt-1 w-40 h-40 rounded-lg object-cover border border-gray-200"
                     />
-                    <img
+                    <NextImage
                       src={blurPreviewUrl}
                       alt="selected preview"
+                      unoptimized
+                      width={160}
+                      height={160}
                       className="mt-1 w-40 h-40 rounded-lg object-cover border border-gray-200"
                     />
                   </div>

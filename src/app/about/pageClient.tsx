@@ -4,6 +4,7 @@ import Nav from "@/components/common/Nav";
 import { GlassBox } from "@/components/ui/GlassBox";
 import { about } from "@/data";
 import { motion } from "motion/react";
+import Image from "next/image";
 
 export default function AboutClient() {
   return (
@@ -20,13 +21,19 @@ export default function AboutClient() {
       >
         <div className="flex justify-center items-center gap-4 text-4xl font-bold text-indigo-400">
           {about.name}
-          <GlassBox className="w-12 h-12 p-1">
+          <GlassBox className="relative w-12 h-12 p-1">
             <a
               href="https://github.com/2YH02"
               target="_blank"
               className="w-full h-full"
             >
-              <img src="/github-mark-white.png" alt="github button" />
+              <Image
+                src="/github-mark-white.png"
+                alt="github button"
+                fill
+                sizes="48px"
+                className="object-contain"
+              />
             </a>
           </GlassBox>
         </div>

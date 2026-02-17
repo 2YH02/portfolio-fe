@@ -40,18 +40,27 @@ export type EditorProps = {
 const Editor = ({ initialHTML = "", onChange }: EditorProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const onChangeRef = useRef(onChange);
+  const isInitializedRef = useRef(false);
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    if (containerRef.current?.innerHTML !== "") return;
+    onChangeRef.current = onChange;
+  }, [onChange]);
 
+  useEffect(() => {
+    if (containerRef.current?.innerHTML !== "") return;
+    if (isInitializedRef.current) return;
     let quill: null | Quill = null;
     let editorContainer: null | HTMLDivElement = null;
 
     if (quill || editorContainer) return;
 
-    editorContainer = containerRef.current!.appendChild(
-      containerRef.current!.ownerDocument.createElement("div")
+    const container = containerRef.current;
+    if (!container) return;
+    isInitializedRef.current = true;
+
+    editorContainer = container.appendChild(
+      container.ownerDocument.createElement("div")
     );
 
     quill = new Quill(editorContainer, {
@@ -167,11 +176,10 @@ const Editor = ({ initialHTML = "", onChange }: EditorProps) => {
     });
 
     return () => {
-      if (containerRef.current) {
-        containerRef.current.innerHTML = "";
-      }
+      container.innerHTML = "";
+      isInitializedRef.current = false;
     };
-  }, []);
+  }, [initialHTML]);
 
   return (
     <div>

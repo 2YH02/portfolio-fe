@@ -8,41 +8,20 @@ const INTERVAL = 1000 / 60;
 const DELAY = 300;
 
 const ParticleCanvas = ({
-  x = window.innerWidth / 2,
-  y = window.innerHeight / 2,
+  x,
+  y,
 }: {
   x?: number;
   y?: number;
 }) => {
+  const fallbackX = typeof window !== "undefined" ? window.innerWidth / 2 : 0;
+  const fallbackY = typeof window !== "undefined" ? window.innerHeight / 2 : 0;
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const particlesRef = useRef<Particle[]>([]);
-  const dpr = typeof window !== "undefined" ? window.devicePixelRatio : 1;
-
-  const initCanvas = () => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    const canvasWidth = window.innerWidth;
-    const canvasHeight = window.innerHeight;
-
-    canvas.style.width = canvasWidth + "px";
-    canvas.style.height = canvasHeight + "px";
-
-    canvas.width = canvasWidth * dpr;
-    canvas.height = canvasHeight * dpr;
-
-    ctx.scale(dpr, dpr);
-  };
-
-  const createParticles = () => {
-    particlesRef.current = [];
-    for (let i = 0; i < PARTICLE_NUM; i++) {
-      particlesRef.current.push(new Particle(x, y));
-    }
-  };
+  const originRef = useRef({
+    x: x ?? fallbackX,
+    y: y ?? fallbackY,
+  });
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -51,8 +30,30 @@ const ParticleCanvas = ({
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    const dpr = window.devicePixelRatio || 1;
     let then = Date.now();
     let animationFrameId: number;
+    const initCanvas = () => {
+      const canvasWidth = window.innerWidth;
+      const canvasHeight = window.innerHeight;
+
+      canvas.style.width = canvasWidth + "px";
+      canvas.style.height = canvasHeight + "px";
+
+      canvas.width = canvasWidth * dpr;
+      canvas.height = canvasHeight * dpr;
+
+      ctx.scale(dpr, dpr);
+    };
+
+    const createParticles = () => {
+      particlesRef.current = [];
+      for (let i = 0; i < PARTICLE_NUM; i++) {
+        particlesRef.current.push(
+          new Particle(originRef.current.x, originRef.current.y)
+        );
+      }
+    };
 
     initCanvas();
 

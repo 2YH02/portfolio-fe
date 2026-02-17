@@ -3,7 +3,7 @@
 import { cn } from "@/lib/utils";
 import useMaskRevealStore from "@/store/useMaskRevealStore";
 import { motion } from "motion/react";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import ParticleCanvas from "./ParticleCanvas";
 
 export const MaskContainer = ({
@@ -27,28 +27,24 @@ export const MaskContainer = ({
     y: null | number;
   }>({ x: null, y: null });
   const containerRef = useRef<HTMLDivElement>(null);
-  const updateMousePosition = (e: MouseEvent) => {
+  const updateMousePosition = useCallback((e: MouseEvent) => {
     if (!containerRef.current) return;
     const rect = containerRef.current.getBoundingClientRect();
     setMousePosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
-  };
-
-  useEffect(() => {
-    if (!containerRef.current) return;
-    containerRef.current.addEventListener("mousemove", updateMousePosition);
-    return () => {
-      if (containerRef.current) {
-        containerRef.current.removeEventListener(
-          "mousemove",
-          updateMousePosition
-        );
-      }
-    };
   }, []);
 
   useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+    container.addEventListener("mousemove", updateMousePosition);
+    return () => {
+      container.removeEventListener("mousemove", updateMousePosition);
+    };
+  }, [updateMousePosition]);
+
+  useEffect(() => {
     setIsHover(isHovered);
-  }, [isHovered]);
+  }, [isHovered, setIsHover]);
 
   const maskSize = isHovered ? revealSize : size;
 
