@@ -6,6 +6,10 @@ on:
       - main
   workflow_dispatch:
 
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   lighthouse:
     runs-on: ubuntu-latest
@@ -30,4 +34,120 @@ jobs:
         run: npm run build
 
       - name: Run Lighthouse CI
+        id: lhci
+        continue-on-error: true
         run: npx @lhci/cli@0.13.x autorun --config=.lighthouserc.json
+
+      - name: Prepare Lighthouse summary
+        if: github.event_name == 'pull_request'
+        run: |
+          node <<'EOF'
+          const fs = require("fs");
+          const path = require("path");
+
+          const reportsDir = path.join(process.cwd(), ".lighthouseci");
+          const outPath = path.join(process.cwd(), ".lighthouse-summary.md");
+
+          let lines = [];
+          lines.push("<!-- lighthouse-ci-report -->");
+          lines.push("## Lighthouse CI 결과");
+          lines.push("");
+          lines.push(`- 실행 상태: **${process.env.LHCI_OUTCOME || "unknown"}**`);
+          lines.push("- 대상: `/posts` (3회 측정)");
+          lines.push("");
+
+          if (!fs.existsSync(reportsDir)) {
+            lines.push("리포트 디렉터리를 찾을 수 없습니다.");
+            fs.writeFileSync(outPath, lines.join("\n"));
+            process.exit(0);
+          }
+
+          const reportFiles = fs
+            .readdirSync(reportsDir)
+            .filter((name) => name.endsWith(".report.json"))
+            .map((name) => path.join(reportsDir, name));
+
+          if (reportFiles.length === 0) {
+            lines.push("생성된 Lighthouse report JSON이 없습니다.");
+            fs.writeFileSync(outPath, lines.join("\n"));
+            process.exit(0);
+          }
+
+          const rows = [];
+          for (const reportFile of reportFiles.slice(0, 3)) {
+            try {
+              const report = JSON.parse(fs.readFileSync(reportFile, "utf8"));
+              const categories = report.categories || {};
+              const formatScore = (value) =>
+                typeof value === "number" ? Math.round(value * 100) : "-";
+
+              rows.push({
+                url: report.finalDisplayedUrl || report.finalUrl || "-",
+                performance: formatScore(categories.performance?.score),
+                accessibility: formatScore(categories.accessibility?.score),
+                bestPractices: formatScore(categories["best-practices"]?.score),
+                seo: formatScore(categories.seo?.score),
+              });
+            } catch {
+              // ignore broken report file and continue
+            }
+          }
+
+          if (rows.length > 0) {
+            lines.push("| URL | Perf | A11y | BP | SEO |");
+            lines.push("|---|---:|---:|---:|---:|");
+            for (const row of rows) {
+              lines.push(
+                `| ${row.url} | ${row.performance} | ${row.accessibility} | ${row.bestPractices} | ${row.seo} |`
+              );
+            }
+          } else {
+            lines.push("점수 요약을 만들 report를 파싱하지 못했습니다.");
+          }
+
+          fs.writeFileSync(outPath, lines.join("\n"));
+          EOF
+        env:
+          LHCI_OUTCOME: ${{ steps.lhci.outcome }}
+
+      - name: Comment PR with Lighthouse summary
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require("fs");
+            const marker = "<!-- lighthouse-ci-report -->";
+            const body = fs.readFileSync(".lighthouse-summary.md", "utf8");
+            const { owner, repo } = context.repo;
+            const issue_number = context.issue.number;
+
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner,
+              repo,
+              issue_number,
+              per_page: 100,
+            });
+
+            const existing = comments.find((c) => c.body && c.body.includes(marker));
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner,
+                repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number,
+                body,
+              });
+            }
+
+      - name: Fail when Lighthouse assertions fail
+        if: steps.lhci.outcome == 'failure'
+        run: |
+          echo "Lighthouse CI assertions failed."
+          exit 1
