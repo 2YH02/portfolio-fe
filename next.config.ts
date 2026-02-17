@@ -10,7 +10,13 @@ const nextConfig: NextConfig = {
     ];
   },
   images: {
-    domains: ["evcsbwqeetfvegvrtbny.supabase.co"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "evcsbwqeetfvegvrtbny.supabase.co",
+        pathname: "/**",
+      },
+    ],
     formats: ["image/avif", "image/webp"],
   },
 };
