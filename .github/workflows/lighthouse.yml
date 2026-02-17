@@ -19,10 +19,16 @@ jobs:
         include:
           - path: /posts
             path_key: posts
+            perf_level: error
+            perf_min: "0.7"
           - path: /posts/100
             path_key: posts-100
+            perf_level: warn
+            perf_min: "0.5"
           - path: /projects/1
             path_key: projects-1
+            perf_level: error
+            perf_min: "0.8"
     env:
       NEXT_PUBLIC_API_BASE_URL: https://api.yonghun.me
       NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
@@ -50,10 +56,16 @@ jobs:
           const fs = require("fs");
           const config = JSON.parse(fs.readFileSync(".lighthouserc.json", "utf8"));
           config.ci.collect.url = [`http://localhost:3000${process.env.LH_PATH}`];
+          config.ci.assert.assertions["categories:performance"] = [
+            process.env.LH_PERF_LEVEL,
+            { minScore: Number(process.env.LH_PERF_MIN) },
+          ];
           fs.writeFileSync(".lighthouserc.runtime.json", JSON.stringify(config, null, 2));
           EOF
         env:
           LH_PATH: ${{ matrix.path }}
+          LH_PERF_LEVEL: ${{ matrix.perf_level }}
+          LH_PERF_MIN: ${{ matrix.perf_min }}
 
       - name: Run Lighthouse CI
         id: lhci
@@ -76,6 +88,7 @@ jobs:
           lines.push("");
           lines.push(`- 실행 상태: **${process.env.LHCI_OUTCOME || "unknown"}**`);
           lines.push(`- 대상: \`${process.env.LH_PATH}\` (3회 측정)`);
+          lines.push(`- 성능 기준: **${process.env.LH_PERF_LEVEL} >= ${Math.round(Number(process.env.LH_PERF_MIN) * 100)}**`);
           lines.push("");
 
           if (!fs.existsSync(reportsDir)) {
@@ -146,6 +159,8 @@ jobs:
           LHCI_OUTCOME: ${{ steps.lhci.outcome }}
           LH_PATH: ${{ matrix.path }}
           LH_PATH_KEY: ${{ matrix.path_key }}
+          LH_PERF_LEVEL: ${{ matrix.perf_level }}
+          LH_PERF_MIN: ${{ matrix.perf_min }}
 
       - name: Comment PR with Lighthouse summary
         if: github.event_name == 'pull_request'
@@ -154,9 +169,10 @@ jobs:
           script: |
             const fs = require("fs");
             const marker = `<!-- lighthouse-ci-report:${process.env.LH_PATH_KEY} -->`;
-            const body = fs.readFileSync(".lighthouse-summary.md", "utf8");
+            const baseBody = fs.readFileSync(".lighthouse-summary.md", "utf8");
             const { owner, repo } = context.repo;
             const issue_number = context.issue.number;
+            const perfPattern = /\|\s*[^|]+\s*\|\s*(\d+)\s*\|/;
 
             const comments = await github.paginate(github.rest.issues.listComments, {
               owner,
@@ -166,6 +182,24 @@ jobs:
             });
 
             const existing = comments.find((c) => c.body && c.body.includes(marker));
+            const currentPerfMatch = baseBody.match(perfPattern);
+            const currentPerf = currentPerfMatch ? Number(currentPerfMatch[1]) : null;
+
+            let deltaLine = "- 이전 대비 Perf(median): 첫 측정";
+            if (existing) {
+              const prevPerfMatch = existing.body.match(perfPattern);
+              const prevPerf = prevPerfMatch ? Number(prevPerfMatch[1]) : null;
+
+              if (currentPerf !== null && prevPerf !== null) {
+                const delta = currentPerf - prevPerf;
+                const sign = delta > 0 ? "+" : "";
+                deltaLine = `- 이전 대비 Perf(median): ${sign}${delta}p (이전 ${prevPerf} -> 현재 ${currentPerf})`;
+              } else {
+                deltaLine = "- 이전 대비 Perf(median): 비교 불가";
+              }
+            }
+
+            const body = `${baseBody}\n${deltaLine}`;
 
             if (existing) {
               await github.rest.issues.updateComment({
