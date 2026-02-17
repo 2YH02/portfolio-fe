@@ -13,6 +13,16 @@ permissions:
 jobs:
   lighthouse:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - path: /posts
+            path_key: posts
+          - path: /posts/91
+            path_key: posts-91
+          - path: /projects/1
+            path_key: projects-1
     env:
       NEXT_PUBLIC_API_BASE_URL: https://api.yonghun.me
       NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
@@ -34,10 +44,21 @@ jobs:
       - name: Build app
         run: npm run build
 
+      - name: Prepare LHCI runtime config
+        run: |
+          node <<'EOF'
+          const fs = require("fs");
+          const config = JSON.parse(fs.readFileSync(".lighthouserc.json", "utf8"));
+          config.ci.collect.url = [`http://localhost:3000${process.env.LH_PATH}`];
+          fs.writeFileSync(".lighthouserc.runtime.json", JSON.stringify(config, null, 2));
+          EOF
+        env:
+          LH_PATH: ${{ matrix.path }}
+
       - name: Run Lighthouse CI
         id: lhci
         continue-on-error: true
-        run: npx @lhci/cli@0.13.x autorun --config=.lighthouserc.json
+        run: npx @lhci/cli@0.13.x autorun --config=.lighthouserc.runtime.json
 
       - name: Prepare Lighthouse summary
         if: github.event_name == 'pull_request'
@@ -50,11 +71,11 @@ jobs:
           const outPath = path.join(process.cwd(), ".lighthouse-summary.md");
 
           let lines = [];
-          lines.push("<!-- lighthouse-ci-report -->");
+          lines.push(`<!-- lighthouse-ci-report:${process.env.LH_PATH_KEY} -->`);
           lines.push("## Lighthouse CI 결과");
           lines.push("");
           lines.push(`- 실행 상태: **${process.env.LHCI_OUTCOME || "unknown"}**`);
-          lines.push("- 대상: `/posts`, `/posts/91`, `/projects/1` (각 3회 측정)");
+          lines.push(`- 대상: \`${process.env.LH_PATH}\` (3회 측정)`);
           lines.push("");
 
           if (!fs.existsSync(reportsDir)) {
@@ -100,20 +121,31 @@ jobs:
             process.exit(0);
           }
 
-          if (rows.length > 0) {
-            lines.push("| URL | Perf | A11y | BP | SEO |");
-            lines.push("|---|---:|---:|---:|---:|");
-            for (const row of rows) {
-              lines.push(
-                `| ${row.url} | ${row.performance} | ${row.accessibility} | ${row.bestPractices} | ${row.seo} |`
-              );
-            }
-          }
+          const toNumber = (v) => (typeof v === "number" && Number.isFinite(v) ? v : null);
+          const median = (arr) => {
+            const clean = arr.filter((v) => v !== null).sort((a, b) => a - b);
+            if (clean.length === 0) return "-";
+            return clean[Math.floor(clean.length / 2)];
+          };
+
+          lines.push(`- 수집된 리포트 수: ${rows.length}`);
+          lines.push("");
+          lines.push("| URL | Perf(median) | A11y(median) | BP(median) | SEO(median) |");
+          lines.push("|---|---:|---:|---:|---:|");
+
+          const url = rows[0]?.url || `http://localhost:3000${process.env.LH_PATH}`;
+          const perf = median(rows.map((r) => toNumber(r.performance)));
+          const a11y = median(rows.map((r) => toNumber(r.accessibility)));
+          const bp = median(rows.map((r) => toNumber(r.bestPractices)));
+          const seo = median(rows.map((r) => toNumber(r.seo)));
+          lines.push(`| ${url} | ${perf} | ${a11y} | ${bp} | ${seo} |`);
 
           fs.writeFileSync(outPath, lines.join("\n"));
           EOF
         env:
           LHCI_OUTCOME: ${{ steps.lhci.outcome }}
+          LH_PATH: ${{ matrix.path }}
+          LH_PATH_KEY: ${{ matrix.path_key }}
 
       - name: Comment PR with Lighthouse summary
         if: github.event_name == 'pull_request'
@@ -121,7 +153,7 @@ jobs:
         with:
           script: |
             const fs = require("fs");
-            const marker = "<!-- lighthouse-ci-report -->";
+            const marker = `<!-- lighthouse-ci-report:${process.env.LH_PATH_KEY} -->`;
             const body = fs.readFileSync(".lighthouse-summary.md", "utf8");
             const { owner, repo } = context.repo;
             const issue_number = context.issue.number;
@@ -150,6 +182,8 @@ jobs:
                 body,
               });
             }
+        env:
+          LH_PATH_KEY: ${{ matrix.path_key }}
 
       - name: Fail when Lighthouse assertions fail
         if: steps.lhci.outcome == 'failure'
