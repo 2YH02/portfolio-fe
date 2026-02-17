@@ -27,20 +27,61 @@ export const MaskContainer = ({
     y: null | number;
   }>({ x: null, y: null });
   const containerRef = useRef<HTMLDivElement>(null);
-  const updateMousePosition = useCallback((e: MouseEvent) => {
+  const rectRef = useRef<DOMRect | null>(null);
+  const rafRef = useRef<number | null>(null);
+  const pointerRef = useRef<{ x: number; y: number } | null>(null);
+
+  const updateRect = useCallback(() => {
     if (!containerRef.current) return;
-    const rect = containerRef.current.getBoundingClientRect();
-    setMousePosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+    rectRef.current = containerRef.current.getBoundingClientRect();
   }, []);
+
+  const flushMousePosition = useCallback(() => {
+    const rect = rectRef.current;
+    const pointer = pointerRef.current;
+    if (!rect || !pointer) {
+      rafRef.current = null;
+      return;
+    }
+
+    setMousePosition({ x: pointer.x - rect.left, y: pointer.y - rect.top });
+    rafRef.current = null;
+  }, []);
+
+  const updateMousePosition = useCallback(
+    (e: MouseEvent) => {
+      pointerRef.current = { x: e.clientX, y: e.clientY };
+
+      if (rafRef.current !== null) return;
+      rafRef.current = window.requestAnimationFrame(flushMousePosition);
+    },
+    [flushMousePosition]
+  );
 
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
+    updateRect();
+
+    const onEnter = () => updateRect();
+    const onScroll = () => updateRect();
+    const onResize = () => updateRect();
+
     container.addEventListener("mousemove", updateMousePosition);
+    container.addEventListener("mouseenter", onEnter);
+    window.addEventListener("resize", onResize);
+    window.addEventListener("scroll", onScroll, true);
+
     return () => {
       container.removeEventListener("mousemove", updateMousePosition);
+      container.removeEventListener("mouseenter", onEnter);
+      window.removeEventListener("resize", onResize);
+      window.removeEventListener("scroll", onScroll, true);
+      if (rafRef.current !== null) {
+        window.cancelAnimationFrame(rafRef.current);
+      }
     };
-  }, [updateMousePosition]);
+  }, [updateMousePosition, updateRect]);
 
   useEffect(() => {
     setIsHover(isHovered);

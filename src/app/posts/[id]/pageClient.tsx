@@ -83,6 +83,10 @@ export default function PostDetailClient({ post }: { post: Post }) {
           alt="post thumbnail"
           fill
           className="object-cover"
+          sizes="100vw"
+          priority
+          fetchPriority="high"
+          loading="eager"
           placeholder="blur"
           blurDataURL={post.thumbnail_blur}
         />
