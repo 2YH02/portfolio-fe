@@ -42,6 +42,9 @@ export default function QuillCodeRenderer({
       });
 
       prevEl.querySelectorAll("img").forEach((img) => {
+        if (!img.hasAttribute("alt")) {
+          img.setAttribute("alt", "");
+        }
         img.setAttribute("loading", "lazy");
         img.setAttribute("decoding", "async");
         img.setAttribute("fetchpriority", "low");

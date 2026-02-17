@@ -8,6 +8,8 @@ import { useState } from "react";
 interface AuthFormProps {
   onSuccess?: VoidFunction;
   setRole?: (role: User) => void;
+  titleId?: string;
+  descriptionId?: string;
 }
 
 const formVariants = {
@@ -24,7 +26,12 @@ const buttonVariants = {
   tap: { scale: 0.97 },
 };
 
-const AuthForm = ({ onSuccess, setRole }: AuthFormProps) => {
+const AuthForm = ({
+  onSuccess,
+  setRole,
+  titleId,
+  descriptionId,
+}: AuthFormProps) => {
   const [user, setUser] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
@@ -63,15 +70,22 @@ const AuthForm = ({ onSuccess, setRole }: AuthFormProps) => {
       onClick={(e) => e.stopPropagation()}
       aria-busy={isSubmitting}
     >
-      <h2 className="text-2xl font-bold text-center">사용자 확인</h2>
+      <h2 id={titleId} className="text-2xl font-bold text-center">
+        사용자 확인
+      </h2>
+      <p id={descriptionId} className="sr-only">
+        사용자와 비밀번호를 입력하고 확인하기 버튼을 누르세요.
+      </p>
 
       <div>
-        <label htmlFor="text" className="block text-sm font-medium">
+        <label htmlFor="username" className="block text-sm font-medium">
           사용자
         </label>
         <input
           type="text"
-          id="text"
+          id="username"
+          name="username"
+          autoComplete="username"
           required
           value={user}
           onChange={(e) => {
@@ -89,6 +103,8 @@ const AuthForm = ({ onSuccess, setRole }: AuthFormProps) => {
         <input
           type="password"
           id="password"
+          name="password"
+          autoComplete="current-password"
           required
           value={password}
           onChange={(e) => {
