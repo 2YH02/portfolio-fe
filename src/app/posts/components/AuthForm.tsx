@@ -61,6 +61,7 @@ const AuthForm = ({ onSuccess, setRole }: AuthFormProps) => {
       initial="hidden"
       animate="visible"
       onClick={(e) => e.stopPropagation()}
+      aria-busy={isSubmitting}
     >
       <h2 className="text-2xl font-bold text-center">사용자 확인</h2>
 
@@ -97,7 +98,9 @@ const AuthForm = ({ onSuccess, setRole }: AuthFormProps) => {
           className="mt-1 block w-full px-4 py-2 border border-gray-400 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
       </div>
-      <div className="text-xs text-red-300 text-center">{message}</div>
+      <div className="text-xs text-red-300 text-center" aria-live="polite">
+        {message}
+      </div>
       <GlassBox className="p-0 rounded-md" withAction>
         <motion.button
           type="submit"

@@ -65,10 +65,11 @@ export default function PostClient({
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full h-full"
+                aria-label="깃허브 프로필 새 창에서 열기"
               >
                 <Image
                   src="/github-mark-white.png"
-                  alt="github button"
+                  alt="깃허브 프로필 아이콘"
                   width={40}
                   height={40}
                   className="w-full h-full object-contain"
@@ -79,6 +80,7 @@ export default function PostClient({
               <button
                 className="w-full h-full flex items-center justify-center"
                 onClick={() => router.push("/posts/add")}
+                aria-label="새 글 작성 페이지로 이동"
               >
                 <BsPencilSquare color="white" size={26} />
               </button>

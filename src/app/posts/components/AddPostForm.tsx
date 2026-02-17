@@ -149,7 +149,9 @@ const AddPostForm = ({
                   className="block w-full text-sm text-gray-300 mb-2 file:mr-4 file:py-2 file:px-4 file:cursor-pointer file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                 />
                 {message ? (
-                  <p className="text-xs text-red-300">{message}</p>
+                  <p className="text-xs text-red-300" aria-live="polite">
+                    {message}
+                  </p>
                 ) : null}
 
                 {previewUrl && blurPreviewUrl ? (

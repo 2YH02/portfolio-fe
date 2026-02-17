@@ -18,7 +18,10 @@ const RecentSection = ({ data }: { data: PostsResponse }) => {
   if (isLoading) return <Skeleton />;
 
   return (
-    <section className="max-w-[1280px] p-10 mx-auto pt-40 pb-10">
+    <section
+      className="max-w-[1280px] p-10 mx-auto pt-40 pb-10"
+      aria-label="최신 게시글 목록"
+    >
       <div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {data.posts.map((post, index) => {
@@ -30,6 +33,7 @@ const RecentSection = ({ data }: { data: PostsResponse }) => {
                 href={`/posts/${post.id}`}
                 key={post.id}
                 className="text-left"
+                aria-label={`${post.title} 게시글 상세 보기`}
               >
                 <GlassBox
                   className="h-96 p-0 transform transition-transform duration-300 ease-in-out hover:z-10
@@ -40,7 +44,7 @@ const RecentSection = ({ data }: { data: PostsResponse }) => {
                   <div className={cn("relative w-full overflow-hidden h-1/2")}>
                     <Image
                       src={post.thumbnail}
-                      alt={`thumbnail`}
+                      alt={`${post.title} 썸네일`}
                       fill
                       className={cn("object-cover")}
                       quality={45}

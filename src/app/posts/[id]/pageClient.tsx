@@ -111,6 +111,7 @@ export default function PostDetailClient({ post }: { post: Post }) {
                 setViewAuth(true);
                 setMessage("");
               }}
+              aria-label="게시글 삭제 인증 열기"
             >
               <BsTrash color="white" size={20} />
             </button>
@@ -123,18 +124,26 @@ export default function PostDetailClient({ post }: { post: Post }) {
                 setViewAuth(true);
                 setMessage("");
               }}
+              aria-label="게시글 수정 인증 열기"
             >
               <BsWrenchAdjustable color="white" size={20} />
             </button>
           </GlassBox>
         </div>
-        {message ? <p className="mt-4 text-sm text-red-300">{message}</p> : null}
+        {message ? (
+          <p className="mt-4 text-sm text-red-300" aria-live="polite">
+            {message}
+          </p>
+        ) : null}
       </div>
 
       {viewAuth && (
         <div
           className="fixed w-screen h-screen bg-black/70 z-50"
           onClick={() => setViewAuth(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-label="사용자 인증"
         >
           <AuthForm
             onSuccess={() => {
@@ -152,6 +161,9 @@ export default function PostDetailClient({ post }: { post: Post }) {
         <div
           className="fixed w-screen h-screen bg-black/70 z-50"
           onClick={() => setViewDelete(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-label="게시글 삭제 확인"
         >
           <DeleteModal
             close={() => setViewDelete(false)}
@@ -169,6 +181,9 @@ export default function PostDetailClient({ post }: { post: Post }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            role="dialog"
+            aria-modal="true"
+            aria-label="이미지 확대 보기"
           >
             <motion.div
               layoutId={`img-${curImage}`}
