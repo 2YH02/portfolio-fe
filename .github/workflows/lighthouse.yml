@@ -53,7 +53,7 @@ jobs:
           lines.push("## Lighthouse CI 결과");
           lines.push("");
           lines.push(`- 실행 상태: **${process.env.LHCI_OUTCOME || "unknown"}**`);
-          lines.push("- 대상: `/posts` (3회 측정)");
+          lines.push("- 대상: `/posts`, `/posts/91`, `/projects/1` (각 3회 측정)");
           lines.push("");
 
           if (!fs.existsSync(reportsDir)) {
@@ -102,7 +102,7 @@ jobs:
           if (rows.length > 0) {
             lines.push("| URL | Perf | A11y | BP | SEO |");
             lines.push("|---|---:|---:|---:|---:|");
-            for (const row of rows.slice(0, 3)) {
+            for (const row of rows) {
               lines.push(
                 `| ${row.url} | ${row.performance} | ${row.accessibility} | ${row.bestPractices} | ${row.seo} |`
               );
