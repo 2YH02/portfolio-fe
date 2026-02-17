@@ -17,6 +17,7 @@ const nextConfig: NextConfig = {
         pathname: "/**",
       },
     ],
+    qualities: [45, 50, 75],
     formats: ["image/avif", "image/webp"],
   },
 };
