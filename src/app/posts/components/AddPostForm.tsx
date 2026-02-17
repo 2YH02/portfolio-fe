@@ -29,6 +29,7 @@ const AddPostForm = ({
 
   const [file, setFile] = useState<File | null>(null);
   const [message, setMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (!isOpen) {
@@ -63,13 +64,25 @@ const AddPostForm = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!file) return;
+    if (!file || isSubmitting) {
+      if (!file) {
+        setMessage("대표 이미지를 선택해주세요.");
+      }
+      return;
+    }
+
+    setMessage("");
+    setIsSubmitting(true);
 
     const filePath = `yonghunblog/${Date.now()}`;
 
     const imageUrl = await addFileToStorage(file, filePath);
 
-    if (!imageUrl) return;
+    if (!imageUrl) {
+      setMessage("이미지 업로드에 실패했습니다. 다시 시도해주세요.");
+      setIsSubmitting(false);
+      return;
+    }
 
     const payload: AddPostsRequest = {
       ...data,
@@ -79,12 +92,14 @@ const AddPostForm = ({
 
     try {
       await addPost(payload);
+      onClose();
     } catch (error) {
       console.error(error);
       await deleteFileFromStorage(filePath);
+      setMessage("게시글 저장에 실패했습니다. 다시 시도해주세요.");
+    } finally {
+      setIsSubmitting(false);
     }
-
-    onClose();
   };
 
   return (
@@ -96,7 +111,9 @@ const AddPostForm = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1, transition: { duration: 0.2 } }}
             exit={{ opacity: 0, transition: { duration: 0.2 } }}
-            onClick={onClose}
+            onClick={() => {
+              if (!isSubmitting) onClose();
+            }}
           />
           <motion.div
             className="fixed left-0 bottom-0 w-full backdrop-blur-lg bg-white/10 border border-white/10 rounded-t-2xl shadow-xl p-4 flex flex-col"
@@ -161,9 +178,10 @@ const AddPostForm = ({
               </div>
               <button
                 type="submit"
-                className="shrink-0 mt-6 w-full py-2 font-semibold rounded-lg backdrop-blur-lg bg-white/10 border border-white/10"
+                className="shrink-0 mt-6 w-full py-2 font-semibold rounded-lg backdrop-blur-lg bg-white/10 border border-white/10 disabled:opacity-60 disabled:cursor-not-allowed"
+                disabled={isSubmitting}
               >
-                업로드
+                {isSubmitting ? "업로드 중..." : "업로드"}
               </button>
             </form>
           </motion.div>

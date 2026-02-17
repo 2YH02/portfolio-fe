@@ -28,18 +28,29 @@ const AuthForm = ({ onSuccess, setRole }: AuthFormProps) => {
   const [user, setUser] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const data = await Auth(user, password);
+    if (isSubmitting) return;
+    setMessage("");
+    setIsSubmitting(true);
 
-    setRole?.(data.role);
+    try {
+      const data = await Auth(user, password);
+      setRole?.(data.role);
 
-    if (data.role === "Guest") {
-      setMessage("사용자 정보를 확인해주세요.");
+      if (data.role === "Guest") {
+        setMessage("사용자 정보를 확인해주세요.");
+      }
+
+      if (data.role === "Admin") onSuccess?.();
+    } catch (error) {
+      console.error(error);
+      setMessage("인증 요청에 실패했습니다. 잠시 후 다시 시도해주세요.");
+    } finally {
+      setIsSubmitting(false);
     }
-
-    if (data.role === "Admin") onSuccess?.();
   };
 
   return (
@@ -62,7 +73,10 @@ const AuthForm = ({ onSuccess, setRole }: AuthFormProps) => {
           id="text"
           required
           value={user}
-          onChange={(e) => setUser(e.target.value)}
+          onChange={(e) => {
+            setUser(e.target.value);
+            setMessage("");
+          }}
           className="mt-1 block w-full px-4 py-2 border border-gray-400 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
       </div>
@@ -76,7 +90,10 @@ const AuthForm = ({ onSuccess, setRole }: AuthFormProps) => {
           id="password"
           required
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={(e) => {
+            setPassword(e.target.value);
+            setMessage("");
+          }}
           className="mt-1 block w-full px-4 py-2 border border-gray-400 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
       </div>
@@ -88,8 +105,9 @@ const AuthForm = ({ onSuccess, setRole }: AuthFormProps) => {
           variants={buttonVariants}
           whileHover="hover"
           whileTap="tap"
+          disabled={isSubmitting}
         >
-          확인하기
+          {isSubmitting ? "확인 중..." : "확인하기"}
         </motion.button>
       </GlassBox>
     </motion.form>
