@@ -2,6 +2,7 @@
 
 import { GlassBox } from "@/components/ui/GlassBox";
 import { type PostsResponse } from "@/lib/api/blog";
+import { isKnownAnimatedSupabaseImage } from "@/lib/image";
 import { cn, formatDate } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
@@ -27,6 +28,9 @@ const RecentSection = ({ data }: { data: PostsResponse }) => {
           {data.posts.map((post, index) => {
             const isLcpCandidate = index === 0;
             const useBlurPlaceholder = Boolean(post.thumbnail_blur);
+            const isAnimatedLegacyImage = isKnownAnimatedSupabaseImage(
+              post.thumbnail
+            );
             return (
               <Link
                 href={`/posts/${post.id}`}
@@ -51,6 +55,7 @@ const RecentSection = ({ data }: { data: PostsResponse }) => {
                       priority={isLcpCandidate}
                       fetchPriority={isLcpCandidate ? "high" : "auto"}
                       loading={isLcpCandidate ? "eager" : "lazy"}
+                      unoptimized={isAnimatedLegacyImage}
                       placeholder={useBlurPlaceholder ? "blur" : "empty"}
                       blurDataURL={
                         useBlurPlaceholder ? post.thumbnail_blur : undefined

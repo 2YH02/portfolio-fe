@@ -4,6 +4,7 @@ import Nav from "@/components/common/Nav";
 import QuillCodeRenderer from "@/components/common/QuillCodeRenderer";
 import { GlassBox } from "@/components/ui/GlassBox";
 import { deletePost, type Post } from "@/lib/api/blog";
+import { isKnownAnimatedSupabaseImage } from "@/lib/image";
 import { formatDate } from "@/lib/utils";
 import useImageStore from "@/store/useImageStore";
 import { AnimatePresence, motion } from "motion/react";
@@ -30,6 +31,7 @@ const buttonVariants = {
 export default function PostDetailClient({ post }: { post: Post }) {
   const router = useRouter();
   const { curImage, setCurImage } = useImageStore();
+  const isAnimatedThumbnail = isKnownAnimatedSupabaseImage(post.thumbnail);
 
   const [viewAuth, setViewAuth] = useState(false);
   const [viewDelete, setViewDelete] = useState(false);
@@ -87,6 +89,7 @@ export default function PostDetailClient({ post }: { post: Post }) {
           priority
           fetchPriority="high"
           loading="eager"
+          unoptimized={isAnimatedThumbnail}
           placeholder="blur"
           blurDataURL={post.thumbnail_blur}
         />
@@ -198,6 +201,7 @@ export default function PostDetailClient({ post }: { post: Post }) {
                 alt="enlarged screenshot"
                 fill
                 className="object-contain"
+                unoptimized={isKnownAnimatedSupabaseImage(curImage)}
               />
             </motion.div>
           </motion.div>
