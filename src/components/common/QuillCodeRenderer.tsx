@@ -15,7 +15,7 @@ export default function QuillCodeRenderer({
   useEffect(() => {
     if (containerRef.current) {
       const prevEl = document.createElement("div");
-      prevEl.innerHTML = htmlString;
+      prevEl.innerHTML = sanitizeHtmlString(htmlString);
       prevEl
         .querySelectorAll(".ql-ui, .ql-picker, .ql-picker-options, option")
         .forEach((el) => el.remove());
@@ -50,4 +50,33 @@ export default function QuillCodeRenderer({
   }, [htmlString]);
 
   return <div ref={containerRef} className="whitespace-pre-wrap" />;
+}
+
+function sanitizeHtmlString(input: string) {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(input, "text/html");
+
+  doc
+    .querySelectorAll(
+      "script, style, iframe, object, embed, form, link, meta, base"
+    )
+    .forEach((node) => node.remove());
+
+  doc.body.querySelectorAll("*").forEach((el) => {
+    [...el.attributes].forEach((attr) => {
+      const name = attr.name.toLowerCase();
+      const value = attr.value.trim().toLowerCase();
+
+      const isEventHandler = name.startsWith("on");
+      const isUnsafeUrl =
+        (name === "href" || name === "src" || name === "xlink:href") &&
+        (value.startsWith("javascript:") || value.startsWith("data:text/html"));
+
+      if (isEventHandler || isUnsafeUrl) {
+        el.removeAttribute(attr.name);
+      }
+    });
+  });
+
+  return doc.body.innerHTML;
 }
