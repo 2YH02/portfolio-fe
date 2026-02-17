@@ -41,13 +41,13 @@ export default async function Posts(props: { searchParams: SearchParams }) {
 
   const optimizedData = {
     total_count: data.total_count,
-    posts: data.posts.map((post) => ({
+    posts: data.posts.map((post, index) => ({
       id: post.id,
       title: post.title,
       description: post.description,
       tags: post.tags,
       thumbnail: post.thumbnail,
-      thumbnail_blur: post.thumbnail_blur,
+      thumbnail_blur: index < 3 ? post.thumbnail_blur : "",
       created_at: post.created_at,
     })),
   };

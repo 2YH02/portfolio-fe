@@ -24,6 +24,7 @@ const RecentSection = ({ data }: { data: PostsResponse }) => {
           {data.posts.map((post, index) => {
             const isLcpCandidate = index === 0;
             const isAboveTheFoldCandidate = index < 3;
+            const useBlurPlaceholder = Boolean(post.thumbnail_blur);
             return (
               <Link
                 href={`/posts/${post.id}`}
@@ -47,8 +48,10 @@ const RecentSection = ({ data }: { data: PostsResponse }) => {
                       priority={isLcpCandidate}
                       fetchPriority={isAboveTheFoldCandidate ? "high" : "auto"}
                       loading={isAboveTheFoldCandidate ? "eager" : "lazy"}
-                      placeholder="blur"
-                      blurDataURL={post.thumbnail_blur}
+                      placeholder={useBlurPlaceholder ? "blur" : "empty"}
+                      blurDataURL={
+                        useBlurPlaceholder ? post.thumbnail_blur : undefined
+                      }
                     />
                   </div>
 
