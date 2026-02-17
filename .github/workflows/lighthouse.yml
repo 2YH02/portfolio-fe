@@ -62,47 +62,51 @@ jobs:
             process.exit(0);
           }
 
-          const reportFiles = fs
+          const jsonFiles = fs
             .readdirSync(reportsDir)
-            .filter((name) => name.endsWith(".report.json"))
+            .filter((name) => name.endsWith(".json"))
             .map((name) => path.join(reportsDir, name));
 
-          if (reportFiles.length === 0) {
-            lines.push("생성된 Lighthouse report JSON이 없습니다.");
-            fs.writeFileSync(outPath, lines.join("\n"));
-            process.exit(0);
-          }
-
           const rows = [];
-          for (const reportFile of reportFiles.slice(0, 3)) {
+          for (const jsonFile of jsonFiles) {
             try {
-              const report = JSON.parse(fs.readFileSync(reportFile, "utf8"));
+              const report = JSON.parse(fs.readFileSync(jsonFile, "utf8"));
+              if (!report || typeof report !== "object" || !report.categories) {
+                continue;
+              }
+
               const categories = report.categories || {};
               const formatScore = (value) =>
                 typeof value === "number" ? Math.round(value * 100) : "-";
 
               rows.push({
-                url: report.finalDisplayedUrl || report.finalUrl || "-",
+                url: report.finalDisplayedUrl || report.finalUrl || report.requestedUrl || "-",
                 performance: formatScore(categories.performance?.score),
                 accessibility: formatScore(categories.accessibility?.score),
                 bestPractices: formatScore(categories["best-practices"]?.score),
                 seo: formatScore(categories.seo?.score),
               });
             } catch {
-              // ignore broken report file and continue
+              // ignore non-report JSON files
             }
+          }
+
+          if (rows.length === 0) {
+            lines.push("파싱 가능한 Lighthouse report JSON이 없습니다.");
+            lines.push("");
+            lines.push(`- 감지된 JSON 파일 수: ${jsonFiles.length}`);
+            fs.writeFileSync(outPath, lines.join("\n"));
+            process.exit(0);
           }
 
           if (rows.length > 0) {
             lines.push("| URL | Perf | A11y | BP | SEO |");
             lines.push("|---|---:|---:|---:|---:|");
-            for (const row of rows) {
+            for (const row of rows.slice(0, 3)) {
               lines.push(
                 `| ${row.url} | ${row.performance} | ${row.accessibility} | ${row.bestPractices} | ${row.seo} |`
               );
             }
-          } else {
-            lines.push("점수 요약을 만들 report를 파싱하지 못했습니다.");
           }
 
           fs.writeFileSync(outPath, lines.join("\n"));
