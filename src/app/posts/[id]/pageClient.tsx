@@ -3,11 +3,12 @@
 import Nav from "@/components/common/Nav";
 import QuillCodeRenderer from "@/components/common/QuillCodeRenderer";
 import { GlassBox } from "@/components/ui/GlassBox";
-import { type Post } from "@/lib/api/blog";
+import { deletePost, type Post } from "@/lib/api/blog";
 import { formatDate } from "@/lib/utils";
 import useImageStore from "@/store/useImageStore";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { BsTrash, BsWrenchAdjustable } from "react-icons/bs";
 import AuthForm from "../components/AuthForm";
@@ -27,10 +28,14 @@ const buttonVariants = {
 };
 
 export default function PostDetailClient({ post }: { post: Post }) {
+  const router = useRouter();
   const { curImage, setCurImage } = useImageStore();
 
   const [viewAuth, setViewAuth] = useState(false);
   const [viewDelete, setViewDelete] = useState(false);
+  const [authAction, setAuthAction] = useState<"delete" | "edit" | null>(null);
+  const [message, setMessage] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     const nodeList =
@@ -50,7 +55,24 @@ export default function PostDetailClient({ post }: { post: Post }) {
         imgEl.removeEventListener("click", handleClick);
       });
     };
-  }, []);
+  }, [setCurImage]);
+
+  const handleDelete = async () => {
+    if (isDeleting) return;
+    setMessage("");
+    setIsDeleting(true);
+    try {
+      await deletePost(post.id);
+      setViewDelete(false);
+      router.replace("/posts");
+      router.refresh();
+    } catch (error) {
+      console.error(error);
+      setMessage("삭제 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   return (
     <div className="relative h-dvh overflow-auto">
@@ -84,7 +106,11 @@ export default function PostDetailClient({ post }: { post: Post }) {
           <GlassBox className="w-10 h-10 p-1 flex items-center justify-center">
             <button
               className="w-full h-full flex items-center justify-center"
-              onClick={() => setViewAuth(true)}
+              onClick={() => {
+                setAuthAction("delete");
+                setViewAuth(true);
+                setMessage("");
+              }}
             >
               <BsTrash color="white" size={20} />
             </button>
@@ -92,12 +118,17 @@ export default function PostDetailClient({ post }: { post: Post }) {
           <GlassBox className="w-10 h-10 p-1 flex items-center justify-center">
             <button
               className="w-full h-full flex items-center justify-center"
-              onClick={() => setViewAuth(true)}
+              onClick={() => {
+                setAuthAction("edit");
+                setViewAuth(true);
+                setMessage("");
+              }}
             >
               <BsWrenchAdjustable color="white" size={20} />
             </button>
           </GlassBox>
         </div>
+        {message ? <p className="mt-4 text-sm text-red-300">{message}</p> : null}
       </div>
 
       {viewAuth && (
@@ -108,7 +139,11 @@ export default function PostDetailClient({ post }: { post: Post }) {
           <AuthForm
             onSuccess={() => {
               setViewAuth(false);
-              setViewDelete(true);
+              if (authAction === "delete") {
+                setViewDelete(true);
+              } else {
+                setMessage("수정 기능은 준비 중입니다.");
+              }
             }}
           />
         </div>
@@ -120,7 +155,8 @@ export default function PostDetailClient({ post }: { post: Post }) {
         >
           <DeleteModal
             close={() => setViewDelete(false)}
-            onSuccess={() => {}}
+            onSuccess={handleDelete}
+            isLoading={isDeleting}
           />
         </div>
       )}
@@ -155,9 +191,11 @@ export default function PostDetailClient({ post }: { post: Post }) {
 function DeleteModal({
   close,
   onSuccess,
+  isLoading,
 }: {
   close: VoidFunction;
   onSuccess: VoidFunction;
+  isLoading: boolean;
 }) {
   return (
     <motion.div
@@ -179,6 +217,7 @@ function DeleteModal({
             whileHover="hover"
             whileTap="tap"
             onClick={close}
+            disabled={isLoading}
           >
             취소
           </motion.button>
@@ -190,8 +229,9 @@ function DeleteModal({
             whileHover="hover"
             whileTap="tap"
             onClick={onSuccess}
+            disabled={isLoading}
           >
-            삭제
+            {isLoading ? "삭제 중..." : "삭제"}
           </motion.button>
         </GlassBox>
       </div>
