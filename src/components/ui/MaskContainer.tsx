@@ -3,7 +3,7 @@
 import { cn } from "@/lib/utils";
 import useMaskRevealStore from "@/store/useMaskRevealStore";
 import { motion } from "motion/react";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import ParticleCanvas from "./ParticleCanvas";
 
 export const MaskContainer = ({
@@ -27,28 +27,65 @@ export const MaskContainer = ({
     y: null | number;
   }>({ x: null, y: null });
   const containerRef = useRef<HTMLDivElement>(null);
-  const updateMousePosition = (e: MouseEvent) => {
+  const rectRef = useRef<DOMRect | null>(null);
+  const rafRef = useRef<number | null>(null);
+  const pointerRef = useRef<{ x: number; y: number } | null>(null);
+
+  const updateRect = useCallback(() => {
     if (!containerRef.current) return;
-    const rect = containerRef.current.getBoundingClientRect();
-    setMousePosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
-  };
+    rectRef.current = containerRef.current.getBoundingClientRect();
+  }, []);
+
+  const flushMousePosition = useCallback(() => {
+    const rect = rectRef.current;
+    const pointer = pointerRef.current;
+    if (!rect || !pointer) {
+      rafRef.current = null;
+      return;
+    }
+
+    setMousePosition({ x: pointer.x - rect.left, y: pointer.y - rect.top });
+    rafRef.current = null;
+  }, []);
+
+  const updateMousePosition = useCallback(
+    (e: MouseEvent) => {
+      pointerRef.current = { x: e.clientX, y: e.clientY };
+
+      if (rafRef.current !== null) return;
+      rafRef.current = window.requestAnimationFrame(flushMousePosition);
+    },
+    [flushMousePosition]
+  );
 
   useEffect(() => {
-    if (!containerRef.current) return;
-    containerRef.current.addEventListener("mousemove", updateMousePosition);
+    const container = containerRef.current;
+    if (!container) return;
+    updateRect();
+
+    const onEnter = () => updateRect();
+    const onScroll = () => updateRect();
+    const onResize = () => updateRect();
+
+    container.addEventListener("mousemove", updateMousePosition);
+    container.addEventListener("mouseenter", onEnter);
+    window.addEventListener("resize", onResize);
+    window.addEventListener("scroll", onScroll, true);
+
     return () => {
-      if (containerRef.current) {
-        containerRef.current.removeEventListener(
-          "mousemove",
-          updateMousePosition
-        );
+      container.removeEventListener("mousemove", updateMousePosition);
+      container.removeEventListener("mouseenter", onEnter);
+      window.removeEventListener("resize", onResize);
+      window.removeEventListener("scroll", onScroll, true);
+      if (rafRef.current !== null) {
+        window.cancelAnimationFrame(rafRef.current);
       }
     };
-  }, []);
+  }, [updateMousePosition, updateRect]);
 
   useEffect(() => {
     setIsHover(isHovered);
-  }, [isHovered]);
+  }, [isHovered, setIsHover]);
 
   const maskSize = isHovered ? revealSize : size;
 

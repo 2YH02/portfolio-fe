@@ -36,7 +36,7 @@ export const Spotlight = ({ className }: SpotlightProps) => {
         changeColor("white");
       }
     }
-  }, [pathname, isHover]);
+  }, [pathname, isHover, changeColor]);
 
   return (
     <svg

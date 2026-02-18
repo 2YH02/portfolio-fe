@@ -2,6 +2,7 @@
 
 import { GlassBox } from "@/components/ui/GlassBox";
 import { type PostsResponse } from "@/lib/api/blog";
+import { isKnownAnimatedSupabaseImage } from "@/lib/image";
 import { cn, formatDate } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
@@ -13,20 +14,29 @@ const RecentSection = ({ data }: { data: PostsResponse }) => {
 
   useEffect(() => {
     setLoading(false);
-  }, [data]);
+  }, [data, setLoading]);
 
   if (isLoading) return <Skeleton />;
 
   return (
-    <section className="max-w-[1280px] p-10 mx-auto pt-40 pb-10">
+    <section
+      className="max-w-[1280px] p-10 mx-auto pt-40 pb-10"
+      aria-label="최신 게시글 목록"
+    >
       <div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {data.posts.map((post) => {
+          {data.posts.map((post, index) => {
+            const isLcpCandidate = index === 0;
+            const useBlurPlaceholder = Boolean(post.thumbnail_blur);
+            const isAnimatedLegacyImage = isKnownAnimatedSupabaseImage(
+              post.thumbnail
+            );
             return (
               <Link
                 href={`/posts/${post.id}`}
                 key={post.id}
                 className="text-left"
+                aria-label={`${post.title} 게시글 상세 보기`}
               >
                 <GlassBox
                   className="h-96 p-0 transform transition-transform duration-300 ease-in-out hover:z-10
@@ -37,13 +47,19 @@ const RecentSection = ({ data }: { data: PostsResponse }) => {
                   <div className={cn("relative w-full overflow-hidden h-1/2")}>
                     <Image
                       src={post.thumbnail}
-                      alt={`thumbnail`}
+                      alt={`${post.title} 썸네일`}
                       fill
                       className={cn("object-cover")}
-                      quality={50}
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      placeholder="blur"
-                      blurDataURL={post.thumbnail_blur}
+                      quality={45}
+                      sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 33vw"
+                      priority={isLcpCandidate}
+                      fetchPriority={isLcpCandidate ? "high" : "auto"}
+                      loading={isLcpCandidate ? "eager" : "lazy"}
+                      unoptimized={isAnimatedLegacyImage}
+                      placeholder={useBlurPlaceholder ? "blur" : "empty"}
+                      blurDataURL={
+                        useBlurPlaceholder ? post.thumbnail_blur : undefined
+                      }
                     />
                   </div>
 

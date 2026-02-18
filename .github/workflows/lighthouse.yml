@@ -1,0 +1,226 @@
+name: Lighthouse CI
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - path: /posts
+            path_key: posts
+            perf_level: error
+            perf_min: "0.7"
+          - path: /posts/100
+            path_key: posts-100
+            perf_level: warn
+            perf_min: "0.5"
+          - path: /projects/1
+            path_key: projects-1
+            perf_level: error
+            perf_min: "0.8"
+    env:
+      NEXT_PUBLIC_API_BASE_URL: https://api.yonghun.me
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build app
+        run: npm run build
+
+      - name: Prepare LHCI runtime config
+        run: |
+          node <<'EOF'
+          const fs = require("fs");
+          const config = JSON.parse(fs.readFileSync(".lighthouserc.json", "utf8"));
+          config.ci.collect.url = [`http://localhost:3000${process.env.LH_PATH}`];
+          config.ci.assert.assertions["categories:performance"] = [
+            process.env.LH_PERF_LEVEL,
+            { minScore: Number(process.env.LH_PERF_MIN) },
+          ];
+          fs.writeFileSync(".lighthouserc.runtime.json", JSON.stringify(config, null, 2));
+          EOF
+        env:
+          LH_PATH: ${{ matrix.path }}
+          LH_PERF_LEVEL: ${{ matrix.perf_level }}
+          LH_PERF_MIN: ${{ matrix.perf_min }}
+
+      - name: Run Lighthouse CI
+        id: lhci
+        continue-on-error: true
+        run: npx @lhci/cli@0.13.x autorun --config=.lighthouserc.runtime.json
+
+      - name: Prepare Lighthouse summary
+        if: github.event_name == 'pull_request'
+        run: |
+          node <<'EOF'
+          const fs = require("fs");
+          const path = require("path");
+
+          const reportsDir = path.join(process.cwd(), ".lighthouseci");
+          const outPath = path.join(process.cwd(), ".lighthouse-summary.md");
+
+          let lines = [];
+          lines.push(`<!-- lighthouse-ci-report:${process.env.LH_PATH_KEY} -->`);
+          lines.push("## Lighthouse CI 결과");
+          lines.push("");
+          lines.push(`- 실행 상태: **${process.env.LHCI_OUTCOME || "unknown"}**`);
+          lines.push(`- 대상: \`${process.env.LH_PATH}\` (3회 측정)`);
+          lines.push(`- 성능 기준: **${process.env.LH_PERF_LEVEL} >= ${Math.round(Number(process.env.LH_PERF_MIN) * 100)}**`);
+          lines.push("");
+
+          if (!fs.existsSync(reportsDir)) {
+            lines.push("리포트 디렉터리를 찾을 수 없습니다.");
+            fs.writeFileSync(outPath, lines.join("\n"));
+            process.exit(0);
+          }
+
+          const jsonFiles = fs
+            .readdirSync(reportsDir)
+            .filter((name) => name.endsWith(".json"))
+            .map((name) => path.join(reportsDir, name));
+
+          const rows = [];
+          for (const jsonFile of jsonFiles) {
+            try {
+              const report = JSON.parse(fs.readFileSync(jsonFile, "utf8"));
+              if (!report || typeof report !== "object" || !report.categories) {
+                continue;
+              }
+
+              const categories = report.categories || {};
+              const formatScore = (value) =>
+                typeof value === "number" ? Math.round(value * 100) : "-";
+
+              rows.push({
+                url: report.finalDisplayedUrl || report.finalUrl || report.requestedUrl || "-",
+                performance: formatScore(categories.performance?.score),
+                accessibility: formatScore(categories.accessibility?.score),
+                bestPractices: formatScore(categories["best-practices"]?.score),
+                seo: formatScore(categories.seo?.score),
+              });
+            } catch {
+              // ignore non-report JSON files
+            }
+          }
+
+          if (rows.length === 0) {
+            lines.push("파싱 가능한 Lighthouse report JSON이 없습니다.");
+            lines.push("");
+            lines.push(`- 감지된 JSON 파일 수: ${jsonFiles.length}`);
+            fs.writeFileSync(outPath, lines.join("\n"));
+            process.exit(0);
+          }
+
+          const toNumber = (v) => (typeof v === "number" && Number.isFinite(v) ? v : null);
+          const median = (arr) => {
+            const clean = arr.filter((v) => v !== null).sort((a, b) => a - b);
+            if (clean.length === 0) return "-";
+            return clean[Math.floor(clean.length / 2)];
+          };
+
+          lines.push(`- 수집된 리포트 수: ${rows.length}`);
+          lines.push("");
+          lines.push("| URL | Perf(median) | A11y(median) | BP(median) | SEO(median) |");
+          lines.push("|---|---:|---:|---:|---:|");
+
+          const url = rows[0]?.url || `http://localhost:3000${process.env.LH_PATH}`;
+          const perf = median(rows.map((r) => toNumber(r.performance)));
+          const a11y = median(rows.map((r) => toNumber(r.accessibility)));
+          const bp = median(rows.map((r) => toNumber(r.bestPractices)));
+          const seo = median(rows.map((r) => toNumber(r.seo)));
+          lines.push(`| ${url} | ${perf} | ${a11y} | ${bp} | ${seo} |`);
+
+          fs.writeFileSync(outPath, lines.join("\n"));
+          EOF
+        env:
+          LHCI_OUTCOME: ${{ steps.lhci.outcome }}
+          LH_PATH: ${{ matrix.path }}
+          LH_PATH_KEY: ${{ matrix.path_key }}
+          LH_PERF_LEVEL: ${{ matrix.perf_level }}
+          LH_PERF_MIN: ${{ matrix.perf_min }}
+
+      - name: Comment PR with Lighthouse summary
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require("fs");
+            const marker = `<!-- lighthouse-ci-report:${process.env.LH_PATH_KEY} -->`;
+            const baseBody = fs.readFileSync(".lighthouse-summary.md", "utf8");
+            const { owner, repo } = context.repo;
+            const issue_number = context.issue.number;
+            const perfPattern = /\|\s*[^|]+\s*\|\s*(\d+)\s*\|/;
+
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner,
+              repo,
+              issue_number,
+              per_page: 100,
+            });
+
+            const existing = comments.find((c) => c.body && c.body.includes(marker));
+            const currentPerfMatch = baseBody.match(perfPattern);
+            const currentPerf = currentPerfMatch ? Number(currentPerfMatch[1]) : null;
+
+            let deltaLine = "- 이전 대비 Perf(median): 첫 측정";
+            if (existing) {
+              const prevPerfMatch = existing.body.match(perfPattern);
+              const prevPerf = prevPerfMatch ? Number(prevPerfMatch[1]) : null;
+
+              if (currentPerf !== null && prevPerf !== null) {
+                const delta = currentPerf - prevPerf;
+                const sign = delta > 0 ? "+" : "";
+                deltaLine = `- 이전 대비 Perf(median): ${sign}${delta}p (이전 ${prevPerf} -> 현재 ${currentPerf})`;
+              } else {
+                deltaLine = "- 이전 대비 Perf(median): 비교 불가";
+              }
+            }
+
+            const body = `${baseBody}\n${deltaLine}`;
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner,
+                repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number,
+                body,
+              });
+            }
+        env:
+          LH_PATH_KEY: ${{ matrix.path_key }}
+
+      - name: Fail when Lighthouse assertions fail
+        if: steps.lhci.outcome == 'failure'
+        run: |
+          echo "Lighthouse CI assertions failed."
+          exit 1

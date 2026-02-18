@@ -21,9 +21,11 @@ export default function DetailClient({ project }: { project: Project }) {
 
       {/* 메인 이미지 */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 h-[40%] md:h-[80%] w-[90%] rounded-bl-4xl rounded-br-4xl overflow-hidden">
-        <img
+        <Image
           src={project.thumbnail}
           alt="thumbnail"
+          fill
+          sizes="90vw"
           className="w-full h-full object-cover object-center scale-110"
         />
       </div>

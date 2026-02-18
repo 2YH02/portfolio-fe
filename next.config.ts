@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  htmlLimitedBots: /.*/,
   async rewrites() {
     return [
       {
@@ -10,7 +11,15 @@ const nextConfig: NextConfig = {
     ];
   },
   images: {
-    domains: ["evcsbwqeetfvegvrtbny.supabase.co"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "evcsbwqeetfvegvrtbny.supabase.co",
+        pathname: "/**",
+      },
+    ],
+    qualities: [45, 50, 75],
+    formats: ["image/avif", "image/webp"],
   },
 };
 

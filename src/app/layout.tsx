@@ -1,10 +1,10 @@
 import GoogleAnalytics from "@/components/provider/GoogleAnalytics";
-import InitHLJS from "@/components/provider/InitHLJS";
 import PathListener from "@/components/provider/PathListener";
 import NoiseBackground from "@/components/ui/NoiseBackground";
 import { Spotlight } from "@/components/ui/Spotlight";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Nanum_Pen_Script } from "next/font/google";
+import "highlight.js/styles/github-dark.css";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -18,11 +18,15 @@ const geistMono = Geist_Mono({
 });
 
 const geistNanum = Nanum_Pen_Script({
+  variable: "--font-nanum-pen",
   weight: "400",
   subsets: ["latin"],
+  display: "swap",
+  preload: false,
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.yonghun.me"),
   title: "Yonghun - 포트폴리오",
   description: "기억에 남는 순간을 만들고 싶은 웹 개발자 이용훈입니다.",
   keywords: "웹개발,프론트엔드,백엔드,포트폴리오,개발자,블로그",
@@ -54,12 +58,11 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body
-        className={`${geistMono.variable} ${geistSans.variable} ${geistNanum} antialiased overflow-hidden`}
+        className={`${geistMono.variable} ${geistSans.variable} ${geistNanum.variable} antialiased overflow-hidden`}
       >
         {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS ? (
           <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS} />
         ) : null}
-        <InitHLJS />
         <PathListener />
         <NoiseBackground />
         <Spotlight className="-top-40 left-0 md:-top-20 md:left-60" />

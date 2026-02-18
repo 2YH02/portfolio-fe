@@ -3,12 +3,14 @@
 import Nav from "@/components/common/Nav";
 import QuillCodeRenderer from "@/components/common/QuillCodeRenderer";
 import { GlassBox } from "@/components/ui/GlassBox";
-import { type Post } from "@/lib/api/blog";
+import { deletePost, type Post } from "@/lib/api/blog";
+import { isKnownAnimatedSupabaseImage } from "@/lib/image";
 import { formatDate } from "@/lib/utils";
 import useImageStore from "@/store/useImageStore";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from "react";
 import { BsTrash, BsWrenchAdjustable } from "react-icons/bs";
 import AuthForm from "../components/AuthForm";
 
@@ -26,11 +28,57 @@ const buttonVariants = {
   tap: { scale: 0.97 },
 };
 
+const FOCUSABLE_SELECTOR =
+  'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])';
+
+const trapTabKey = (event: ReactKeyboardEvent<HTMLElement>) => {
+  if (event.key !== "Tab") return;
+
+  const focusables = Array.from(
+    event.currentTarget.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)
+  );
+
+  if (focusables.length === 0) {
+    event.preventDefault();
+    return;
+  }
+
+  const firstEl = focusables[0];
+  const lastEl = focusables[focusables.length - 1];
+  const activeEl = document.activeElement as HTMLElement | null;
+
+  if (event.shiftKey && activeEl === firstEl) {
+    event.preventDefault();
+    lastEl.focus();
+    return;
+  }
+
+  if (!event.shiftKey && activeEl === lastEl) {
+    event.preventDefault();
+    firstEl.focus();
+  }
+};
+
+const focusDialog = (dialog: HTMLDivElement | null) => {
+  if (!dialog) return;
+  const firstFocusable = dialog.querySelector<HTMLElement>(FOCUSABLE_SELECTOR);
+  (firstFocusable ?? dialog).focus();
+};
+
 export default function PostDetailClient({ post }: { post: Post }) {
+  const router = useRouter();
   const { curImage, setCurImage } = useImageStore();
+  const isAnimatedThumbnail = isKnownAnimatedSupabaseImage(post.thumbnail);
+  const authDialogRef = useRef<HTMLDivElement>(null);
+  const deleteDialogRef = useRef<HTMLDivElement>(null);
+  const imageDialogRef = useRef<HTMLDivElement>(null);
+  const lastFocusedElementRef = useRef<HTMLElement | null>(null);
 
   const [viewAuth, setViewAuth] = useState(false);
   const [viewDelete, setViewDelete] = useState(false);
+  const [authAction, setAuthAction] = useState<"delete" | "edit" | null>(null);
+  const [message, setMessage] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     const nodeList =
@@ -39,76 +87,185 @@ export default function PostDetailClient({ post }: { post: Post }) {
       const target = event.currentTarget as HTMLImageElement;
       setCurImage(target.src);
     };
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Enter" && event.key !== " ") return;
+      event.preventDefault();
+      const target = event.currentTarget as HTMLImageElement;
+      setCurImage(target.src);
+    };
 
     nodeList.forEach((imgEl) => {
+      if (imgEl.closest("a, button")) return;
+      imgEl.setAttribute("tabindex", "0");
+      imgEl.setAttribute("role", "button");
+      if (!imgEl.getAttribute("aria-label")) {
+        imgEl.setAttribute("aria-label", "이미지 확대 보기");
+      }
+      imgEl.classList.add("cursor-zoom-in");
       imgEl.addEventListener("click", handleClick);
+      imgEl.addEventListener("keydown", handleKeyDown);
     });
 
     return () => {
       setCurImage(null);
       nodeList.forEach((imgEl) => {
         imgEl.removeEventListener("click", handleClick);
+        imgEl.removeEventListener("keydown", handleKeyDown);
       });
     };
-  }, []);
+  }, [setCurImage]);
+
+  useEffect(() => {
+    const isDialogOpen = viewAuth || viewDelete || Boolean(curImage);
+
+    if (isDialogOpen) {
+      if (!lastFocusedElementRef.current) {
+        lastFocusedElementRef.current = document.activeElement as HTMLElement | null;
+      }
+
+      if (viewAuth) {
+        focusDialog(authDialogRef.current);
+        return;
+      }
+
+      if (viewDelete) {
+        focusDialog(deleteDialogRef.current);
+        return;
+      }
+
+      if (curImage) {
+        focusDialog(imageDialogRef.current);
+      }
+
+      return;
+    }
+
+    if (lastFocusedElementRef.current) {
+      lastFocusedElementRef.current.focus();
+      lastFocusedElementRef.current = null;
+    }
+  }, [viewAuth, viewDelete, curImage]);
+
+  const handleDelete = async () => {
+    if (isDeleting) return;
+    setMessage("");
+    setIsDeleting(true);
+    try {
+      await deletePost(post.id);
+      setViewDelete(false);
+      router.replace("/posts");
+      router.refresh();
+    } catch (error) {
+      console.error(error);
+      setMessage("삭제 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   return (
     <div className="relative h-dvh overflow-auto">
       <Nav className="bg-black/40" />
-      <div className="absolute top-0 left-0 w-full h-96">
-        <Image
-          src={post.thumbnail}
-          alt="post thumbnail"
-          fill
-          className="object-cover"
-          placeholder="blur"
-          blurDataURL={post.thumbnail_blur}
-        />
-      </div>
-
-      <div className="absolute blog-post top-96 left-1/2 -translate-x-1/2 w-full max-w-[1020px] p-6">
-        <h1 className="text-4xl mb-2 hover:drop-shadow-glow transition duration-300">
-          {post.title}
-        </h1>
-        <div className="flex items-center gap-3">
-          <p className="shrink-0 text-sm flex gap-2 text-indigo-200">
-            {post.tags.join(", ")}
-          </p>
-          <p className="text-gray-400 text-xs">{formatDate(post.created_at)}</p>
-        </div>
-        <div className="p-2 mt-8">
-          <QuillCodeRenderer htmlString={post.body} />
+      <main aria-label="게시글 상세" className="relative">
+        <div className="absolute top-0 left-0 w-full h-96">
+          <Image
+            src={post.thumbnail}
+            alt={`${post.title} 대표 이미지`}
+            fill
+            className="object-cover"
+            sizes="100vw"
+            priority
+            fetchPriority="high"
+            loading="eager"
+            unoptimized={isAnimatedThumbnail}
+            placeholder="blur"
+            blurDataURL={post.thumbnail_blur}
+          />
         </div>
 
-        <div className="flex gap-2">
-          <GlassBox className="w-10 h-10 p-1 flex items-center justify-center">
-            <button
-              className="w-full h-full flex items-center justify-center"
-              onClick={() => setViewAuth(true)}
+        <article className="absolute blog-post top-96 left-1/2 -translate-x-1/2 w-full max-w-[1020px] p-6">
+          <h1 className="text-4xl mb-2 hover:drop-shadow-glow transition duration-300">
+            {post.title}
+          </h1>
+          <div className="flex items-center gap-3">
+            <p className="shrink-0 text-sm flex gap-2 text-indigo-200">
+              {post.tags.join(", ")}
+            </p>
+            <time
+              className="text-gray-400 text-xs"
+              dateTime={new Date(post.created_at).toISOString()}
             >
-              <BsTrash color="white" size={20} />
-            </button>
-          </GlassBox>
-          <GlassBox className="w-10 h-10 p-1 flex items-center justify-center">
-            <button
-              className="w-full h-full flex items-center justify-center"
-              onClick={() => setViewAuth(true)}
-            >
-              <BsWrenchAdjustable color="white" size={20} />
-            </button>
-          </GlassBox>
-        </div>
-      </div>
+              {formatDate(post.created_at)}
+            </time>
+          </div>
+          <div className="p-2 mt-8">
+            <QuillCodeRenderer htmlString={post.body} />
+          </div>
+
+          <div className="flex gap-2">
+            <GlassBox className="w-10 h-10 p-1 flex items-center justify-center">
+              <button
+                className="w-full h-full flex items-center justify-center"
+                onClick={() => {
+                  setAuthAction("delete");
+                  setViewAuth(true);
+                  setMessage("");
+                }}
+                aria-label="게시글 삭제 인증 열기"
+              >
+                <BsTrash color="white" size={20} />
+              </button>
+            </GlassBox>
+            <GlassBox className="w-10 h-10 p-1 flex items-center justify-center">
+              <button
+                className="w-full h-full flex items-center justify-center"
+                onClick={() => {
+                  setAuthAction("edit");
+                  setViewAuth(true);
+                  setMessage("");
+                }}
+                aria-label="게시글 수정 인증 열기"
+              >
+                <BsWrenchAdjustable color="white" size={20} />
+              </button>
+            </GlassBox>
+          </div>
+          {message ? (
+            <p className="mt-4 text-sm text-red-300" aria-live="polite">
+              {message}
+            </p>
+          ) : null}
+        </article>
+      </main>
 
       {viewAuth && (
         <div
           className="fixed w-screen h-screen bg-black/70 z-50"
           onClick={() => setViewAuth(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="auth-dialog-title"
+          aria-describedby="auth-dialog-description"
+          tabIndex={-1}
+          ref={authDialogRef}
+          onKeyDown={(event) => {
+            if (event.key === "Escape") {
+              setViewAuth(false);
+              return;
+            }
+            trapTabKey(event);
+          }}
         >
           <AuthForm
+            titleId="auth-dialog-title"
+            descriptionId="auth-dialog-description"
             onSuccess={() => {
               setViewAuth(false);
-              setViewDelete(true);
+              if (authAction === "delete") {
+                setViewDelete(true);
+              } else {
+                setMessage("수정 기능은 준비 중입니다.");
+              }
             }}
           />
         </div>
@@ -117,10 +274,26 @@ export default function PostDetailClient({ post }: { post: Post }) {
         <div
           className="fixed w-screen h-screen bg-black/70 z-50"
           onClick={() => setViewDelete(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="delete-dialog-title"
+          aria-describedby="delete-dialog-description"
+          tabIndex={-1}
+          ref={deleteDialogRef}
+          onKeyDown={(event) => {
+            if (event.key === "Escape") {
+              setViewDelete(false);
+              return;
+            }
+            trapTabKey(event);
+          }}
         >
           <DeleteModal
             close={() => setViewDelete(false)}
-            onSuccess={() => {}}
+            onSuccess={handleDelete}
+            isLoading={isDeleting}
+            titleId="delete-dialog-title"
+            descriptionId="delete-dialog-description"
           />
         </div>
       )}
@@ -133,16 +306,40 @@ export default function PostDetailClient({ post }: { post: Post }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="image-dialog-title"
+            tabIndex={-1}
+            ref={imageDialogRef}
+            onKeyDown={(event) => {
+              if (event.key === "Escape") {
+                setCurImage(null);
+                return;
+              }
+              trapTabKey(event);
+            }}
           >
+            <h2 id="image-dialog-title" className="sr-only">
+              이미지 확대 보기
+            </h2>
+            <button
+              type="button"
+              className="absolute top-4 right-4 px-3 py-2 rounded-md bg-black/50 text-white"
+              onClick={() => setCurImage(null)}
+              aria-label="이미지 확대 보기 닫기"
+            >
+              닫기
+            </button>
             <motion.div
               layoutId={`img-${curImage}`}
               className="relative w-full h-full"
             >
               <Image
                 src={curImage}
-                alt="enlarged screenshot"
+                alt={`${post.title} 본문 이미지 확대`}
                 fill
                 className="object-contain"
+                unoptimized={isKnownAnimatedSupabaseImage(curImage)}
               />
             </motion.div>
           </motion.div>
@@ -155,9 +352,15 @@ export default function PostDetailClient({ post }: { post: Post }) {
 function DeleteModal({
   close,
   onSuccess,
+  isLoading,
+  titleId,
+  descriptionId,
 }: {
   close: VoidFunction;
   onSuccess: VoidFunction;
+  isLoading: boolean;
+  titleId?: string;
+  descriptionId?: string;
 }) {
   return (
     <motion.div
@@ -167,9 +370,13 @@ function DeleteModal({
       animate="visible"
       onClick={(e) => e.stopPropagation()}
     >
-      <h2 className="text-2xl font-bold text-center">삭제하기</h2>
+      <h2 id={titleId} className="text-2xl font-bold text-center">
+        삭제하기
+      </h2>
 
-      <p className="text-center">정말 삭제하시겠습니까?</p>
+      <p id={descriptionId} className="text-center">
+        정말 삭제하시겠습니까?
+      </p>
 
       <div className="flex gap-3 justify-center">
         <GlassBox className="p-0 rounded-md" withAction>
@@ -179,6 +386,7 @@ function DeleteModal({
             whileHover="hover"
             whileTap="tap"
             onClick={close}
+            disabled={isLoading}
           >
             취소
           </motion.button>
@@ -190,8 +398,9 @@ function DeleteModal({
             whileHover="hover"
             whileTap="tap"
             onClick={onSuccess}
+            disabled={isLoading}
           >
-            삭제
+            {isLoading ? "삭제 중..." : "삭제"}
           </motion.button>
         </GlassBox>
       </div>
