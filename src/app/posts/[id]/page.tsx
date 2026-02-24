@@ -74,5 +74,29 @@ export default async function PostDetail({
 
   if (!data) notFound();
 
-  return <PostDetailClient post={data} />;
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: data.title,
+    description: createMetaDescription(data.description, data.body),
+    image: data.thumbnail,
+    datePublished: data.created_at,
+    keywords: data.tags.join(", "),
+    url: `https://www.yonghun.me/posts/${id}`,
+    author: {
+      "@type": "Person",
+      name: "이용훈",
+      url: "https://www.yonghun.me",
+    },
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <PostDetailClient post={data} />
+    </>
+  );
 }
