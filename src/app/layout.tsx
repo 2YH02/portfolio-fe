@@ -50,6 +50,14 @@ export const metadata: Metadata = {
   },
 };
 
+const websiteJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "Yonghun - 포트폴리오",
+  url: "https://www.yonghun.me",
+  description: "기억에 남는 순간을 만들고 싶은 웹 개발자 이용훈입니다.",
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -60,6 +68,10 @@ export default function RootLayout({
       <body
         className={`${geistMono.variable} ${geistSans.variable} ${geistNanum.variable} antialiased overflow-hidden`}
       >
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+        />
         {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS ? (
           <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS} />
         ) : null}
