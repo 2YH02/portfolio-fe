@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/api/:path*",
-        destination: "https://api.yonghun.me/:path*",
+        destination: `${process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.yonghun.me"}/:path*`,
       },
     ];
   },
