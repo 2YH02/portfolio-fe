@@ -13,7 +13,6 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from "react";
 import { BsTrash, BsWrenchAdjustable } from "react-icons/bs";
-import AuthForm from "../components/AuthForm";
 
 const modalVariants = {
   hidden: { opacity: 0, y: -20 },
@@ -70,15 +69,12 @@ export default function PostDetailClient({ post }: { post: Post }) {
   const router = useRouter();
   const { curImage, setCurImage } = useImageStore();
   const isAnimatedThumbnail = isKnownAnimatedSupabaseImage(post.thumbnail);
-  const authDialogRef = useRef<HTMLDivElement>(null);
   const deleteDialogRef = useRef<HTMLDivElement>(null);
   const imageDialogRef = useRef<HTMLDivElement>(null);
   const lastFocusedElementRef = useRef<HTMLElement | null>(null);
 
   const [role, setRole] = useState<User>("Guest");
-  const [viewAuth, setViewAuth] = useState(false);
   const [viewDelete, setViewDelete] = useState(false);
-  const [authAction, setAuthAction] = useState<"delete" | "edit" | null>(null);
   const [message, setMessage] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -126,16 +122,11 @@ export default function PostDetailClient({ post }: { post: Post }) {
   }, [setCurImage]);
 
   useEffect(() => {
-    const isDialogOpen = viewAuth || viewDelete || Boolean(curImage);
+    const isDialogOpen = viewDelete || Boolean(curImage);
 
     if (isDialogOpen) {
       if (!lastFocusedElementRef.current) {
         lastFocusedElementRef.current = document.activeElement as HTMLElement | null;
-      }
-
-      if (viewAuth) {
-        focusDialog(authDialogRef.current);
-        return;
       }
 
       if (viewDelete) {
@@ -154,7 +145,7 @@ export default function PostDetailClient({ post }: { post: Post }) {
       lastFocusedElementRef.current.focus();
       lastFocusedElementRef.current = null;
     }
-  }, [viewAuth, viewDelete, curImage]);
+  }, [viewDelete, curImage]);
 
   const handleDelete = async () => {
     if (isDeleting) return;
@@ -212,42 +203,31 @@ export default function PostDetailClient({ post }: { post: Post }) {
             <QuillCodeRenderer htmlString={post.body} />
           </div>
 
-          <div className="flex gap-2">
-            <GlassBox className="w-10 h-10 p-1 flex items-center justify-center">
-              <button
-                className="w-full h-full flex items-center justify-center"
-                onClick={() => {
-                  setMessage("");
-                  if (role === "Admin") {
+          {role === "Admin" && (
+            <div className="flex gap-2">
+              <GlassBox className="w-10 h-10 p-1 flex items-center justify-center">
+                <button
+                  className="w-full h-full flex items-center justify-center"
+                  onClick={() => {
+                    setMessage("");
                     setViewDelete(true);
-                  } else {
-                    setAuthAction("delete");
-                    setViewAuth(true);
-                  }
-                }}
-                aria-label="게시글 삭제 인증 열기"
-              >
-                <BsTrash color="white" size={20} />
-              </button>
-            </GlassBox>
-            <GlassBox className="w-10 h-10 p-1 flex items-center justify-center">
-              <button
-                className="w-full h-full flex items-center justify-center"
-                onClick={() => {
-                  setMessage("");
-                  if (role === "Admin") {
-                    setMessage("수정 기능은 준비 중입니다.");
-                  } else {
-                    setAuthAction("edit");
-                    setViewAuth(true);
-                  }
-                }}
-                aria-label="게시글 수정 인증 열기"
-              >
-                <BsWrenchAdjustable color="white" size={20} />
-              </button>
-            </GlassBox>
-          </div>
+                  }}
+                  aria-label="게시글 삭제"
+                >
+                  <BsTrash color="white" size={20} />
+                </button>
+              </GlassBox>
+              <GlassBox className="w-10 h-10 p-1 flex items-center justify-center">
+                <button
+                  className="w-full h-full flex items-center justify-center"
+                  onClick={() => setMessage("수정 기능은 준비 중입니다.")}
+                  aria-label="게시글 수정"
+                >
+                  <BsWrenchAdjustable color="white" size={20} />
+                </button>
+              </GlassBox>
+            </div>
+          )}
           {message ? (
             <p className="mt-4 text-sm text-red-300" aria-live="polite">
               {message}
@@ -256,39 +236,6 @@ export default function PostDetailClient({ post }: { post: Post }) {
         </article>
       </main>
 
-      {viewAuth && (
-        <div
-          className="fixed w-screen h-screen bg-black/70 z-50"
-          onClick={() => setViewAuth(false)}
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="auth-dialog-title"
-          aria-describedby="auth-dialog-description"
-          tabIndex={-1}
-          ref={authDialogRef}
-          onKeyDown={(event) => {
-            if (event.key === "Escape") {
-              setViewAuth(false);
-              return;
-            }
-            trapTabKey(event);
-          }}
-        >
-          <AuthForm
-            titleId="auth-dialog-title"
-            descriptionId="auth-dialog-description"
-            setRole={setRole}
-            onSuccess={() => {
-              setViewAuth(false);
-              if (authAction === "delete") {
-                setViewDelete(true);
-              } else {
-                setMessage("수정 기능은 준비 중입니다.");
-              }
-            }}
-          />
-        </div>
-      )}
       {viewDelete && (
         <div
           className="fixed w-screen h-screen bg-black/70 z-50"
