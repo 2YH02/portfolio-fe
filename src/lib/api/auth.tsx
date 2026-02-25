@@ -16,3 +16,7 @@ export async function Auth(user: string, password: string) {
     body: JSON.stringify({ user, password }),
   });
 }
+
+export async function getMe() {
+  return apiClient<AuthResponse>(`/api/me`);
+}

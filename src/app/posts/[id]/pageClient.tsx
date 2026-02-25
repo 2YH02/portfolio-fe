@@ -3,6 +3,7 @@
 import Nav from "@/components/common/Nav";
 import QuillCodeRenderer from "@/components/common/QuillCodeRenderer";
 import { GlassBox } from "@/components/ui/GlassBox";
+import { getMe, type User } from "@/lib/api/auth";
 import { deletePost, type Post } from "@/lib/api/blog";
 import { isKnownAnimatedSupabaseImage } from "@/lib/image";
 import { formatDate } from "@/lib/utils";
@@ -74,11 +75,20 @@ export default function PostDetailClient({ post }: { post: Post }) {
   const imageDialogRef = useRef<HTMLDivElement>(null);
   const lastFocusedElementRef = useRef<HTMLElement | null>(null);
 
+  const [role, setRole] = useState<User>("Guest");
   const [viewAuth, setViewAuth] = useState(false);
   const [viewDelete, setViewDelete] = useState(false);
   const [authAction, setAuthAction] = useState<"delete" | "edit" | null>(null);
   const [message, setMessage] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
+
+  useEffect(() => {
+    getMe()
+      .then((data) => {
+        if (data?.role === "Admin") setRole("Admin");
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     const nodeList =
@@ -207,9 +217,13 @@ export default function PostDetailClient({ post }: { post: Post }) {
               <button
                 className="w-full h-full flex items-center justify-center"
                 onClick={() => {
-                  setAuthAction("delete");
-                  setViewAuth(true);
                   setMessage("");
+                  if (role === "Admin") {
+                    setViewDelete(true);
+                  } else {
+                    setAuthAction("delete");
+                    setViewAuth(true);
+                  }
                 }}
                 aria-label="게시글 삭제 인증 열기"
               >
@@ -220,9 +234,13 @@ export default function PostDetailClient({ post }: { post: Post }) {
               <button
                 className="w-full h-full flex items-center justify-center"
                 onClick={() => {
-                  setAuthAction("edit");
-                  setViewAuth(true);
                   setMessage("");
+                  if (role === "Admin") {
+                    setMessage("수정 기능은 준비 중입니다.");
+                  } else {
+                    setAuthAction("edit");
+                    setViewAuth(true);
+                  }
                 }}
                 aria-label="게시글 수정 인증 열기"
               >
@@ -259,6 +277,7 @@ export default function PostDetailClient({ post }: { post: Post }) {
           <AuthForm
             titleId="auth-dialog-title"
             descriptionId="auth-dialog-description"
+            setRole={setRole}
             onSuccess={() => {
               setViewAuth(false);
               if (authAction === "delete") {

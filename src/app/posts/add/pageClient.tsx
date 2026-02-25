@@ -14,8 +14,8 @@ const Editor = dynamic(() => import("@/components/ui/Editor"), {
   ssr: false,
 });
 
-export default function AddPostClient() {
-  const [role, setRole] = useState<User>("Guest");
+export default function AddPostClient({ initialRole }: { initialRole: User }) {
+  const [role, setRole] = useState<User>(initialRole);
 
   const [data, setData] = useState<AddPostsRequest>({
     title: "",
