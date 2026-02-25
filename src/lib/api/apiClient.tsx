@@ -19,6 +19,7 @@ export async function apiClient<T>(
     },
     ...options,
     ...next,
+    credentials: "include",
   });
 
   if (!res.ok) {

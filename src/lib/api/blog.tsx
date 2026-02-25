@@ -54,7 +54,7 @@ export async function addPost(payload: AddPostsRequest) {
 }
 
 export async function deletePost(id: number) {
-  return apiClient<Post>(`${BASE_URL}/posts/${id}`, {
+  return apiClient<Post>(`/api/posts/${id}`, {
     method: "DELETE",
   });
 }
