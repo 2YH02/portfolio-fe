@@ -20,7 +20,7 @@ const Syntax = Quill.import("modules/syntax") as {
 };
 
 Syntax.DEFAULTS.languages = [
-  { key: "plain", label: "Plain" },
+  { key: "plaintext", label: "Plain" },
   { key: "javascript", label: "JavaScript" },
   { key: "typescript", label: "TypeScript" },
   { key: "jsx", label: "JSX" },
