@@ -45,6 +45,7 @@ const AuthForm = ({
 
     try {
       const data = await Auth(user, password);
+      if (!data) throw new Error();
       setRole?.(data.role);
 
       if (data.role === "Guest") {
