@@ -4,7 +4,7 @@ import Nav from "@/components/common/Nav";
 import QuillCodeRenderer from "@/components/common/QuillCodeRenderer";
 import { GlassBox } from "@/components/ui/GlassBox";
 import { getMe, type User } from "@/lib/api/auth";
-import { deletePost, type Post } from "@/lib/api/blog";
+import { deletePost, viewPost, type Post } from "@/lib/api/blog";
 import { isKnownAnimatedSupabaseImage } from "@/lib/image";
 import { formatDate } from "@/lib/utils";
 import useImageStore from "@/store/useImageStore";
@@ -12,7 +12,7 @@ import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from "react";
-import { BsTrash, BsWrenchAdjustable } from "react-icons/bs";
+import { BsEye, BsTrash, BsWrenchAdjustable } from "react-icons/bs";
 
 const modalVariants = {
   hidden: { opacity: 0, y: -20 },
@@ -77,6 +77,29 @@ export default function PostDetailClient({ post }: { post: Post }) {
   const [viewDelete, setViewDelete] = useState(false);
   const [message, setMessage] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
+  const [viewCount, setViewCount] = useState(post.view_count);
+
+  useEffect(() => {
+    const fetch = async () => {
+      try {
+        const data = await viewPost(post.id);
+        if (data?.view_count !== undefined) setViewCount(data.view_count);
+      } catch {}
+    }
+
+    fetch();
+  }, [post.id]);
+
+  useEffect(() => {
+    const fetch = async () => {
+      try {
+        const data = await getMe();
+        if (data?.role === "Admin") setRole("Admin");
+      } catch {}
+    };
+
+    fetch();
+  }, []);
 
   useEffect(() => {
     getMe()
@@ -198,6 +221,12 @@ export default function PostDetailClient({ post }: { post: Post }) {
             >
               {formatDate(post.created_at)}
             </time>
+            {role === "Admin" && (
+              <span className="flex items-center gap-1 text-gray-400 text-xs">
+                <BsEye size={13} />
+                {viewCount.toLocaleString()}
+              </span>
+            )}
           </div>
           <div className="p-2 mt-8">
             <QuillCodeRenderer htmlString={post.body} />

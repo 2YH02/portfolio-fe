@@ -4,6 +4,7 @@
 
 import ImageUploader from "@/lib/quill/ImageUploader";
 import hljs from "@/lib/highlight/hljs";
+import { optimizeImage } from "@/lib/imageOptimizer";
 import { supabase } from "@/lib/supabase/supabasClient";
 import Quill from "quill";
 import { useEffect, useRef, useState } from "react";
@@ -82,7 +83,16 @@ const Editor = ({ initialHTML = "", onChange }: EditorProps) => {
         imageUploader: {
           upload: async (file: File) => {
             setMessage("");
-            const optimizedFile = await optimizeEditorImage(file);
+            const fileType = file.type.toLowerCase();
+            if (fileType === "image/gif") {
+              throw new Error(
+                "GIF 업로드는 지원하지 않습니다. mp4/webm 또는 정적 이미지로 업로드해주세요."
+              );
+            }
+            const optimizedFile =
+              fileType === "image/svg+xml"
+                ? file
+                : await optimizeImage(file, 1600);
             const filePath = `yonghunblog/${Date.now()}`;
 
             const { error: uploadError } = await supabase.storage
@@ -190,67 +200,3 @@ const Editor = ({ initialHTML = "", onChange }: EditorProps) => {
 };
 
 export default Editor;
-
-async function optimizeEditorImage(file: File): Promise<File> {
-  const fileType = file.type.toLowerCase();
-
-  if (fileType === "image/gif") {
-    throw new Error(
-      "GIF 업로드는 지원하지 않습니다. mp4/webm 또는 정적 이미지로 업로드해주세요."
-    );
-  }
-
-  if (fileType === "image/svg+xml") {
-    return file;
-  }
-
-  return new Promise((resolve, reject) => {
-    const objectUrl = URL.createObjectURL(file);
-    const img = new Image();
-
-    img.onload = () => {
-      const maxWidth = 1600;
-      const scale = Math.min(1, maxWidth / img.naturalWidth);
-      const width = Math.max(1, Math.round(img.naturalWidth * scale));
-      const height = Math.max(1, Math.round(img.naturalHeight * scale));
-
-      const canvas = document.createElement("canvas");
-      canvas.width = width;
-      canvas.height = height;
-
-      const ctx = canvas.getContext("2d");
-      if (!ctx) {
-        URL.revokeObjectURL(objectUrl);
-        reject(new Error("이미지 최적화 처리에 실패했습니다."));
-        return;
-      }
-
-      ctx.drawImage(img, 0, 0, width, height);
-
-      canvas.toBlob(
-        (blob) => {
-          URL.revokeObjectURL(objectUrl);
-          if (!blob) {
-            reject(new Error("이미지 최적화 처리에 실패했습니다."));
-            return;
-          }
-
-          resolve(
-            new File([blob], `${file.name.replace(/\.[^.]+$/, "")}.webp`, {
-              type: "image/webp",
-            })
-          );
-        },
-        "image/webp",
-        0.82
-      );
-    };
-
-    img.onerror = () => {
-      URL.revokeObjectURL(objectUrl);
-      reject(new Error("이미지 로드에 실패했습니다."));
-    };
-
-    img.src = objectUrl;
-  });
-}

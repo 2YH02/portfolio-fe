@@ -8,6 +8,7 @@ export type Post = {
   tags: string[];
   thumbnail: string;
   thumbnail_blur: string;
+  view_count: number;
   created_at: string;
 };
 
@@ -29,9 +30,7 @@ export type AddPostsRequest = {
 
 export async function getAllPosts(page?: number) {
   if (page) {
-    return apiClient<PostsResponse>(`${BASE_URL}/posts?page=${page}`, {
-      next: { revalidate: 3600 },
-    });
+    return apiClient<PostsResponse>(`${BASE_URL}/posts?page=${page}`);
   } else {
     return apiClient<PostsResponse>(`${BASE_URL}/posts`, {
       cache: "no-store",
@@ -57,4 +56,8 @@ export async function deletePost(id: number) {
   return apiClient<Post>(`/api/posts/${id}`, {
     method: "DELETE",
   });
+}
+
+export async function viewPost(id: number): Promise<{ view_count: number } | null> {
+  return apiClient(`/api/posts/${id}/view`, { method: "POST" });
 }

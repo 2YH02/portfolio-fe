@@ -8,7 +8,7 @@ import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
 import { BsX } from "react-icons/bs";
 import AddPostForm from "../components/AddPostForm";
-import AuthForm from "../components/AuthForm";
+import AuthForm from "@/components/common/AuthForm";
 
 const Editor = dynamic(() => import("@/components/ui/Editor"), {
   ssr: false,

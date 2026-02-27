@@ -1,6 +1,6 @@
 import { type User } from "@/lib/api/auth";
 import { cookies } from "next/headers";
-import AddPostClient from "./pageClient";
+import AddPostClient from "./AddPostClient";
 
 export default async function AddPostPage() {
   const cookieStore = await cookies();

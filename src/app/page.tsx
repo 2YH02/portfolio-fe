@@ -1,4 +1,4 @@
-import HomeClient from "./pageClient";
+import HomeClient from "./HomeClient";
 
 export const dynamic = "force-static";
 

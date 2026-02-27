@@ -1,6 +1,6 @@
 import { getPostById } from "@/lib/api/blog";
 import { notFound } from "next/navigation";
-import PostDetailClient from "./pageClient";
+import PostDetailClient from "./PostDetailClient";
 
 export const dynamic = "force-static";
 export const revalidate = 3600;

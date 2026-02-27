@@ -1,6 +1,6 @@
 import { projects } from "@/data";
 import { notFound } from "next/navigation";
-import DetailClient from "./pageClient";
+import DetailClient from "./DetailClient";
 
 export const dynamic = "force-static";
 

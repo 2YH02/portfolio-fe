@@ -3,7 +3,7 @@
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
-import { useLoading } from "../pageClient";
+import { useLoading } from "../PostClient";
 
 export const glassBtn =
   "px-3 py-1 rounded-lg border border-white/20 bg-white/5 backdrop-blur-sm text-white text-sm hover:bg-white/10 ";
