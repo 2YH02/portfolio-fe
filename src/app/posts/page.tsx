@@ -1,7 +1,7 @@
 import { getAllPosts } from "@/lib/api/blog";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import PostClient from "./pageClient";
+import PostClient from "./PostClient";
 
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
 const DEFAULT_DESCRIPTION =

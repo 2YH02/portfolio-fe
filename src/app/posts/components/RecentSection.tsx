@@ -7,7 +7,7 @@ import { cn, formatDate } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect } from "react";
-import { useLoading } from "../pageClient";
+import { useLoading } from "../PostClient";
 
 const RecentSection = ({ data, isAdmin }: { data: PostsResponse; isAdmin?: boolean }) => {
   const { isLoading, setLoading } = useLoading();
