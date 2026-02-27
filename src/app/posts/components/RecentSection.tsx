@@ -9,7 +9,7 @@ import Link from "next/link";
 import { useEffect } from "react";
 import { useLoading } from "../pageClient";
 
-const RecentSection = ({ data }: { data: PostsResponse }) => {
+const RecentSection = ({ data, isAdmin }: { data: PostsResponse; isAdmin?: boolean }) => {
   const { isLoading, setLoading } = useLoading();
 
   useEffect(() => {
@@ -76,7 +76,8 @@ const RecentSection = ({ data }: { data: PostsResponse }) => {
                       </p>
                     </div>
                     <div className="grow" />
-                    <div className="text-gray-400 text-xs text-right">
+                    <div className="flex items-center justify-between text-gray-400 text-xs">
+                      {isAdmin && <span>{post.view_count.toLocaleString()} 조회</span>}
                       {formatDate(post.created_at)}
                     </div>
                   </div>

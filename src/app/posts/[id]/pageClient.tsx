@@ -12,7 +12,7 @@ import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from "react";
-import { BsTrash, BsWrenchAdjustable } from "react-icons/bs";
+import { BsEye, BsTrash, BsWrenchAdjustable } from "react-icons/bs";
 
 const modalVariants = {
   hidden: { opacity: 0, y: -20 },
@@ -79,11 +79,14 @@ export default function PostDetailClient({ post }: { post: Post }) {
   const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
-    getMe()
-      .then((data) => {
+    const fetch = async () => {
+      try {
+        const data = await getMe();
         if (data?.role === "Admin") setRole("Admin");
-      })
-      .catch(() => {});
+      } catch {}
+    };
+
+    fetch();
   }, []);
 
   useEffect(() => {
@@ -198,6 +201,12 @@ export default function PostDetailClient({ post }: { post: Post }) {
             >
               {formatDate(post.created_at)}
             </time>
+            {role === "Admin" && (
+              <span className="flex items-center gap-1 text-gray-400 text-xs">
+                <BsEye size={13} />
+                {post.view_count.toLocaleString()}
+              </span>
+            )}
           </div>
           <div className="p-2 mt-8">
             <QuillCodeRenderer htmlString={post.body} />

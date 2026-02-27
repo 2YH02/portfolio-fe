@@ -72,6 +72,7 @@ export default async function Posts(props: { searchParams: SearchParams }) {
       tags: post.tags,
       thumbnail: post.thumbnail,
       thumbnail_blur: index < 3 ? post.thumbnail_blur : "",
+      view_count: post.view_count,
       created_at: post.created_at,
     })),
   };

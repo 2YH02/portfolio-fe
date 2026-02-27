@@ -2,10 +2,11 @@
 
 import Nav from "@/components/common/Nav";
 import { GlassBox } from "@/components/ui/GlassBox";
+import { getMe } from "@/lib/api/auth";
 import { type PostsResponse } from "@/lib/api/blog";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { createContext, useContext, useRef, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { BsPencilSquare } from "react-icons/bs";
 import Pagination from "./components/Pagination";
 import RecentSection from "./components/RecentSection";
@@ -39,6 +40,15 @@ export default function PostClient({
   const mainRef = useRef<HTMLElement>(null);
 
   const [isLoading, setIsLoading] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    getMe()
+      .then((data) => {
+        if (data?.role === "Admin") setIsAdmin(true);
+      })
+      .catch(() => {});
+  }, []);
 
   return (
     <LoadingContext.Provider
@@ -51,7 +61,7 @@ export default function PostClient({
         <Nav className="bg-black/40" />
         <h1 className="sr-only">Yonghun 개발 블로그 글 목록</h1>
 
-        <RecentSection data={data} />
+        <RecentSection data={data} isAdmin={isAdmin} />
         <Pagination
           currentPage={Number(page)}
           totalPages={Math.ceil(data.total_count / 12)}
