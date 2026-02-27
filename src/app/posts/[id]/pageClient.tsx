@@ -4,7 +4,7 @@ import Nav from "@/components/common/Nav";
 import QuillCodeRenderer from "@/components/common/QuillCodeRenderer";
 import { GlassBox } from "@/components/ui/GlassBox";
 import { getMe, type User } from "@/lib/api/auth";
-import { deletePost, type Post } from "@/lib/api/blog";
+import { deletePost, viewPost, type Post } from "@/lib/api/blog";
 import { isKnownAnimatedSupabaseImage } from "@/lib/image";
 import { formatDate } from "@/lib/utils";
 import useImageStore from "@/store/useImageStore";
@@ -77,6 +77,18 @@ export default function PostDetailClient({ post }: { post: Post }) {
   const [viewDelete, setViewDelete] = useState(false);
   const [message, setMessage] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
+  const [viewCount, setViewCount] = useState(post.view_count);
+
+  useEffect(() => {
+    const fetch = async () => {
+      try {
+        const data = await viewPost(post.id);
+        if (data?.view_count !== undefined) setViewCount(data.view_count);
+      } catch {}
+    }
+
+    fetch();
+  }, [post.id]);
 
   useEffect(() => {
     const fetch = async () => {
@@ -204,7 +216,7 @@ export default function PostDetailClient({ post }: { post: Post }) {
             {role === "Admin" && (
               <span className="flex items-center gap-1 text-gray-400 text-xs">
                 <BsEye size={13} />
-                {post.view_count.toLocaleString()}
+                {viewCount.toLocaleString()}
               </span>
             )}
           </div>

@@ -10,7 +10,7 @@ export async function apiClient<T>(
   url: string,
   options: RequestInit = {},
   next: NextFetchOptions = {}
-): Promise<T> {
+): Promise<T | null> {
   const res = await fetch(url, {
     method: "GET",
     headers: {
@@ -26,5 +26,6 @@ export async function apiClient<T>(
     throw new Error(`API 요청 실패: ${res.status}`);
   }
 
-  return res.json();
+  const text = await res.text();
+  return text ? JSON.parse(text) : null;
 }

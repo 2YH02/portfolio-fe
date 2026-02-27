@@ -57,3 +57,7 @@ export async function deletePost(id: number) {
     method: "DELETE",
   });
 }
+
+export async function viewPost(id: number): Promise<{ view_count: number } | null> {
+  return apiClient(`/api/posts/${id}/view`, { method: "POST" });
+}
