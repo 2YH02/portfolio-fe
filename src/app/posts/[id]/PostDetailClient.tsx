@@ -191,8 +191,9 @@ export default function PostDetailClient({ post }: { post: Post }) {
   return (
     <div className="relative h-dvh overflow-auto">
       <Nav className="bg-black/40" />
-      <main aria-label="게시글 상세" className="relative">
-        <div className="absolute top-0 left-0 w-full h-96">
+      <main aria-label="게시글 상세">
+        {/* Hero: thumbnail + overlaid title/meta */}
+        <div className="relative w-full h-[480px]">
           <Image
             src={post.thumbnail}
             alt={`${post.title} 대표 이미지`}
@@ -206,39 +207,48 @@ export default function PostDetailClient({ post }: { post: Post }) {
             placeholder="blur"
             blurDataURL={post.thumbnail_blur}
           />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/50 to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 h-2/3 bg-gradient-to-b from-transparent to-[#0a0a0a]" />
+          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[1020px] px-6 pb-8">
+            <h1 className="text-5xl font-bold mb-4 hover:drop-shadow-glow transition duration-300">
+              {post.title}
+            </h1>
+            <div className="flex items-center gap-2 flex-wrap">
+              {post.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="px-3 py-1 text-xs rounded-full bg-white/10 border border-white/20 text-indigo-200 backdrop-blur-sm"
+                >
+                  #{tag}
+                </span>
+              ))}
+              <span className="text-white/30 mx-1">·</span>
+              <time
+                className="text-gray-400 text-xs"
+                dateTime={new Date(post.created_at).toISOString()}
+              >
+                {formatDate(post.created_at)}
+              </time>
+              {role === "Admin" && (
+                <span className="flex items-center gap-1 text-gray-400 text-xs">
+                  <BsEye size={13} />
+                  {viewCount.toLocaleString()}
+                </span>
+              )}
+            </div>
+          </div>
         </div>
 
-        <article className="absolute blog-post top-96 left-1/2 -translate-x-1/2 w-full max-w-[1020px] p-6">
-          <h1 className="text-4xl mb-2 hover:drop-shadow-glow transition duration-300">
-            {post.title}
-          </h1>
-          <div className="flex items-center gap-3">
-            <p className="shrink-0 text-sm flex gap-2 text-indigo-200">
-              {post.tags.join(", ")}
-            </p>
-            <time
-              className="text-gray-400 text-xs"
-              dateTime={new Date(post.created_at).toISOString()}
-            >
-              {formatDate(post.created_at)}
-            </time>
-            {role === "Admin" && (
-              <span className="flex items-center gap-1 text-gray-400 text-xs">
-                <BsEye size={13} />
-                {viewCount.toLocaleString()}
-              </span>
-            )}
-          </div>
-          <div className="p-2 mt-8">
-            {post.body.trimStart().startsWith("<") ? (
-              <QuillCodeRenderer htmlString={post.body} />
-            ) : (
-              <MarkdownRenderer markdown={post.body} />
-            )}
-          </div>
+        {/* Content */}
+        <article className="blog-post w-full max-w-[1020px] mx-auto px-6 pt-8 pb-24">
+          {post.body.trimStart().startsWith("<") ? (
+            <QuillCodeRenderer htmlString={post.body} />
+          ) : (
+            <MarkdownRenderer markdown={post.body} />
+          )}
 
           {role === "Admin" && (
-            <div className="flex gap-2">
+            <div className="flex gap-2 mt-10">
               <GlassBox className="w-10 h-10 p-1 flex items-center justify-center">
                 <button
                   className="w-full h-full flex items-center justify-center"
