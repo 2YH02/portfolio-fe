@@ -31,6 +31,8 @@ const RecentSection = ({
 }: RecentSectionProps) => {
   const { isLoading, setLoading } = useLoading();
   const [activeTag, setActiveTag] = useState<string | null>(null);
+  const [showAllTags, setShowAllTags] = useState(false);
+  const TAG_LIMIT = 8;
 
   useEffect(() => {
     setLoading(false);
@@ -58,35 +60,40 @@ const RecentSection = ({
       </div>
 
       {tags.length > 0 && (
-        <div className="relative mb-8">
-          <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
+        <div className="flex gap-2 flex-wrap mb-8">
+          <button
+            onClick={() => setActiveTag(null)}
+            className={cn(
+              "px-3 py-1 text-xs rounded-full border transition-colors duration-200",
+              !activeTag
+                ? "bg-white/20 border-white/40 text-white"
+                : "bg-white/5 border-white/10 text-gray-400 hover:text-white hover:border-white/20"
+            )}
+          >
+            All
+          </button>
+          {(showAllTags ? tags : tags.slice(0, TAG_LIMIT)).map((tag) => (
             <button
-              onClick={() => setActiveTag(null)}
+              key={tag}
+              onClick={() => setActiveTag(activeTag === tag ? null : tag)}
               className={cn(
-                "px-3 py-1 text-xs rounded-full border transition-colors duration-200 shrink-0",
-                !activeTag
+                "px-3 py-1 text-xs rounded-full border transition-colors duration-200",
+                activeTag === tag
                   ? "bg-white/20 border-white/40 text-white"
                   : "bg-white/5 border-white/10 text-gray-400 hover:text-white hover:border-white/20"
               )}
             >
-              All
+              {tag}
             </button>
-            {tags.map((tag) => (
-              <button
-                key={tag}
-                onClick={() => setActiveTag(activeTag === tag ? null : tag)}
-                className={cn(
-                  "px-3 py-1 text-xs rounded-full border transition-colors duration-200 shrink-0",
-                  activeTag === tag
-                    ? "bg-white/20 border-white/40 text-white"
-                    : "bg-white/5 border-white/10 text-gray-400 hover:text-white hover:border-white/20"
-                )}
-              >
-                {tag}
-              </button>
-            ))}
-          </div>
-          <div className="absolute right-0 top-0 h-full w-16 bg-gradient-to-l from-[#0a0a0a] to-transparent pointer-events-none" />
+          ))}
+          {tags.length > TAG_LIMIT && (
+            <button
+              onClick={() => setShowAllTags((v) => !v)}
+              className="px-3 py-1 text-xs rounded-full border border-white/10 bg-white/5 text-gray-400 hover:text-white hover:border-white/20 transition-colors duration-200"
+            >
+              {showAllTags ? "접기" : `+${tags.length - TAG_LIMIT}개 더보기`}
+            </button>
+          )}
         </div>
       )}
 
