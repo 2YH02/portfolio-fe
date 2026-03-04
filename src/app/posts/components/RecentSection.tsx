@@ -1,91 +1,217 @@
 "use client";
 
 import { GlassBox } from "@/components/ui/GlassBox";
-import { type PostsResponse } from "@/lib/api/blog";
+import { type PostListItem, type PostsResponse } from "@/lib/api/blog";
+
 import { isKnownAnimatedSupabaseImage } from "@/lib/image";
 import { cn, formatDate } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { BsEye } from "react-icons/bs";
 import { useLoading } from "../PostClient";
+import Pagination from "./Pagination";
 
-const RecentSection = ({ data, isAdmin }: { data: PostsResponse; isAdmin?: boolean }) => {
+interface RecentSectionProps {
+  data: PostsResponse;
+  popularPosts: PostListItem[];
+  tags: string[];
+  isAdmin?: boolean;
+  currentPage: number;
+  totalPages: number;
+}
+
+const RecentSection = ({
+  data,
+  popularPosts,
+  tags,
+  isAdmin,
+  currentPage,
+  totalPages,
+}: RecentSectionProps) => {
   const { isLoading, setLoading } = useLoading();
+  const [activeTag, setActiveTag] = useState<string | null>(null);
 
   useEffect(() => {
     setLoading(false);
   }, [data, setLoading]);
 
+  useEffect(() => {
+    setActiveTag(null);
+  }, [data]);
+
+  const displayPosts = useMemo(() => {
+    if (!activeTag) return data.posts;
+    return data.posts.filter((post) => post.tags.includes(activeTag));
+  }, [data.posts, activeTag]);
+
   if (isLoading) return <Skeleton />;
 
   return (
     <section
-      className="max-w-[1280px] p-10 mx-auto pt-40 pb-10"
+      className="max-w-[1000px] px-8 mx-auto pt-36 pb-10"
       aria-label="최신 게시글 목록"
     >
-      <div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {data.posts.map((post, index) => {
-            const isLcpCandidate = index === 0;
-            const useBlurPlaceholder = Boolean(post.thumbnail_blur);
-            const isAnimatedLegacyImage = isKnownAnimatedSupabaseImage(
-              post.thumbnail
-            );
-            return (
-              <Link
-                href={`/posts/${post.id}`}
-                key={post.id}
-                className="text-left"
-                aria-label={`${post.title} 게시글 상세 보기`}
-              >
-                <GlassBox
-                  className="h-96 p-0 transform transition-transform duration-300 ease-in-out hover:z-10
-                            hover:[transform:perspective(800px)_rotateX(4deg)_rotateY(-4deg)_scale(1.05)]
-                            relative border border-solid w-full rounded-lg"
-                  withAction
-                >
-                  <div className={cn("relative w-full overflow-hidden h-1/2")}>
-                    <Image
-                      src={post.thumbnail}
-                      alt={`${post.title} 썸네일`}
-                      fill
-                      className={cn("object-cover")}
-                      quality={45}
-                      sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 33vw"
-                      priority={isLcpCandidate}
-                      fetchPriority={isLcpCandidate ? "high" : "auto"}
-                      loading={isLcpCandidate ? "eager" : "lazy"}
-                      unoptimized={isAnimatedLegacyImage}
-                      placeholder={useBlurPlaceholder ? "blur" : "empty"}
-                      blurDataURL={
-                        useBlurPlaceholder ? post.thumbnail_blur : undefined
-                      }
-                    />
-                  </div>
+      <div className="mb-6">
+        <h2 className="text-3xl font-bold tracking-tight text-white">Posts</h2>
+        <p className="text-sm text-gray-500 mt-1">{data.total_count}개의 글</p>
+      </div>
 
-                  <div className="w-full h-1/2 p-4 flex flex-col justify-center">
-                    <p className="shrink-0 text-xs flex gap-2 text-indigo-200">
-                      {post.tags.join(", ")}
-                    </p>
-                    <p className="shrink-0 text-xl mb-1 truncate">
-                      {post.title}
-                    </p>
-                    <div>
-                      <p className="shrink-0 grow text-gray-400 text-sm line-clamp-3">
-                        {post.description}
+      {tags.length > 0 && (
+        <div className="relative mb-8">
+          <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
+            <button
+              onClick={() => setActiveTag(null)}
+              className={cn(
+                "px-3 py-1 text-xs rounded-full border transition-colors duration-200 shrink-0",
+                !activeTag
+                  ? "bg-white/20 border-white/40 text-white"
+                  : "bg-white/5 border-white/10 text-gray-400 hover:text-white hover:border-white/20"
+              )}
+            >
+              All
+            </button>
+            {tags.map((tag) => (
+              <button
+                key={tag}
+                onClick={() => setActiveTag(activeTag === tag ? null : tag)}
+                className={cn(
+                  "px-3 py-1 text-xs rounded-full border transition-colors duration-200 shrink-0",
+                  activeTag === tag
+                    ? "bg-white/20 border-white/40 text-white"
+                    : "bg-white/5 border-white/10 text-gray-400 hover:text-white hover:border-white/20"
+                )}
+              >
+                {tag}
+              </button>
+            ))}
+          </div>
+          <div className="absolute right-0 top-0 h-full w-16 bg-gradient-to-l from-[#0a0a0a] to-transparent pointer-events-none" />
+        </div>
+      )}
+
+      <div className="flex gap-6 items-start">
+        <div className="flex-1 min-w-0">
+          {displayPosts.length === 0 ? (
+            <div className="py-20 text-center text-gray-500 text-sm">
+              해당 태그의 글이 없습니다.
+            </div>
+          ) : (
+            <div className="flex flex-col gap-3">
+              {displayPosts.map((post, index) => {
+                const useBlurPlaceholder = Boolean(post.thumbnail_blur);
+                const isAnimatedLegacyImage = isKnownAnimatedSupabaseImage(
+                  post.thumbnail
+                );
+                const isFirst = index === 0 && !activeTag;
+                return (
+                  <Link
+                    href={`/posts/${post.id}`}
+                    key={post.id}
+                    aria-label={`${post.title} 게시글 상세 보기`}
+                  >
+                    <GlassBox
+                      className="p-0 w-full h-36 flex overflow-hidden transform transition-transform duration-300 ease-in-out hover:z-10
+                                hover:[transform:perspective(800px)_rotateX(3deg)_rotateY(-2deg)_scale(1.02)]"
+                      withAction
+                    >
+                      <div className="relative w-44 shrink-0 h-full">
+                        <Image
+                          src={post.thumbnail}
+                          alt={`${post.title} 썸네일`}
+                          fill
+                          className="object-cover"
+                          quality={isFirst ? 75 : 45}
+                          sizes="160px"
+                          priority={isFirst}
+                          fetchPriority={isFirst ? "high" : "auto"}
+                          loading={isFirst ? "eager" : "lazy"}
+                          unoptimized={isAnimatedLegacyImage}
+                          placeholder={useBlurPlaceholder ? "blur" : "empty"}
+                          blurDataURL={
+                            useBlurPlaceholder
+                              ? post.thumbnail_blur
+                              : undefined
+                          }
+                        />
+                      </div>
+                      <div className="flex-1 min-w-0 px-4 py-3 flex flex-col justify-between">
+                        <div>
+                          <div className="flex flex-wrap gap-1 mb-1.5">
+                            {post.tags.slice(0, 3).map((tag) => (
+                              <span
+                                key={tag}
+                                className="px-2 py-0.5 text-xs rounded-full bg-white/10 border border-white/20 text-indigo-200"
+                              >
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
+                          <p className="text-sm font-medium text-white line-clamp-1 leading-snug">
+                            {post.title}
+                          </p>
+                          <p className="text-xs text-gray-400 line-clamp-2 mt-1 leading-relaxed">
+                            {post.description}
+                          </p>
+                        </div>
+                        <div className="flex items-center justify-between text-gray-500 text-xs">
+                          {isAdmin && (
+                            <span className="flex items-center gap-1">
+                              <BsEye size={11} />
+                              {post.view_count.toLocaleString()}
+                            </span>
+                          )}
+                          <span className={cn(!isAdmin && "ml-auto")}>
+                            {formatDate(post.created_at)}
+                          </span>
+                        </div>
+                      </div>
+                    </GlassBox>
+                  </Link>
+                );
+              })}
+            </div>
+          )}
+
+          {!activeTag && (
+            <div className="mt-8">
+              <Pagination currentPage={currentPage} totalPages={totalPages} />
+            </div>
+          )}
+        </div>
+
+        {popularPosts.length > 0 && (
+          <aside className="hidden lg:block w-64 shrink-0">
+            <GlassBox className="p-4">
+              <h3 className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-4">
+                인기글
+              </h3>
+              <div className="flex flex-col gap-4">
+                {popularPosts.map((post, idx) => (
+                  <Link
+                    key={post.id}
+                    href={`/posts/${post.id}`}
+                    className="group flex gap-3 items-start"
+                    aria-label={`${post.title} 게시글 상세 보기`}
+                  >
+                    <span className="text-lg font-bold text-gray-700 w-6 shrink-0 leading-none mt-0.5">
+                      {String(idx + 1).padStart(2, "0")}
+                    </span>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs text-white line-clamp-2 leading-snug group-hover:text-indigo-200 transition-colors duration-200">
+                        {post.title}
+                      </p>
+                      <p className="text-xs text-gray-500 mt-1.5 flex items-center gap-1">
+                        <BsEye size={10} />
+                        {post.view_count.toLocaleString()}
                       </p>
                     </div>
-                    <div className="grow" />
-                    <div className="flex items-center justify-between text-gray-400 text-xs">
-                      {isAdmin && <span>{post.view_count.toLocaleString()} 조회</span>}
-                      {formatDate(post.created_at)}
-                    </div>
-                  </div>
-                </GlassBox>
-              </Link>
-            );
-          })}
-        </div>
+                  </Link>
+                ))}
+              </div>
+            </GlassBox>
+          </aside>
+        )}
       </div>
     </section>
   );
@@ -93,27 +219,52 @@ const RecentSection = ({ data, isAdmin }: { data: PostsResponse; isAdmin?: boole
 
 function Skeleton() {
   return (
-    <section className="max-w-[1280px] p-10 mx-auto pt-40 pb-10">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {Array.from({ length: 12 }).map((_, idx) => (
+    <section className="max-w-[1000px] px-8 mx-auto pt-36 pb-10">
+      <div className="mb-6">
+        <div className="w-24 h-8 bg-gray-300/20 rounded animate-pulse mb-2" />
+        <div className="w-16 h-4 bg-gray-300/20 rounded animate-pulse" />
+      </div>
+      <div className="flex gap-2 mb-8">
+        {Array.from({ length: 5 }).map((_, i) => (
           <div
-            key={idx}
-            className="h-96 rounded-lg overflow-hidden bg-gray-200/20 animate-pulse backdrop-blur-2xl"
-          >
-            {/* 이미지 영역 */}
-            <div className="w-full h-1/2 bg-gray-300/20" />
-            {/* 텍스트 영역 */}
-            <div className="p-4 flex flex-col justify-between h-1/2">
-              <div className="space-y-2">
-                <div className="w-1/4 h-3 bg-gray-300/20 rounded" />
-                <div className="w-3/4 h-6 bg-gray-300/20 rounded" />
-                <div className="h-4 bg-gray-300/20 rounded w-full" />
-                <div className="h-4 bg-gray-300/20 rounded w-5/6" />
-              </div>
-              <div className="w-1/6 h-3 bg-gray-300/20 rounded self-end" />
-            </div>
-          </div>
+            key={i}
+            className="w-16 h-6 bg-gray-300/20 rounded-full animate-pulse"
+          />
         ))}
+      </div>
+      <div className="flex gap-6 items-start">
+        <div className="flex-1 min-w-0 flex flex-col gap-3">
+          {Array.from({ length: 8 }).map((_, idx) => (
+            <div
+              key={idx}
+              className="h-36 rounded-2xl overflow-hidden bg-gray-200/20 animate-pulse backdrop-blur-2xl flex"
+            >
+              <div className="w-44 h-full bg-gray-300/20 shrink-0" />
+              <div className="flex-1 p-4 flex flex-col justify-between">
+                <div className="space-y-2">
+                  <div className="w-1/4 h-3 bg-gray-300/20 rounded" />
+                  <div className="w-3/4 h-4 bg-gray-300/20 rounded" />
+                </div>
+                <div className="w-1/6 h-3 bg-gray-300/20 rounded self-end" />
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="hidden lg:block w-64 shrink-0">
+          <div className="rounded-2xl bg-gray-200/20 animate-pulse backdrop-blur-2xl p-4 space-y-4">
+            <div className="w-16 h-3 bg-gray-300/20 rounded" />
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div key={i} className="flex gap-3 items-start">
+                <div className="w-6 h-5 bg-gray-300/20 rounded shrink-0" />
+                <div className="flex-1 space-y-1.5">
+                  <div className="h-3 bg-gray-300/20 rounded w-full" />
+                  <div className="h-3 bg-gray-300/20 rounded w-4/5" />
+                  <div className="h-2.5 bg-gray-300/20 rounded w-1/4" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );

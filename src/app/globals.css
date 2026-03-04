@@ -134,6 +134,15 @@ blockquote p {
   margin: 0;
 }
 
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
 .glass-scroll::-webkit-scrollbar {
   width: 4px;
   height: 4px;

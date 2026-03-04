@@ -1,4 +1,4 @@
-import { getAllPosts } from "@/lib/api/blog";
+import { getAllPosts, getPopularPosts, getTags } from "@/lib/api/blog";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import PostClient from "./PostClient";
@@ -57,7 +57,11 @@ export default async function Posts(props: { searchParams: SearchParams }) {
   const searchParams = await props.searchParams;
   const page = parsePage(searchParams.page);
 
-  const data = await getAllPosts(page);
+  const [data, popularPosts, tags] = await Promise.all([
+    getAllPosts(page),
+    getPopularPosts().catch(() => null),
+    getTags().catch(() => null),
+  ]);
 
   if (!data || data.posts.length === 0) {
     notFound();
@@ -77,5 +81,5 @@ export default async function Posts(props: { searchParams: SearchParams }) {
     })),
   };
 
-  return <PostClient data={optimizedData} page={page} />;
+  return <PostClient data={optimizedData} popularPosts={popularPosts ?? []} tags={tags ?? []} page={page} />;
 }

@@ -3,12 +3,12 @@
 import Nav from "@/components/common/Nav";
 import { GlassBox } from "@/components/ui/GlassBox";
 import { getMe } from "@/lib/api/auth";
-import { type PostsResponse } from "@/lib/api/blog";
+import { type PostListItem, type PostsResponse } from "@/lib/api/blog";
+
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { BsPencilSquare } from "react-icons/bs";
-import Pagination from "./components/Pagination";
 import RecentSection from "./components/RecentSection";
 
 interface LoadingContextType {
@@ -31,11 +31,16 @@ export function useLoading() {
 
 export default function PostClient({
   data,
+  popularPosts,
+  tags,
   page,
 }: {
   data: PostsResponse;
+  popularPosts: PostListItem[];
+  tags: string[];
   page: number;
 }) {
+  console.log(popularPosts);
   const router = useRouter();
   const mainRef = useRef<HTMLElement>(null);
 
@@ -61,8 +66,11 @@ export default function PostClient({
         <Nav className="bg-black/40" />
         <h1 className="sr-only">Yonghun 개발 블로그 글 목록</h1>
 
-        <RecentSection data={data} isAdmin={isAdmin} />
-        <Pagination
+        <RecentSection
+          data={data}
+          popularPosts={popularPosts}
+          tags={tags}
+          isAdmin={isAdmin}
           currentPage={Number(page)}
           totalPages={Math.ceil(data.total_count / 12)}
         />

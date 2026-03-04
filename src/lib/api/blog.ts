@@ -61,3 +61,11 @@ export async function deletePost(id: number) {
 export async function viewPost(id: number): Promise<{ view_count: number } | null> {
   return apiClient(`/api/posts/${id}/view`, { method: "POST" });
 }
+
+export async function getPopularPosts() {
+  return apiClient<PostListItem[]>(`${BASE_URL}/posts/popular`);
+}
+
+export async function getTags() {
+  return apiClient<string[]>(`${BASE_URL}/tags`);
+}
