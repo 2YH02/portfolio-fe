@@ -1,6 +1,7 @@
 "use client";
 
 import Nav from "@/components/common/Nav";
+import MarkdownRenderer from "@/components/common/MarkdownRenderer";
 import QuillCodeRenderer from "@/components/common/QuillCodeRenderer";
 import { GlassBox } from "@/components/ui/GlassBox";
 import { getMe, type User } from "@/lib/api/auth";
@@ -229,7 +230,11 @@ export default function PostDetailClient({ post }: { post: Post }) {
             )}
           </div>
           <div className="p-2 mt-8">
-            <QuillCodeRenderer htmlString={post.body} />
+            {post.body.trimStart().startsWith("<") ? (
+              <QuillCodeRenderer htmlString={post.body} />
+            ) : (
+              <MarkdownRenderer markdown={post.body} />
+            )}
           </div>
 
           {role === "Admin" && (

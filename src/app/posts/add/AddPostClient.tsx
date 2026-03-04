@@ -10,7 +10,7 @@ import { BsX } from "react-icons/bs";
 import AddPostForm from "../components/AddPostForm";
 import AuthForm from "@/components/common/AuthForm";
 
-const Editor = dynamic(() => import("@/components/ui/Editor"), {
+const MarkdownEditor = dynamic(() => import("@/components/ui/MarkdownEditor"), {
   ssr: false,
 });
 
@@ -72,8 +72,8 @@ export default function AddPostClient({ initialRole }: { initialRole: User }) {
     setData((prev) => ({ ...prev, tags: filteredTag }));
   };
 
-  const changeBody = (html: string) => {
-    setData((prev) => ({ ...prev, body: html }));
+  const changeBody = (markdown: string) => {
+    setData((prev) => ({ ...prev, body: markdown }));
   };
   const changeThumbnailBlur = (thumbnailBlur: string) => {
     setData((prev) => ({ ...prev, thumbnail_blur: thumbnailBlur }));
@@ -87,7 +87,7 @@ export default function AddPostClient({ initialRole }: { initialRole: User }) {
   };
 
   const savePost = () => {
-    changeDescription(stripHtml(data.body));
+    changeDescription(stripMarkdown(data.body));
 
     setPreview(true);
   };
@@ -112,7 +112,7 @@ export default function AddPostClient({ initialRole }: { initialRole: User }) {
               className="block w-full text-3xl py-2 outline-none"
             />
           </div>
-          <Editor initialHTML={data.body} onChange={changeBody} />
+          <MarkdownEditor value={data.body} onChange={changeBody} />
           <div className="flex items-center flex-wrap gap-2 p-4 pb-32 text-sm">
             {data.tags.map((tag, index) => (
               <div key={index} className="flex items-center space-x-1">
@@ -156,9 +156,19 @@ export default function AddPostClient({ initialRole }: { initialRole: User }) {
   }
 }
 
-function stripHtml(html: string) {
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(html, "text/html");
-
-  return doc.body.textContent || "";
+function stripMarkdown(markdown: string) {
+  return markdown
+    .replace(/^#{1,6}\s+/gm, "")
+    .replace(/\*\*(.+?)\*\*/g, "$1")
+    .replace(/\*(.+?)\*/g, "$1")
+    .replace(/~~(.+?)~~/g, "$1")
+    .replace(/`{3}[\s\S]*?`{3}/g, "")
+    .replace(/`(.+?)`/g, "$1")
+    .replace(/^>\s+/gm, "")
+    .replace(/!\[.*?\]\(.*?\)/g, "")
+    .replace(/\[(.+?)\]\(.*?\)/g, "$1")
+    .replace(/^[-*+]\s+/gm, "")
+    .replace(/^\d+\.\s+/gm, "")
+    .replace(/^---+$/gm, "")
+    .trim();
 }

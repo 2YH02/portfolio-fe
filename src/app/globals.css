@@ -273,6 +273,65 @@ blockquote p {
   transform: scale(103%) !important;
 }
 
+.blog-post code {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 0.875rem;
+  font-family: var(--font-mono);
+}
+
+.blog-post pre {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  overflow-x: auto;
+  margin: 1rem 0;
+}
+
+.blog-post pre code {
+  background-color: transparent;
+  padding: 0;
+  border-radius: 0;
+  font-size: 0.875rem;
+}
+
+.blog-post hr {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin: 2rem 0;
+}
+
+.blog-post table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-size: 0.9rem;
+}
+
+.blog-post th,
+.blog-post td {
+  padding: 0.5rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  text-align: left;
+}
+
+.blog-post th {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.blog-post h1,
+.blog-post h2,
+.blog-post h3 {
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.blog-post p {
+  margin-bottom: 1rem;
+  line-height: 1.75;
+}
+
 .ql-code-block-container:hover {
   transform: scale(103%) !important;
 }
