@@ -128,13 +128,13 @@ export default function PostDetailClient({ post }: { post: Post }) {
       document.querySelectorAll<HTMLImageElement>(".blog-post img");
     const handleClick = (event: MouseEvent) => {
       const target = event.currentTarget as HTMLImageElement;
-      setCurImage(target.src);
+      setCurImage({ src: target.src, rect: target.getBoundingClientRect() });
     };
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key !== "Enter" && event.key !== " ") return;
       event.preventDefault();
       const target = event.currentTarget as HTMLImageElement;
-      setCurImage(target.src);
+      setCurImage({ src: target.src, rect: target.getBoundingClientRect() });
     };
 
     nodeList.forEach((imgEl) => {
@@ -404,8 +404,7 @@ export default function PostDetailClient({ post }: { post: Post }) {
       <AnimatePresence>
         {curImage && (
           <motion.div
-            className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 cursor-zoom-out"
-            onClick={() => setCurImage(null)}
+            className="fixed inset-0 z-50"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -425,26 +424,52 @@ export default function PostDetailClient({ post }: { post: Post }) {
             <h2 id="image-dialog-title" className="sr-only">
               이미지 확대 보기
             </h2>
+            <div
+              className="absolute inset-0 bg-black/80 cursor-zoom-out"
+              onClick={() => setCurImage(null)}
+            />
+            <motion.div
+              className="fixed overflow-hidden cursor-zoom-out"
+              initial={{
+                top: curImage.rect.top,
+                left: curImage.rect.left,
+                width: curImage.rect.width,
+                height: curImage.rect.height,
+                borderRadius: 4,
+              }}
+              animate={{
+                top: 32,
+                left: 32,
+                width: window.innerWidth - 64,
+                height: window.innerHeight - 64,
+                borderRadius: 12,
+              }}
+              exit={{
+                top: curImage.rect.top,
+                left: curImage.rect.left,
+                width: curImage.rect.width,
+                height: curImage.rect.height,
+                borderRadius: 4,
+              }}
+              transition={{ type: "spring", damping: 30, stiffness: 300 }}
+              onClick={() => setCurImage(null)}
+            >
+              <Image
+                src={curImage.src}
+                alt={`${post.title} 본문 이미지 확대`}
+                fill
+                className="object-contain"
+                unoptimized
+              />
+            </motion.div>
             <button
               type="button"
-              className="absolute top-4 right-4 px-3 py-2 rounded-md bg-black/50 text-white"
+              className="fixed top-4 right-4 z-10 px-3 py-2 rounded-md bg-black/50 text-white"
               onClick={() => setCurImage(null)}
               aria-label="이미지 확대 보기 닫기"
             >
               닫기
             </button>
-            <motion.div
-              layoutId={`img-${curImage}`}
-              className="relative w-full h-full"
-            >
-              <Image
-                src={curImage}
-                alt={`${post.title} 본문 이미지 확대`}
-                fill
-                className="object-contain"
-                unoptimized={isKnownAnimatedSupabaseImage(curImage)}
-              />
-            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
