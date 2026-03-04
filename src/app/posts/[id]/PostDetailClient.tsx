@@ -73,12 +73,14 @@ export default function PostDetailClient({ post }: { post: Post }) {
   const deleteDialogRef = useRef<HTMLDivElement>(null);
   const imageDialogRef = useRef<HTMLDivElement>(null);
   const lastFocusedElementRef = useRef<HTMLElement | null>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const [role, setRole] = useState<User>("Guest");
   const [viewDelete, setViewDelete] = useState(false);
   const [message, setMessage] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
   const [viewCount, setViewCount] = useState(post.view_count);
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     const fetch = async () => {
@@ -171,6 +173,15 @@ export default function PostDetailClient({ post }: { post: Post }) {
     }
   }, [viewDelete, curImage]);
 
+  useEffect(() => {
+    const el = scrollContainerRef.current;
+    if (!el) return;
+
+    const handleScroll = () => setScrolled(el.scrollTop > 80);
+    el.addEventListener("scroll", handleScroll, { passive: true });
+    return () => el.removeEventListener("scroll", handleScroll);
+  }, []);
+
   const handleDelete = async () => {
     if (isDeleting) return;
     setMessage("");
@@ -189,8 +200,8 @@ export default function PostDetailClient({ post }: { post: Post }) {
   };
 
   return (
-    <div className="relative h-dvh overflow-auto">
-      <Nav className="bg-black/40" />
+    <div ref={scrollContainerRef} className="relative h-dvh overflow-auto">
+      <Nav className={`transition-colors duration-500 ${scrolled ? "bg-black/70" : "bg-black/40"}`} />
       <main aria-label="게시글 상세">
         {/* Hero: thumbnail + overlaid title/meta */}
         <div className="relative w-full h-[480px]">
