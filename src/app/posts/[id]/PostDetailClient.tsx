@@ -15,6 +15,12 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from "react";
 import { BsEye, BsTrash, BsWrenchAdjustable } from "react-icons/bs";
 
+interface TocItem {
+  id: string;
+  text: string;
+  level: number;
+}
+
 const modalVariants = {
   hidden: { opacity: 0, y: -20 },
   visible: {
@@ -74,6 +80,7 @@ export default function PostDetailClient({ post }: { post: Post }) {
   const imageDialogRef = useRef<HTMLDivElement>(null);
   const lastFocusedElementRef = useRef<HTMLElement | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const articleRef = useRef<HTMLElement>(null);
 
   const [role, setRole] = useState<User>("Guest");
   const [viewDelete, setViewDelete] = useState(false);
@@ -81,6 +88,8 @@ export default function PostDetailClient({ post }: { post: Post }) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [viewCount, setViewCount] = useState(post.view_count);
   const [scrolled, setScrolled] = useState(false);
+  const [tocItems, setTocItems] = useState<TocItem[]>([]);
+  const [activeId, setActiveId] = useState<string | null>(null);
 
   useEffect(() => {
     const fetch = async () => {
@@ -182,6 +191,56 @@ export default function PostDetailClient({ post }: { post: Post }) {
     return () => el.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const article = articleRef.current;
+      if (!article) return;
+
+      const headings = article.querySelectorAll("h1, h2, h3");
+      const items: TocItem[] = [];
+
+      headings.forEach((heading, i) => {
+        const id = `toc-${i}`;
+        heading.id = id;
+        const text = heading.textContent?.trim() || "";
+        if (text) {
+          items.push({ id, text, level: parseInt(heading.tagName[1]) });
+        }
+      });
+
+      setTocItems(items);
+    }, 0);
+
+    return () => clearTimeout(timer);
+  }, [post.body]);
+
+  useEffect(() => {
+    if (tocItems.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.filter((e) => e.isIntersecting);
+        if (visible.length > 0) setActiveId(visible[0].target.id);
+      },
+      { root: scrollContainerRef.current, rootMargin: "-10% 0px -80% 0px" }
+    );
+
+    tocItems.forEach(({ id }) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, [tocItems]);
+
+  const scrollToHeading = (id: string) => {
+    const el = document.getElementById(id);
+    const container = scrollContainerRef.current;
+    if (!el || !container) return;
+    const offset = el.getBoundingClientRect().top + container.scrollTop - 96;
+    container.scrollTo({ top: offset, behavior: "smooth" });
+  };
+
   const handleDelete = async () => {
     if (isDeleting) return;
     setMessage("");
@@ -220,7 +279,7 @@ export default function PostDetailClient({ post }: { post: Post }) {
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/50 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 h-2/3 bg-gradient-to-b from-transparent to-[#0a0a0a]" />
-          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[1020px] px-6 pb-8">
+          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[1040px] px-6 pb-8">
             <h1 className="text-5xl font-bold mb-4 hover:drop-shadow-glow transition duration-300">
               {post.title}
             </h1>
@@ -250,45 +309,57 @@ export default function PostDetailClient({ post }: { post: Post }) {
           </div>
         </div>
 
-        {/* Content */}
-        <article className="blog-post w-full max-w-[1020px] mx-auto px-6 pt-8 pb-24">
-          {post.body.trimStart().startsWith("<") ? (
-            <QuillCodeRenderer htmlString={post.body} />
-          ) : (
-            <MarkdownRenderer markdown={post.body} />
-          )}
+        {/* Content + TOC */}
+        <div className="w-full max-w-[1040px] mx-auto px-6 pt-8 pb-24 flex gap-16 items-start">
+          <article ref={articleRef} className="blog-post flex-1 min-w-0 max-w-[720px]">
+            {post.body.trimStart().startsWith("<") ? (
+              <QuillCodeRenderer htmlString={post.body} />
+            ) : (
+              <MarkdownRenderer markdown={post.body} />
+            )}
 
-          {role === "Admin" && (
-            <div className="flex gap-2 mt-10">
-              <GlassBox className="w-10 h-10 p-1 flex items-center justify-center">
-                <button
-                  className="w-full h-full flex items-center justify-center"
-                  onClick={() => {
-                    setMessage("");
-                    setViewDelete(true);
-                  }}
-                  aria-label="게시글 삭제"
-                >
-                  <BsTrash color="white" size={20} />
-                </button>
-              </GlassBox>
-              <GlassBox className="w-10 h-10 p-1 flex items-center justify-center">
-                <button
-                  className="w-full h-full flex items-center justify-center"
-                  onClick={() => setMessage("수정 기능은 준비 중입니다.")}
-                  aria-label="게시글 수정"
-                >
-                  <BsWrenchAdjustable color="white" size={20} />
-                </button>
-              </GlassBox>
-            </div>
+            {role === "Admin" && (
+              <div className="flex gap-2 mt-10">
+                <GlassBox className="w-10 h-10 p-1 flex items-center justify-center">
+                  <button
+                    className="w-full h-full flex items-center justify-center"
+                    onClick={() => {
+                      setMessage("");
+                      setViewDelete(true);
+                    }}
+                    aria-label="게시글 삭제"
+                  >
+                    <BsTrash color="white" size={20} />
+                  </button>
+                </GlassBox>
+                <GlassBox className="w-10 h-10 p-1 flex items-center justify-center">
+                  <button
+                    className="w-full h-full flex items-center justify-center"
+                    onClick={() => setMessage("수정 기능은 준비 중입니다.")}
+                    aria-label="게시글 수정"
+                  >
+                    <BsWrenchAdjustable color="white" size={20} />
+                  </button>
+                </GlassBox>
+              </div>
+            )}
+            {message ? (
+              <p className="mt-4 text-sm text-red-300" aria-live="polite">
+                {message}
+              </p>
+            ) : null}
+          </article>
+
+          {tocItems.length > 0 && (
+            <aside className="hidden xl:block w-52 shrink-0 sticky top-24">
+              <TableOfContents
+                items={tocItems}
+                activeId={activeId}
+                onItemClick={scrollToHeading}
+              />
+            </aside>
           )}
-          {message ? (
-            <p className="mt-4 text-sm text-red-300" aria-live="polite">
-              {message}
-            </p>
-          ) : null}
-        </article>
+        </div>
       </main>
 
       {viewDelete && (
@@ -367,6 +438,38 @@ export default function PostDetailClient({ post }: { post: Post }) {
         )}
       </AnimatePresence>
     </div>
+  );
+}
+
+function TableOfContents({
+  items,
+  activeId,
+  onItemClick,
+}: {
+  items: TocItem[];
+  activeId: string | null;
+  onItemClick: (id: string) => void;
+}) {
+  return (
+    <nav aria-label="목차">
+      <p className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-3">
+        목차
+      </p>
+      <ul className="space-y-1.5">
+        {items.map((item) => (
+          <li key={item.id} style={{ paddingLeft: `${(item.level - 1) * 10}px` }}>
+            <button
+              onClick={() => onItemClick(item.id)}
+              className={`text-left text-xs leading-relaxed w-full transition-colors duration-200 hover:text-white ${
+                activeId === item.id ? "text-indigo-300" : "text-gray-500"
+              }`}
+            >
+              {item.text}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </nav>
   );
 }
 
