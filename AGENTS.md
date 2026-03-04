@@ -105,7 +105,46 @@
 - `posts/add` 인증 흐름(`AuthForm`, `Auth`) 변경 시 Guest/Admin 분기 동작을 반드시 수동 검증합니다.
 - Supabase 업로드 로직 변경 시 public URL, placeholder, blur 데이터 동작까지 함께 확인합니다.
 
-## 9) 작업 완료 체크리스트
+## 9) 디자인 시스템 & 스타일 가이드
+
+### 전체 컨셉
+다크 글래스모피즘 + 인터랙티브 이펙트 기반의 크리에이티브 개발자 포트폴리오 스타일.
+
+### 배경 & 베이스
+- 배경색: `#0a0a0a` (거의 검정)
+- 텍스트: 흰색/회색 계열 (`#ededed`)
+- 배경 레이어: `NoiseBackground`(노이즈 텍스처) + `ParticleCanvas`(파티클)
+
+### 핵심 UI 패턴 — 글래스모피즘
+- 기본 카드/컨테이너: `backdrop-blur-lg bg-white/10 border border-white/10 shadow-2xl rounded-2xl`
+- `GlassBox` 컴포넌트가 카드·버튼·레이아웃의 기본 단위 (`src/components/ui/GlassBox.tsx`)
+- `withAction` prop 시 호버 시 빛이 스치는 shimmer 애니메이션 내장
+- 새 UI 요소 추가 시 `GlassBox`를 우선 활용
+
+### 색상 포인트
+- 메인 강조색: `blue-500` (`text-blue-500`)
+- 서브/태그: `indigo-200` (`text-indigo-200`)
+- 링크 기본색: `#7c86ff`, 호버 시 흰색 + 네온 글로우
+- 에러/경고: `red-300` (`text-red-300`)
+
+### 인터랙션 & 이펙트
+- 마우스 reveal 효과: `MaskContainer` (홈 메인)
+- 마우스 추적 빛: `Spotlight`
+- 글자 호버 글로우: `hover:drop-shadow-glow` (`0 0 5px #fff, 0 0 10px #00ffff`)
+- 페이지/요소 전환: Framer Motion (`motion/react`) 사용
+- 호버 흔들림: `hover:animate-shake-rotate`
+
+### 타이포그래피
+- 본문: Inter, Noto Sans KR (`--font-body`)
+- 홈 메인 카피: 나눔펜 (`--font-nanum`, 손글씨 느낌)
+- 모노스페이스: `--font-mono` (코드 블록 등)
+
+### 주의사항
+- 새 컴포넌트 추가 시 기존 글래스모피즘 패턴(`bg-white/10 border-white/10`)을 유지
+- 밝은 배경/라이트 테마 요소는 사이트 컨셉과 맞지 않으므로 지양
+- 애니메이션은 Framer Motion 또는 Tailwind 커스텀 애니메이션(`globals.css`) 사용
+
+## 10) 작업 완료 체크리스트
 
 1. 코드가 린트 오류 없이 통과한다.
 2. 변경 범위의 핵심 페이지가 의도대로 동작한다.
