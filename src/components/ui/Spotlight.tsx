@@ -12,7 +12,7 @@ type SpotlightProps = {
 export const Spotlight = ({ className }: SpotlightProps) => {
   const pathname = usePathname();
 
-  const { isHover } = useMaskRevealStore();
+  const { isHover, spotlightColor } = useMaskRevealStore();
 
   const [lightColor, setLightColor] = useState("#a8a8a8");
 
@@ -23,6 +23,11 @@ export const Spotlight = ({ className }: SpotlightProps) => {
   }, []);
 
   useEffect(() => {
+    if (spotlightColor !== null) {
+      changeColor(spotlightColor);
+      return;
+    }
+
     if (pathname.includes("/projects")) {
       changeColor("yellow");
     } else if (pathname.includes("/about")) {
@@ -36,7 +41,7 @@ export const Spotlight = ({ className }: SpotlightProps) => {
         changeColor("white");
       }
     }
-  }, [pathname, isHover, changeColor]);
+  }, [pathname, isHover, spotlightColor, changeColor]);
 
   return (
     <svg

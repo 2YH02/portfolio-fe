@@ -9,6 +9,7 @@ import { deletePost, viewPost, type Post } from "@/lib/api/blog";
 import { isKnownAnimatedSupabaseImage } from "@/lib/image";
 import { formatDate } from "@/lib/utils";
 import useImageStore from "@/store/useImageStore";
+import useMaskRevealStore from "@/store/useMaskRevealStore";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -75,6 +76,7 @@ const focusDialog = (dialog: HTMLDivElement | null) => {
 export default function PostDetailClient({ post }: { post: Post }) {
   const router = useRouter();
   const { curImage, setCurImage } = useImageStore();
+  const { setSpotlightColor } = useMaskRevealStore();
   const isAnimatedThumbnail = isKnownAnimatedSupabaseImage(post.thumbnail);
   const deleteDialogRef = useRef<HTMLDivElement>(null);
   const imageDialogRef = useRef<HTMLDivElement>(null);
@@ -186,10 +188,19 @@ export default function PostDetailClient({ post }: { post: Post }) {
     const el = scrollContainerRef.current;
     if (!el) return;
 
-    const handleScroll = () => setScrolled(el.scrollTop > 80);
+    const handleScroll = () => {
+      setScrolled(el.scrollTop > 80);
+      const nearEnd = el.scrollTop + el.clientHeight > el.scrollHeight - 800;
+      const inReading = el.scrollTop > 400;
+      setSpotlightColor(inReading && !nearEnd ? "white" : null);
+    };
+
     el.addEventListener("scroll", handleScroll, { passive: true });
-    return () => el.removeEventListener("scroll", handleScroll);
-  }, []);
+    return () => {
+      el.removeEventListener("scroll", handleScroll);
+      setSpotlightColor(null);
+    };
+  }, [setSpotlightColor]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
