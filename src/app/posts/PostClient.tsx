@@ -40,7 +40,6 @@ export default function PostClient({
   tags: string[];
   page: number;
 }) {
-  console.log(popularPosts);
   const router = useRouter();
   const mainRef = useRef<HTMLElement>(null);
 
