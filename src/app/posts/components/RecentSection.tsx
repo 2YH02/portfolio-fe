@@ -7,7 +7,8 @@ import { isKnownAnimatedSupabaseImage } from "@/lib/image";
 import { cn, formatDate } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { BsEye } from "react-icons/bs";
 import { useLoading } from "../PostClient";
 import Pagination from "./Pagination";
@@ -19,6 +20,7 @@ interface RecentSectionProps {
   isAdmin?: boolean;
   currentPage: number;
   totalPages: number;
+  activeTag?: string;
 }
 
 const RecentSection = ({
@@ -28,24 +30,28 @@ const RecentSection = ({
   isAdmin,
   currentPage,
   totalPages,
+  activeTag,
 }: RecentSectionProps) => {
-  const { isLoading, setLoading } = useLoading();
-  const [activeTag, setActiveTag] = useState<string | null>(null);
+  const { isLoading, setLoading, body } = useLoading();
+  const router = useRouter();
   const [showAllTags, setShowAllTags] = useState(false);
+  const [isTagLoading, setIsTagLoading] = useState(false);
   const TAG_LIMIT = 8;
 
   useEffect(() => {
     setLoading(false);
+    setIsTagLoading(false);
   }, [data, setLoading]);
 
-  useEffect(() => {
-    setActiveTag(null);
-  }, [data]);
-
-  const displayPosts = useMemo(() => {
-    if (!activeTag) return data.posts;
-    return data.posts.filter((post) => post.tags.includes(activeTag));
-  }, [data.posts, activeTag]);
+  const handleTagClick = (tag: string | null) => {
+    setIsTagLoading(true);
+    body.current?.scrollTo({ top: 0, behavior: "smooth" });
+    if (tag) {
+      router.push(`/posts?tag=${encodeURIComponent(tag)}`);
+    } else {
+      router.push("/posts");
+    }
+  };
 
   if (isLoading) return <Skeleton />;
 
@@ -62,7 +68,7 @@ const RecentSection = ({
       {tags.length > 0 && (
         <div className="flex gap-2 flex-wrap mb-8">
           <button
-            onClick={() => setActiveTag(null)}
+            onClick={() => handleTagClick(null)}
             className={cn(
               "px-3 py-1 text-xs rounded-full border transition-colors duration-200",
               !activeTag
@@ -75,7 +81,7 @@ const RecentSection = ({
           {(showAllTags ? tags : tags.slice(0, TAG_LIMIT)).map((tag) => (
             <button
               key={tag}
-              onClick={() => setActiveTag(activeTag === tag ? null : tag)}
+              onClick={() => handleTagClick(activeTag === tag ? null : tag)}
               className={cn(
                 "px-3 py-1 text-xs rounded-full border transition-colors duration-200",
                 activeTag === tag
@@ -98,14 +104,14 @@ const RecentSection = ({
       )}
 
       <div className="flex gap-6 items-start">
-        <div className="flex-1 min-w-0">
-          {displayPosts.length === 0 ? (
+        <div className={cn("flex-1 min-w-0 transition-opacity duration-200", isTagLoading && "opacity-50 pointer-events-none")}>
+          {data.posts.length === 0 ? (
             <div className="py-20 text-center text-gray-500 text-sm">
               해당 태그의 글이 없습니다.
             </div>
           ) : (
             <div className="flex flex-col gap-3">
-              {displayPosts.map((post, index) => {
+              {data.posts.map((post, index) => {
                 const useBlurPlaceholder = Boolean(post.thumbnail_blur);
                 const isAnimatedLegacyImage = isKnownAnimatedSupabaseImage(
                   post.thumbnail
@@ -180,11 +186,9 @@ const RecentSection = ({
             </div>
           )}
 
-          {!activeTag && (
-            <div className="mt-8">
-              <Pagination currentPage={currentPage} totalPages={totalPages} />
-            </div>
-          )}
+          <div className="mt-8">
+            <Pagination currentPage={currentPage} totalPages={totalPages} tag={activeTag} />
+          </div>
         </div>
 
         {popularPosts.length > 0 && (

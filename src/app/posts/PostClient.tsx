@@ -34,11 +34,13 @@ export default function PostClient({
   popularPosts,
   tags,
   page,
+  tag,
 }: {
   data: PostsResponse;
   popularPosts: PostListItem[];
   tags: string[];
   page: number;
+  tag?: string;
 }) {
   const router = useRouter();
   const mainRef = useRef<HTMLElement>(null);
@@ -72,6 +74,7 @@ export default function PostClient({
           isAdmin={isAdmin}
           currentPage={Number(page)}
           totalPages={Math.ceil(data.total_count / 8)}
+          activeTag={tag}
         />
 
         <div className="flex justify-center items-center mt-10 gap-4 font-bold text-indigo-400">

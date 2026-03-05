@@ -14,6 +14,11 @@ const parsePage = (value: string | string[] | undefined) => {
   return Math.floor(page);
 };
 
+const parseTag = (value: string | string[] | undefined) => {
+  const raw = Array.isArray(value) ? value[0] : value;
+  return raw || undefined;
+};
+
 export const generateMetadata = async ({
   searchParams,
 }: {
@@ -56,9 +61,10 @@ export const generateMetadata = async ({
 export default async function Posts(props: { searchParams: SearchParams }) {
   const searchParams = await props.searchParams;
   const page = parsePage(searchParams.page);
+  const tag = parseTag(searchParams.tag);
 
   const [data, popularPosts, tags] = await Promise.all([
-    getAllPosts(page),
+    getAllPosts({ page, tag }),
     getPopularPosts().catch(() => null),
     getTags().catch(() => null),
   ]);
@@ -81,5 +87,5 @@ export default async function Posts(props: { searchParams: SearchParams }) {
     })),
   };
 
-  return <PostClient data={optimizedData} popularPosts={popularPosts ?? []} tags={tags ?? []} page={page} />;
+  return <PostClient data={optimizedData} popularPosts={popularPosts ?? []} tags={tags ?? []} page={page} tag={tag} />;
 }

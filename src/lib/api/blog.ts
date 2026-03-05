@@ -28,14 +28,20 @@ export type AddPostsRequest = {
   thumbnail_blur: string;
 };
 
-export async function getAllPosts(page?: number) {
-  if (page) {
-    return apiClient<PostsResponse>(`${BASE_URL}/posts?page=${page}`);
-  } else {
-    return apiClient<PostsResponse>(`${BASE_URL}/posts`, {
-      cache: "no-store",
-    });
-  }
+export async function getAllPosts({
+  page,
+  tag,
+  pageSize,
+}: { page?: number; tag?: string; pageSize?: number } = {}) {
+  const params = new URLSearchParams();
+  if (page) params.set("page", String(page));
+  if (tag) params.set("tag", tag);
+  if (pageSize) params.set("pageSize", String(pageSize));
+  const query = params.toString();
+  return apiClient<PostsResponse>(
+    `${BASE_URL}/posts${query ? `?${query}` : ""}`,
+    query ? {} : { cache: "no-store" }
+  );
 }
 
 export async function getPostById(id: number) {

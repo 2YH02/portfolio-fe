@@ -12,12 +12,14 @@ interface PaginationProps {
   currentPage: number;
   totalPages: number;
   siblingCount?: number;
+  tag?: string;
 }
 
 export default function Pagination({
   currentPage,
   totalPages,
   siblingCount = 3,
+  tag,
 }: PaginationProps) {
   const router = useRouter();
   const { setLoading, body } = useLoading();
@@ -51,7 +53,8 @@ export default function Pagination({
       });
     }
 
-    router.push(`/posts?page=${page}`);
+    const tagParam = tag ? `&tag=${encodeURIComponent(tag)}` : "";
+    router.push(`/posts?page=${page}${tagParam}`);
   };
 
   const showLeftEllipsis = currentPage > siblingCount + 1;
