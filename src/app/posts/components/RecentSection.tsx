@@ -188,7 +188,7 @@ const RecentSection = ({
         </div>
 
         {popularPosts.length > 0 && (
-          <aside className="hidden lg:block w-64 shrink-0">
+          <aside className="hidden lg:block w-64 shrink-0 sticky top-28 self-start">
             <GlassBox className="p-4">
               <h3 className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-4">
                 인기글
