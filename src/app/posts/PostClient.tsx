@@ -72,7 +72,7 @@ export default function PostClient({
           tags={tags}
           isAdmin={isAdmin}
           currentPage={Number(page)}
-          totalPages={Math.ceil(data.total_count / 12)}
+          totalPages={Math.ceil(data.total_count / 8)}
         />
 
         <div className="flex justify-center items-center mt-10 gap-4 font-bold text-indigo-400">
