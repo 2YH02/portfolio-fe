@@ -7,7 +7,7 @@ import { GlassBox } from "@/components/ui/GlassBox";
 import { getMe, type User } from "@/lib/api/auth";
 import { deletePost, viewPost, type Post } from "@/lib/api/blog";
 import { isKnownAnimatedSupabaseImage } from "@/lib/image";
-import { formatDate } from "@/lib/utils";
+import { cn, formatDate } from "@/lib/utils";
 import useImageStore from "@/store/useImageStore";
 import useMaskRevealStore from "@/store/useMaskRevealStore";
 import { AnimatePresence, motion } from "motion/react";
@@ -321,8 +321,11 @@ export default function PostDetailClient({ post }: { post: Post }) {
         </div>
 
         {/* Content + TOC */}
-        <div className="w-full max-w-[1040px] mx-auto px-6 pt-8 pb-24 flex gap-16 items-start">
-          <article ref={articleRef} className="blog-post flex-1 min-w-0 max-w-[720px]">
+        <div className={cn(
+          "w-full max-w-[1040px] mx-auto px-6 pt-8 pb-24 flex gap-16 items-start",
+          tocItems.length > 0 ? "justify-center xl:justify-start" : "justify-center"
+        )}>
+          <article ref={articleRef} className="blog-post min-w-0 max-w-[720px] w-full">
             {post.body.trimStart().startsWith("<") ? (
               <QuillCodeRenderer htmlString={post.body} />
             ) : (
