@@ -8,6 +8,24 @@ const MAX_CLICKS = 7;
 const HEART_PATH =
   "M12 21.593c-5.63-5.539-11-10.297-11-14.402 0-3.791 3.068-5.191 5.281-5.191 1.312 0 4.151.501 5.719 4.457 1.59-3.968 4.464-4.447 5.726-4.447 2.54 0 5.274 1.621 5.274 5.181 0 4.069-5.136 8.625-11 14.402z";
 
+const PROGRESS_MESSAGES = [
+  "살짝 눌러봤네요",
+  "좀 더 눌러봐요",
+  "힘이 필요해요...",
+  "으쌰으쌰!",
+  "거의 다 왔어요!",
+  "딱 한 번만 더!!",
+];
+
+const PROGRESS_COLORS = [
+  "text-indigo-400/70",
+  "text-indigo-400",
+  "text-violet-400",
+  "text-fuchsia-400",
+  "text-pink-400",
+  "text-rose-400",
+];
+
 const POKE_MESSAGES = [
   "이미 눌렀잖아요",
   "벌써 눌렀는데요?",
@@ -335,13 +353,14 @@ export function LikeButton({ onLike, initialDone }: LikeButtonProps) {
           </motion.span>
         ) : (
           <motion.span
-            key="count"
-            className="text-xs text-white/30"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            key={`count-${clicks}`}
+            className={`text-xs transition-colors ${clicks === 0 ? "text-white/30" : PROGRESS_COLORS[clicks - 1]}`}
+            initial={{ opacity: 0, y: -4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 4 }}
+            transition={{ duration: 0.2 }}
           >
-            {clicks === 0 ? "글이 도움됐나요?" : `${clicks} / ${MAX_CLICKS}`}
+            {clicks === 0 ? "글이 도움됐나요?" : PROGRESS_MESSAGES[clicks - 1]}
           </motion.span>
         )}
       </AnimatePresence>

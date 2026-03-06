@@ -388,7 +388,7 @@ export default function PostDetailClient({ post }: { post: Post }) {
                 <div className="h-px bg-white/10" />
               </>
             )}
-            <div className="mt-4">
+            <div >
               <LikeButton onLike={() => likePost(post.id)} initialDone={alreadyLiked} />
             </div>
           </aside>
