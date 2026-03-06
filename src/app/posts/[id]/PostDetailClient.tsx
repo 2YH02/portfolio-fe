@@ -5,7 +5,7 @@ import MarkdownRenderer from "@/components/common/MarkdownRenderer";
 import QuillCodeRenderer from "@/components/common/QuillCodeRenderer";
 import { GlassBox } from "@/components/ui/GlassBox";
 import { getMe, type User } from "@/lib/api/auth";
-import { deletePost, viewPost, type Post } from "@/lib/api/blog";
+import { deletePost, likePost, viewPost, type Post } from "@/lib/api/blog";
 import { isKnownAnimatedSupabaseImage } from "@/lib/image";
 import { cn, formatDate } from "@/lib/utils";
 import useImageStore from "@/store/useImageStore";
@@ -15,6 +15,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from "react";
 import { BsEye, BsTrash, BsWrenchAdjustable } from "react-icons/bs";
+import { LikeButton } from "@/components/ui/LikeButton";
 
 interface TocItem {
   id: string;
@@ -92,6 +93,7 @@ export default function PostDetailClient({ post }: { post: Post }) {
   const [scrolled, setScrolled] = useState(false);
   const [tocItems, setTocItems] = useState<TocItem[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
+  const [alreadyLiked, setAlreadyLiked] = useState(false);
 
   useEffect(() => {
     const fetch = async () => {
@@ -102,6 +104,13 @@ export default function PostDetailClient({ post }: { post: Post }) {
     }
 
     fetch();
+  }, [post.id]);
+
+  useEffect(() => {
+    const match = document.cookie.match(/(?:^|; )liked_posts=([^;]*)/);
+    if (!match) return;
+    const ids = decodeURIComponent(match[1]).split(",");
+    if (ids.includes(String(post.id))) setAlreadyLiked(true);
   }, [post.id]);
 
   useEffect(() => {
@@ -323,7 +332,7 @@ export default function PostDetailClient({ post }: { post: Post }) {
         {/* Content + TOC */}
         <div className={cn(
           "w-full max-w-[1040px] mx-auto px-6 pt-8 pb-24 flex gap-16 items-start",
-          tocItems.length > 0 ? "justify-center xl:justify-start" : "justify-center"
+          "justify-center xl:justify-start"
         )}>
           <article ref={articleRef} className="blog-post min-w-0 max-w-[720px] w-full">
             {post.body.trimStart().startsWith("<") ? (
@@ -362,17 +371,27 @@ export default function PostDetailClient({ post }: { post: Post }) {
                 {message}
               </p>
             ) : null}
+
+            <div className="xl:hidden flex justify-center mt-4">
+              <LikeButton onLike={() => likePost(post.id)} initialDone={alreadyLiked} />
+            </div>
           </article>
 
-          {tocItems.length > 0 && (
-            <aside className="hidden xl:block w-52 shrink-0 sticky top-24">
-              <TableOfContents
-                items={tocItems}
-                activeId={activeId}
-                onItemClick={scrollToHeading}
-              />
-            </aside>
-          )}
+          <aside className="hidden xl:flex xl:flex-col xl:gap-6 w-52 shrink-0 sticky top-30">
+            {tocItems.length > 0 && (
+              <>
+                <TableOfContents
+                  items={tocItems}
+                  activeId={activeId}
+                  onItemClick={scrollToHeading}
+                />
+                <div className="h-px bg-white/10" />
+              </>
+            )}
+            <div className="mt-4">
+              <LikeButton onLike={() => likePost(post.id)} initialDone={alreadyLiked} />
+            </div>
+          </aside>
         </div>
       </main>
 

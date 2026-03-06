@@ -75,3 +75,7 @@ export async function getPopularPosts() {
 export async function getTags() {
   return apiClient<string[]>(`${BASE_URL}/tags`);
 }
+
+export async function likePost(id: number): Promise<{ like_count: number } | null> {
+  return apiClient(`/api/posts/${id}/like`, { method: "POST" });
+}
