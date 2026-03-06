@@ -111,6 +111,11 @@ export function LikeButton({ onLike, initialDone }: LikeButtonProps) {
     const next = clicks + 1;
     setClicks(next);
 
+    controls.start({
+      scale: [1, 0.82, 1.15, 0.95, 1],
+      transition: { duration: 0.35, ease: "easeInOut" },
+    });
+
     if (next === MAX_CLICKS) {
       setBurst(true);
       setDone(true);
@@ -142,7 +147,6 @@ export function LikeButton({ onLike, initialDone }: LikeButtonProps) {
         className="relative w-14 h-14 cursor-pointer focus-visible:outline-none overflow-visible"
         animate={controls}
         whileHover={{ scale: done ? 1.05 : 1.1 }}
-        whileTap={{ scale: 0.82 }}
         transition={{ type: "spring", stiffness: 400, damping: 20 }}
       >
         {/* radial glow when complete */}
