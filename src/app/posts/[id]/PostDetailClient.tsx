@@ -91,6 +91,7 @@ export default function PostDetailClient({ post }: { post: Post }) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [viewCount, setViewCount] = useState(post.view_count);
   const [scrolled, setScrolled] = useState(false);
+  const [isReading, setIsReading] = useState(false);
   const [tocItems, setTocItems] = useState<TocItem[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [alreadyLiked, setAlreadyLiked] = useState(false);
@@ -202,12 +203,14 @@ export default function PostDetailClient({ post }: { post: Post }) {
       const nearEnd = el.scrollTop + el.clientHeight > el.scrollHeight - 800;
       const inReading = el.scrollTop > 400;
       setSpotlightColor(inReading && !nearEnd ? "white" : null);
+      setIsReading(inReading && !nearEnd);
     };
 
     el.addEventListener("scroll", handleScroll, { passive: true });
     return () => {
       el.removeEventListener("scroll", handleScroll);
       setSpotlightColor(null);
+      setIsReading(false);
     };
   }, [setSpotlightColor]);
 
@@ -280,6 +283,14 @@ export default function PostDetailClient({ post }: { post: Post }) {
 
   return (
     <div ref={scrollContainerRef} className="relative h-dvh overflow-auto">
+      <div
+        className="fixed inset-0 pointer-events-none z-10 transition-opacity duration-700"
+        style={{
+          opacity: isReading ? 1 : 0,
+          background: "radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.75) 100%)",
+        }}
+        aria-hidden="true"
+      />
       <Nav className={`transition-colors duration-500 ${scrolled ? "bg-black/70" : "bg-black/40"}`} />
       <main aria-label="게시글 상세">
         {/* Hero: thumbnail + overlaid title/meta */}
