@@ -377,18 +377,20 @@ export default function PostDetailClient({ post }: { post: Post }) {
             </div>
           </article>
 
-          <aside className="hidden xl:flex xl:flex-col xl:gap-6 w-52 shrink-0 sticky top-30">
+          <aside className="hidden xl:flex xl:flex-col xl:gap-6 w-52 shrink-0 sticky top-30 max-h-[calc(100vh-7.5rem)]">
             {tocItems.length > 0 && (
               <>
-                <TableOfContents
-                  items={tocItems}
-                  activeId={activeId}
-                  onItemClick={scrollToHeading}
-                />
+                <div className="flex-1 overflow-y-auto min-h-0">
+                  <TableOfContents
+                    items={tocItems}
+                    activeId={activeId}
+                    onItemClick={scrollToHeading}
+                  />
+                </div>
                 <div className="h-px bg-white/10" />
               </>
             )}
-            <div >
+            <div>
               <LikeButton onLike={() => likePost(post.id)} initialDone={alreadyLiked} />
             </div>
           </aside>
@@ -513,7 +515,7 @@ function TableOfContents({
       <p className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-3">
         목차
       </p>
-      <ul className="space-y-1.5">
+      <ul className="space-y-1">
         {items.map((item) => (
           <li key={item.id} style={{ paddingLeft: `${(item.level - 1) * 10}px` }}>
             <button
