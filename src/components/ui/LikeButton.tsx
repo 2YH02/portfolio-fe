@@ -8,6 +8,16 @@ const MAX_CLICKS = 7;
 const HEART_PATH =
   "M12 21.593c-5.63-5.539-11-10.297-11-14.402 0-3.791 3.068-5.191 5.281-5.191 1.312 0 4.151.501 5.719 4.457 1.59-3.968 4.464-4.447 5.726-4.447 2.54 0 5.274 1.621 5.274 5.181 0 4.069-5.136 8.625-11 14.402z";
 
+const POKE_MESSAGES = [
+  "이미 눌렀잖아요",
+  "벌써 눌렀는데요?",
+  "한 번이면 충분해요",
+  "그만 좀 눌러요...",
+  "진짜예요",
+  "...",
+  "🫠",
+];
+
 const ERROR_PARTICLES = Array.from({ length: 8 }, (_, i) => {
   const angle = ((i * 45 - 90) * Math.PI) / 180;
   const dist = 32 + (i % 2) * 12;
@@ -52,6 +62,8 @@ export function LikeButton({ onLike, initialDone }: LikeButtonProps) {
   const [errorBurst, setErrorBurst] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState(false);
+  const [pokeCount, setPokeCount] = useState(0);
+  const [isPoked, setIsPoked] = useState(false);
   const controls = useAnimationControls();
 
   useEffect(() => {
@@ -65,7 +77,19 @@ export function LikeButton({ onLike, initialDone }: LikeButtonProps) {
   const clipY = (1 - clicks / MAX_CLICKS) * 24;
 
   const handleClick = async () => {
-    if (done) return;
+    if (done) {
+      const next = pokeCount + 1;
+      setPokeCount(next);
+      setIsPoked(true);
+      const intensity = Math.min(next, 6);
+      controls.start({
+        scale: [1, 1.15 + intensity * 0.04, 0.88, 1.08, 1],
+        rotate: [0, -(4 + intensity * 2), (4 + intensity * 2), -2, 0],
+        transition: { duration: 0.35 + intensity * 0.02, ease: "easeInOut" },
+      });
+      setTimeout(() => setIsPoked(false), 700);
+      return;
+    }
     const next = clicks + 1;
     setClicks(next);
 
@@ -96,12 +120,11 @@ export function LikeButton({ onLike, initialDone }: LikeButtonProps) {
     <div className="flex flex-col items-center gap-2 select-none">
       <motion.button
         onClick={handleClick}
-        disabled={done}
-        aria-label={`좋아요 ${clicks}/${MAX_CLICKS}`}
-        className="relative w-14 h-14 cursor-pointer disabled:cursor-default focus-visible:outline-none overflow-visible"
+        aria-label={done ? "이미 좋아요 누름" : `좋아요 ${clicks}/${MAX_CLICKS}`}
+        className="relative w-14 h-14 cursor-pointer focus-visible:outline-none overflow-visible"
         animate={controls}
-        whileHover={!done ? { scale: 1.1 } : {}}
-        whileTap={!done ? { scale: 0.82 } : {}}
+        whileHover={{ scale: done ? 1.05 : 1.1 }}
+        whileTap={{ scale: 0.82 }}
         transition={{ type: "spring", stiffness: 400, damping: 20 }}
       >
         {/* radial glow when complete */}
@@ -117,6 +140,22 @@ export function LikeButton({ onLike, initialDone }: LikeButtonProps) {
               animate={{ opacity: 1, scale: 2.2 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.55, ease: "easeOut" }}
+            />
+          )}
+        </AnimatePresence>
+
+        {/* radial glow on poke */}
+        <AnimatePresence>
+          {isPoked && (
+            <motion.div
+              className="absolute inset-0 rounded-full pointer-events-none"
+              style={{
+                background: `radial-gradient(circle, rgba(251,${Math.max(100 - pokeCount * 12, 30)},${Math.max(80 - pokeCount * 10, 20)},${0.3 + pokeCount * 0.08}) 0%, transparent 70%)`,
+              }}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1.8 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
             />
           )}
         </AnimatePresence>
@@ -208,6 +247,8 @@ export function LikeButton({ onLike, initialDone }: LikeButtonProps) {
           style={
             error
               ? { filter: "drop-shadow(0 0 6px rgba(239,68,68,0.9)) drop-shadow(0 0 12px rgba(249,115,22,0.6))" }
+              : isPoked
+              ? { filter: `drop-shadow(0 0 ${4 + pokeCount * 2}px rgba(251,${Math.max(100 - pokeCount * 12, 30)},50,0.9))` }
               : done
               ? { filter: "drop-shadow(0 0 6px rgba(167,139,250,0.85)) drop-shadow(0 0 12px rgba(236,72,153,0.5))" }
               : undefined
@@ -269,6 +310,17 @@ export function LikeButton({ onLike, initialDone }: LikeButtonProps) {
             transition={{ duration: 0.2 }}
           >
             다시 시도해 주세요
+          </motion.span>
+        ) : isPoked ? (
+          <motion.span
+            key={`poke-${pokeCount}`}
+            className="text-xs text-orange-400"
+            initial={{ opacity: 0, y: -6, scale: 0.8 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 4 }}
+            transition={{ duration: 0.2 }}
+          >
+            {POKE_MESSAGES[Math.min(pokeCount - 1, POKE_MESSAGES.length - 1)]}
           </motion.span>
         ) : done ? (
           <motion.span
