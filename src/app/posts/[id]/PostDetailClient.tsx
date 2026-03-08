@@ -4,7 +4,7 @@ import Nav from "@/components/common/Nav";
 import MarkdownRenderer from "@/components/common/MarkdownRenderer";
 import QuillCodeRenderer from "@/components/common/QuillCodeRenderer";
 import { GlassBox } from "@/components/ui/GlassBox";
-import { getMe, type User } from "@/lib/api/auth";
+import { getMe } from "@/lib/api/auth";
 import { deletePost, likePost, viewPost, type Post } from "@/lib/api/blog";
 import { isKnownAnimatedSupabaseImage } from "@/lib/image";
 import { cn, formatDate } from "@/lib/utils";
@@ -85,7 +85,7 @@ export default function PostDetailClient({ post }: { post: Post }) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const articleRef = useRef<HTMLElement>(null);
 
-  const [role, setRole] = useState<User>("Guest");
+  const [isAdmin, setIsAdmin] = useState(false);
   const [viewDelete, setViewDelete] = useState(false);
   const [message, setMessage] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
@@ -118,7 +118,7 @@ export default function PostDetailClient({ post }: { post: Post }) {
     const fetch = async () => {
       try {
         const data = await getMe();
-        if (data?.role === "Admin") setRole("Admin");
+        if (data?.isAdmin) setIsAdmin(true);
       } catch {}
     };
 
@@ -333,7 +333,7 @@ export default function PostDetailClient({ post }: { post: Post }) {
               >
                 {formatDate(post.created_at)}
               </time>
-              {role === "Admin" && (
+              {isAdmin && (
                 <span className="flex items-center gap-1 text-gray-400 text-xs">
                   <BsEye size={13} />
                   {viewCount.toLocaleString()}
@@ -355,7 +355,7 @@ export default function PostDetailClient({ post }: { post: Post }) {
               <MarkdownRenderer markdown={post.body} />
             )}
 
-            {role === "Admin" && (
+            {isAdmin && (
               <div className="flex gap-2 mt-10">
                 <GlassBox className="w-10 h-10 p-1 flex items-center justify-center">
                   <button
