@@ -18,7 +18,7 @@ export async function apiClient<T>(
       ...(options.headers || {}),
     },
     ...options,
-    ...next,
+    next,
     credentials: "include",
   });
 

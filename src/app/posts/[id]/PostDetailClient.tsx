@@ -126,14 +126,6 @@ export default function PostDetailClient({ post }: { post: Post }) {
   }, []);
 
   useEffect(() => {
-    getMe()
-      .then((data) => {
-        if (data?.role === "Admin") setRole("Admin");
-      })
-      .catch(() => {});
-  }, []);
-
-  useEffect(() => {
     const nodeList =
       document.querySelectorAll<HTMLImageElement>(".blog-post img");
     const handleClick = (event: MouseEvent) => {
