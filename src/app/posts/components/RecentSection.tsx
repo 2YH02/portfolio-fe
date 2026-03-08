@@ -212,10 +212,12 @@ const RecentSection = ({
                       <p className="text-xs text-white line-clamp-2 leading-snug group-hover:text-indigo-200 transition-colors duration-200">
                         {post.title}
                       </p>
-                      <p className="text-xs text-gray-500 mt-1.5 flex items-center gap-1">
-                        <BsEye size={10} />
-                        {post.view_count.toLocaleString()}
-                      </p>
+                      {isAdmin && (
+                        <p className="text-xs text-gray-500 mt-1.5 flex items-center gap-1">
+                          <BsEye size={10} />
+                          {post.view_count.toLocaleString()}
+                        </p>
+                      )}
                     </div>
                   </Link>
                 ))}
