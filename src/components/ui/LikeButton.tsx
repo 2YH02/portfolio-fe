@@ -68,9 +68,10 @@ const PARTICLES = Array.from({ length: 12 }, (_, i) => {
 interface LikeButtonProps {
   onLike?: () => Promise<unknown>;
   initialDone?: boolean;
+  initialLikeCount?: number;
 }
 
-export function LikeButton({ onLike, initialDone }: LikeButtonProps) {
+export function LikeButton({ onLike, initialDone, initialLikeCount }: LikeButtonProps) {
   const uid = useId();
   const gradId = `lk-grad${uid}`;
   const clipId = `lk-clip${uid}`;
@@ -149,6 +150,22 @@ export function LikeButton({ onLike, initialDone }: LikeButtonProps) {
         whileHover={{ scale: done ? 1.05 : 1.1 }}
         transition={{ type: "spring", stiffness: 400, damping: 20 }}
       >
+        {/* floating like count */}
+        <AnimatePresence>
+          {initialLikeCount !== undefined && !error && !isPoked && (clicks === 0 || done) && (
+            <motion.span
+              key={done ? "like-count-done" : "like-count-idle"}
+              className={`absolute -top-3 left-1/2 -translate-x-1/2 text-xs pointer-events-none whitespace-nowrap ${done && !initialDone ? "text-indigo-400/70" : "text-white/25"}`}
+              initial={{ opacity: 0, y: 4 }}
+              animate={{ opacity: 1, y: [0, -2, 0] }}
+              exit={{ opacity: 0, y: 4 }}
+              transition={{ opacity: { duration: 0.4 }, y: { duration: 3, repeat: Infinity, ease: "easeInOut" } }}
+            >
+              ♥ {(done && !initialDone ? initialLikeCount + 1 : initialLikeCount).toLocaleString()}
+            </motion.span>
+          )}
+        </AnimatePresence>
+
         {/* radial glow when complete */}
         <AnimatePresence>
           {done && !error && (
@@ -368,6 +385,7 @@ export function LikeButton({ onLike, initialDone }: LikeButtonProps) {
           </motion.span>
         )}
       </AnimatePresence>
+
     </div>
   );
 }

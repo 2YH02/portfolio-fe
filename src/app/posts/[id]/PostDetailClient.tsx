@@ -387,7 +387,7 @@ export default function PostDetailClient({ post }: { post: Post }) {
             ) : null}
 
             <div className="xl:hidden flex justify-center mt-4">
-              <LikeButton onLike={() => likePost(post.id)} initialDone={alreadyLiked} />
+              <LikeButton onLike={() => likePost(post.id)} initialDone={alreadyLiked} initialLikeCount={isAdmin ? post.like_count : undefined} />
             </div>
           </article>
 
@@ -404,8 +404,8 @@ export default function PostDetailClient({ post }: { post: Post }) {
                 <div className="h-px bg-white/10" />
               </>
             )}
-            <div>
-              <LikeButton onLike={() => likePost(post.id)} initialDone={alreadyLiked} />
+            <div className="mt-4">
+              <LikeButton onLike={() => likePost(post.id)} initialDone={alreadyLiked} initialLikeCount={isAdmin ? post.like_count : undefined} />
             </div>
           </aside>
         </div>
