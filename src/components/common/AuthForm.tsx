@@ -1,7 +1,7 @@
 "use client";
 
 import { GlassBox } from "@/components/ui/GlassBox";
-import { Auth, User } from "@/lib/api/auth";
+import { login, User } from "@/lib/api/auth";
 import { motion } from "motion/react";
 import { useState } from "react";
 
@@ -44,7 +44,7 @@ const AuthForm = ({
     setIsSubmitting(true);
 
     try {
-      const data = await Auth(user, password);
+      const data = await login(user, password);
       if (!data) throw new Error();
       setRole?.(data.role);
 

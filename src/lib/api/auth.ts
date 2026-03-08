@@ -7,7 +7,7 @@ export type AuthResponse = {
   role: User;
 };
 
-export async function Auth(user: string, password: string) {
+export async function login(user: string, password: string) {
   return apiClient<AuthResponse>(`/api/auth`, {
     method: "POST",
     headers: {
