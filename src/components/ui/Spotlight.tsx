@@ -12,7 +12,7 @@ type SpotlightProps = {
 export const Spotlight = ({ className }: SpotlightProps) => {
   const pathname = usePathname();
 
-  const { isHover, spotlightColor } = useMaskRevealStore();
+  const { isHover, spotlightColor, spotlightOpacity } = useMaskRevealStore();
 
   const [lightColor, setLightColor] = useState("#a8a8a8");
 
@@ -62,7 +62,7 @@ export const Spotlight = ({ className }: SpotlightProps) => {
           ry="273.501"
           transform="matrix(-0.822377 -0.568943 -0.568943 0.822377 3631.88 2291.09)"
           fill={lightColor}
-          fillOpacity="0.21"
+          fillOpacity={spotlightOpacity}
         ></ellipse>
       </g>
       <defs>

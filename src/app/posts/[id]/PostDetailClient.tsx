@@ -77,7 +77,7 @@ const focusDialog = (dialog: HTMLDivElement | null) => {
 export default function PostDetailClient({ post }: { post: Post }) {
   const router = useRouter();
   const { curImage, setCurImage } = useImageStore();
-  const { setSpotlightColor } = useMaskRevealStore();
+  const { setSpotlightColor, setSpotlightOpacity } = useMaskRevealStore();
   const isAnimatedThumbnail = isKnownAnimatedSupabaseImage(post.thumbnail);
   const deleteDialogRef = useRef<HTMLDivElement>(null);
   const imageDialogRef = useRef<HTMLDivElement>(null);
@@ -198,21 +198,32 @@ export default function PostDetailClient({ post }: { post: Post }) {
     const el = scrollContainerRef.current;
     if (!el) return;
 
+    let opacityTimer: ReturnType<typeof setTimeout> | null = null;
+
     const handleScroll = () => {
       setScrolled(el.scrollTop > 80);
       const nearEnd = el.scrollTop + el.clientHeight > el.scrollHeight - 800;
       const inReading = el.scrollTop > 400;
-      setSpotlightColor(inReading && !nearEnd ? "white" : null);
-      setIsReading(inReading && !nearEnd);
+      const reading = inReading && !nearEnd;
+      setSpotlightColor(reading ? "white" : null);
+      if (reading) {
+        opacityTimer = setTimeout(() => setSpotlightOpacity(0.30), 400);
+      } else {
+        if (opacityTimer) clearTimeout(opacityTimer);
+        setSpotlightOpacity(0.21);
+      }
+      setIsReading(reading);
     };
 
     el.addEventListener("scroll", handleScroll, { passive: true });
     return () => {
       el.removeEventListener("scroll", handleScroll);
+      if (opacityTimer) clearTimeout(opacityTimer);
       setSpotlightColor(null);
+      setSpotlightOpacity(0.21);
       setIsReading(false);
     };
-  }, [setSpotlightColor]);
+  }, [setSpotlightColor, setSpotlightOpacity]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -287,7 +298,7 @@ export default function PostDetailClient({ post }: { post: Post }) {
         className="fixed inset-0 pointer-events-none z-10 transition-opacity duration-700"
         style={{
           opacity: isReading ? 1 : 0,
-          background: "radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.75) 100%)",
+          background: "radial-gradient(ellipse at center, transparent 35%, rgba(0,0,0,0.70) 100%)",
         }}
         aria-hidden="true"
       />
