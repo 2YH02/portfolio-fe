@@ -1,7 +1,5 @@
+import { BASE_URL } from "@/lib/api/apiClient";
 import { NextRequest, NextResponse } from "next/server";
-
-const BACKEND_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080";
 
 export async function POST(
   req: NextRequest,
@@ -9,7 +7,7 @@ export async function POST(
 ) {
   const { id } = await params;
 
-  const backendRes = await fetch(`${BACKEND_URL}/posts/${id}/like`, {
+  const backendRes = await fetch(`${BASE_URL}/posts/${id}/like`, {
     method: "POST",
     headers: {
       Cookie: req.headers.get("cookie") || "",
