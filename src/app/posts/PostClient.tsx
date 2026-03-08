@@ -7,27 +7,10 @@ import { type PostListItem, type PostsResponse } from "@/lib/api/blog";
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { createContext, useContext, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BsPencilSquare } from "react-icons/bs";
+import { LoadingContext } from "./LoadingContext";
 import RecentSection from "./components/RecentSection";
-
-interface LoadingContextType {
-  isLoading: boolean;
-  setLoading: (loading: boolean) => void;
-  body: React.RefObject<HTMLElement | null>;
-}
-
-const LoadingContext = createContext<LoadingContextType | undefined>(undefined);
-
-export function useLoading() {
-  const context = useContext(LoadingContext);
-  if (!context) {
-    throw new Error(
-      "useLoading은 LoadingProvider 안에서만 호출될 수 있습니다."
-    );
-  }
-  return context;
-}
 
 export default function PostClient({
   data,

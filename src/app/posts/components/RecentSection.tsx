@@ -10,7 +10,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { BsEye } from "react-icons/bs";
-import { useLoading } from "../PostClient";
+import { useLoading } from "../LoadingContext";
 import Pagination from "./Pagination";
 
 interface RecentSectionProps {
