@@ -118,7 +118,7 @@ export default function PostDetailClient({ post }: { post: Post }) {
     const fetch = async () => {
       try {
         const data = await getMe();
-        if (data?.isAdmin) setIsAdmin(true);
+        if (data?.role === "Admin") setIsAdmin(true);
       } catch {}
     };
 
