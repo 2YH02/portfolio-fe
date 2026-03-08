@@ -6,7 +6,7 @@ interface PathState {
   onPathChange: (newPath: string) => void;
 }
 
-export const usePathStore = create<PathState>((set) => ({
+const usePathStore = create<PathState>((set) => ({
   currentPath: "",
   previousPath: null,
   onPathChange: (newPath) =>
@@ -15,3 +15,5 @@ export const usePathStore = create<PathState>((set) => ({
       currentPath: newPath,
     })),
 }));
+
+export default usePathStore;

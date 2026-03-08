@@ -1,6 +1,6 @@
 "use client";
 
-import { useNoiseStore } from "@/store/useNoiseStore";
+import useNoiseStore from "@/store/useNoiseStore";
 
 interface Props {
   width?: number;

@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathStore } from "@/store/usePathStore";
+import usePathStore from "@/store/usePathStore";
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 

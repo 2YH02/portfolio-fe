@@ -9,7 +9,7 @@ interface NoiseState {
   setOpacity: (v: number) => void;
 }
 
-export const useNoiseStore = create<NoiseState>((set) => ({
+const useNoiseStore = create<NoiseState>((set) => ({
   baseFrequency: 0.80,
   numOctaves: 4,
   opacity: 0.1,
@@ -17,3 +17,5 @@ export const useNoiseStore = create<NoiseState>((set) => ({
   setNumOctaves: (v) => set({ numOctaves: v }),
   setOpacity: (v) => set({ opacity: v }),
 }));
+
+export default useNoiseStore;
