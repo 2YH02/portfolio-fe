@@ -2,6 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import useMaskRevealStore from "@/store/useMaskRevealStore";
+import { motion } from "motion/react";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
@@ -44,11 +45,26 @@ export const Spotlight = ({ className }: SpotlightProps) => {
   }, [pathname, isHover, spotlightColor, changeColor]);
 
   return (
-    <svg
-      className={cn(
-        "animate-spotlight pointer-events-none absolute left-1/3 h-[169%] w-[90%] md:w-[84%] opacity-0 -z-10",
-        className
-      )}
+    <>
+      {/* 모바일 원형 글로우 */}
+      <motion.div
+        className="md:hidden fixed top-0 left-1/2 -translate-x-1/2 pointer-events-none -z-10"
+        style={{
+          width: "80vw",
+          height: "60vw",
+          background: `radial-gradient(ellipse at center, ${lightColor} 0%, transparent 70%)`,
+          filter: "blur(48px)",
+        }}
+        animate={{ opacity: [spotlightOpacity * 0.7, spotlightOpacity * 1.1, spotlightOpacity * 0.7] }}
+        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+      />
+
+      {/* 데스크탑 SVG 빔 */}
+      <svg
+        className={cn(
+          "animate-spotlight pointer-events-none absolute left-1/3 h-[169%] w-[90%] md:w-[84%] opacity-0 -z-10 hidden md:block",
+          className
+        )}
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 3787 2842"
       fill="none"
@@ -88,6 +104,7 @@ export const Spotlight = ({ className }: SpotlightProps) => {
           ></feGaussianBlur>
         </filter>
       </defs>
-    </svg>
+      </svg>
+    </>
   );
 };
