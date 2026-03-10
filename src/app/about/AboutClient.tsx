@@ -8,7 +8,7 @@ import Image from "next/image";
 
 export default function AboutClient() {
   return (
-    <main className="relative w-screen h-screen font-mono overflow-auto">
+    <main className="relative w-screen h-screen font-mono overflow-y-auto overflow-x-hidden">
       {/* 상단 링크 */}
       <Nav />
 

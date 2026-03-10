@@ -15,7 +15,7 @@ export default function DetailClient({ project }: { project: Project }) {
   const cardTitleRef = useRef<HTMLDivElement>(null);
 
   return (
-    <main className="relative w-screen h-screen overflow-auto">
+    <main className="relative w-screen h-screen overflow-y-auto overflow-x-hidden">
       {/* 상단 링크 */}
       <Nav className="bg-black/40" />
 

@@ -95,6 +95,15 @@ export default function PostDetailClient({ post }: { post: Post }) {
   const [tocItems, setTocItems] = useState<TocItem[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [alreadyLiked, setAlreadyLiked] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    setIsMobile(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
 
   useEffect(() => {
     const fetch = async () => {
@@ -285,12 +294,14 @@ export default function PostDetailClient({ post }: { post: Post }) {
   };
 
   return (
-    <div ref={scrollContainerRef} className="relative h-dvh overflow-auto">
+    <div ref={scrollContainerRef} className="relative h-dvh overflow-y-auto overflow-x-hidden">
       <div
         className="fixed inset-0 pointer-events-none z-10 transition-opacity duration-700"
         style={{
-          opacity: isReading ? 1 : 0,
-          background: "radial-gradient(ellipse at center, transparent 35%, rgba(0,0,0,0.70) 100%)",
+          opacity: isReading && !isMobile ? 1 : 0,
+          background: isMobile
+            ? "radial-gradient(ellipse 160% 50% at center, transparent 55%, rgba(0,0,0,0.70) 100%)"
+            : "radial-gradient(ellipse at center, transparent 35%, rgba(0,0,0,0.70) 100%)",
         }}
         aria-hidden="true"
       />

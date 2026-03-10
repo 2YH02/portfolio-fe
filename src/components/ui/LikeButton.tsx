@@ -90,7 +90,7 @@ export function LikeButton({ onLike, initialDone, initialLikeCount }: LikeButton
       setClicks(MAX_CLICKS);
       setDone(true);
     }
-  }, [initialDone]);
+  }, [initialDone]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // clipPath rect: y=24 → empty, y=0 → full (SVG viewBox 0 0 24 24)
   const clipY = (1 - clicks / MAX_CLICKS) * 24;
