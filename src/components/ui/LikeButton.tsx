@@ -28,13 +28,17 @@ const PROGRESS_COLORS = [
 
 const POKE_MESSAGES = [
   "이미 눌렀잖아요",
-  "벌써 눌렀는데요?",
   "한 번이면 충분해요",
   "그만 좀 눌러요...",
-  "진짜예요",
-  "...",
   "🫠",
 ];
+
+const UNLIKE_WARN_MESSAGES = [
+  "진짜 취소할 거예요?",
+  "한 번만 더 누르면 취소돼요",
+];
+
+const UNLIKE_WARN_START = POKE_MESSAGES.length; // 7: "🫠" 이후부터
 
 const ERROR_PARTICLES = Array.from({ length: 8 }, (_, i) => {
   const angle = ((i * 45 - 90) * Math.PI) / 180;
@@ -67,11 +71,12 @@ const PARTICLES = Array.from({ length: 12 }, (_, i) => {
 
 interface LikeButtonProps {
   onLike?: () => Promise<unknown>;
+  onUnlike?: () => Promise<unknown>;
   initialDone?: boolean;
   initialLikeCount?: number;
 }
 
-export function LikeButton({ onLike, initialDone, initialLikeCount }: LikeButtonProps) {
+export function LikeButton({ onLike, onUnlike, initialDone, initialLikeCount }: LikeButtonProps) {
   const uid = useId();
   const gradId = `lk-grad${uid}`;
   const clipId = `lk-clip${uid}`;
@@ -83,32 +88,66 @@ export function LikeButton({ onLike, initialDone, initialLikeCount }: LikeButton
   const [error, setError] = useState(false);
   const [pokeCount, setPokeCount] = useState(0);
   const [isPoked, setIsPoked] = useState(false);
+  const [hasUnliked, setHasUnliked] = useState(false);
+  const [likeOffset, setLikeOffset] = useState(0);
   const controls = useAnimationControls();
 
   useEffect(() => {
-    if (initialDone && !done) {
+    if (initialDone && !done && !hasUnliked) {
       setClicks(MAX_CLICKS);
       setDone(true);
     }
-  }, [initialDone, done]);
+  }, [initialDone, done, hasUnliked]);
 
   // clipPath rect: y=24 → empty, y=0 → full (SVG viewBox 0 0 24 24)
   const clipY = (1 - clicks / MAX_CLICKS) * 24;
+  const inUnlikeWarn = done && pokeCount > UNLIKE_WARN_START;
 
   const handleClick = async () => {
     if (done) {
       const next = pokeCount + 1;
       setPokeCount(next);
+
+      if (next > UNLIKE_WARN_START + UNLIKE_WARN_MESSAGES.length) {
+        // 좋아요 취소 실행
+        try {
+          await onUnlike?.();
+          setDone(false);
+          setBurst(false);
+          setClicks(0);
+          setPokeCount(0);
+          setIsPoked(false);
+          setHasUnliked(true);
+          setLikeOffset((prev) => prev - 1);
+        } catch {
+          controls.start({
+            x: [0, -9, 9, -6, 6, -3, 3, 0],
+            transition: { duration: 0.5, ease: "easeInOut" },
+          });
+        }
+        return;
+      }
+
       setIsPoked(true);
-      const intensity = Math.min(next, 6);
-      controls.start({
-        scale: [1, 1.15 + intensity * 0.04, 0.88, 1.08, 1],
-        rotate: [0, -(4 + intensity * 2), (4 + intensity * 2), -2, 0],
-        transition: { duration: 0.35 + intensity * 0.02, ease: "easeInOut" },
-      });
+      if (next > UNLIKE_WARN_START) {
+        // 취소 경고 구간: 더 위협적인 흔들림
+        controls.start({
+          scale: [1, 0.85, 1.08, 0.95, 1],
+          rotate: [0, -10, 10, -5, 0],
+          transition: { duration: 0.4, ease: "easeInOut" },
+        });
+      } else {
+        const intensity = Math.min(next, 6);
+        controls.start({
+          scale: [1, 1.15 + intensity * 0.04, 0.88, 1.08, 1],
+          rotate: [0, -(4 + intensity * 2), (4 + intensity * 2), -2, 0],
+          transition: { duration: 0.35 + intensity * 0.02, ease: "easeInOut" },
+        });
+      }
       setTimeout(() => setIsPoked(false), 700);
       return;
     }
+
     const next = clicks + 1;
     setClicks(next);
 
@@ -120,12 +159,14 @@ export function LikeButton({ onLike, initialDone, initialLikeCount }: LikeButton
     if (next === MAX_CLICKS) {
       setBurst(true);
       setDone(true);
+      setLikeOffset((prev) => prev + 1);
       try {
         await onLike?.();
       } catch {
         setBurst(false);
         setError(true);
         setErrorBurst(true);
+        setLikeOffset((prev) => prev - 1);
         controls.start({
           x: [0, -9, 9, -6, 6, -3, 3, 0],
           transition: { duration: 0.5, ease: "easeInOut" },
@@ -140,6 +181,9 @@ export function LikeButton({ onLike, initialDone, initialLikeCount }: LikeButton
     }
   };
 
+  const displayLikeCount =
+    initialLikeCount !== undefined ? initialLikeCount + likeOffset : undefined;
+
   return (
     <div className="flex flex-col items-center gap-2 select-none">
       <motion.button
@@ -152,16 +196,16 @@ export function LikeButton({ onLike, initialDone, initialLikeCount }: LikeButton
       >
         {/* floating like count */}
         <AnimatePresence>
-          {initialLikeCount !== undefined && !error && !isPoked && (clicks === 0 || done) && (
+          {displayLikeCount !== undefined && !error && !isPoked && (clicks === 0 || done) && (
             <motion.span
               key={done ? "like-count-done" : "like-count-idle"}
-              className={`absolute -top-3 left-1/2 -translate-x-1/2 text-xs pointer-events-none whitespace-nowrap ${done && !initialDone ? "text-indigo-400/70" : "text-white/25"}`}
+              className={`absolute -top-3 left-1/2 -translate-x-1/2 text-xs pointer-events-none whitespace-nowrap ${done && likeOffset > 0 ? "text-indigo-400/70" : "text-white/25"}`}
               initial={{ opacity: 0, y: 4 }}
               animate={{ opacity: 1, y: [0, -2, 0] }}
               exit={{ opacity: 0, y: 4 }}
               transition={{ opacity: { duration: 0.4 }, y: { duration: 3, repeat: Infinity, ease: "easeInOut" } }}
             >
-              ♥ {(done && !initialDone ? initialLikeCount + 1 : initialLikeCount).toLocaleString()}
+              ♥ {displayLikeCount.toLocaleString()}
             </motion.span>
           )}
         </AnimatePresence>
@@ -349,6 +393,17 @@ export function LikeButton({ onLike, initialDone, initialLikeCount }: LikeButton
             transition={{ duration: 0.2 }}
           >
             다시 시도해 주세요
+          </motion.span>
+        ) : inUnlikeWarn ? (
+          <motion.span
+            key={`unlike-warn-${pokeCount}`}
+            className="text-xs text-red-400"
+            initial={{ opacity: 0, y: -6, scale: 0.8 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 4 }}
+            transition={{ duration: 0.2 }}
+          >
+            {UNLIKE_WARN_MESSAGES[Math.min(pokeCount - UNLIKE_WARN_START - 1, UNLIKE_WARN_MESSAGES.length - 1)]}
           </motion.span>
         ) : isPoked ? (
           <motion.span

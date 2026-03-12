@@ -80,3 +80,7 @@ export async function getTags() {
 export async function likePost(id: number): Promise<{ like_count: number } | null> {
   return apiClient(`/api/posts/${id}/like`, { method: "POST" });
 }
+
+export async function unlikePost(id: number): Promise<{ like_count: number } | null> {
+  return apiClient(`/api/posts/${id}/like`, { method: "DELETE" });
+}

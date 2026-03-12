@@ -5,7 +5,7 @@ import MarkdownRenderer from "@/components/common/MarkdownRenderer";
 import QuillCodeRenderer from "@/components/common/QuillCodeRenderer";
 import { GlassBox } from "@/components/ui/GlassBox";
 import { getMe } from "@/lib/api/auth";
-import { deletePost, likePost, viewPost, type Post } from "@/lib/api/blog";
+import { deletePost, likePost, unlikePost, viewPost, type Post } from "@/lib/api/blog";
 import { isKnownAnimatedSupabaseImage } from "@/lib/image";
 import { cn, formatDate } from "@/lib/utils";
 import useImageStore from "@/store/useImageStore";
@@ -139,13 +139,13 @@ export default function PostDetailClient({ post }: { post: Post }) {
       document.querySelectorAll<HTMLImageElement>(".blog-post img");
     const handleClick = (event: MouseEvent) => {
       const target = event.currentTarget as HTMLImageElement;
-      setCurImage({ src: target.src, rect: target.getBoundingClientRect() });
+      setCurImage({ src: target.src, rect: target.getBoundingClientRect(), vw: document.documentElement.clientWidth, vh: document.documentElement.clientHeight });
     };
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key !== "Enter" && event.key !== " ") return;
       event.preventDefault();
       const target = event.currentTarget as HTMLImageElement;
-      setCurImage({ src: target.src, rect: target.getBoundingClientRect() });
+      setCurImage({ src: target.src, rect: target.getBoundingClientRect(), vw: document.documentElement.clientWidth, vh: document.documentElement.clientHeight });
     };
 
     nodeList.forEach((imgEl) => {
@@ -398,7 +398,7 @@ export default function PostDetailClient({ post }: { post: Post }) {
             ) : null}
 
             <div className="xl:hidden flex justify-center mt-4">
-              <LikeButton onLike={() => likePost(post.id)} initialDone={alreadyLiked} initialLikeCount={isAdmin ? post.like_count : undefined} />
+              <LikeButton onLike={() => likePost(post.id)} onUnlike={() => unlikePost(post.id)} initialDone={alreadyLiked} initialLikeCount={isAdmin ? post.like_count : undefined} />
             </div>
           </article>
 
@@ -416,7 +416,7 @@ export default function PostDetailClient({ post }: { post: Post }) {
               </>
             )}
             <div className="mt-4">
-              <LikeButton onLike={() => likePost(post.id)} initialDone={alreadyLiked} initialLikeCount={isAdmin ? post.like_count : undefined} />
+              <LikeButton onLike={() => likePost(post.id)} onUnlike={() => unlikePost(post.id)} initialDone={alreadyLiked} initialLikeCount={isAdmin ? post.like_count : undefined} />
             </div>
           </aside>
         </div>
@@ -489,8 +489,8 @@ export default function PostDetailClient({ post }: { post: Post }) {
               animate={{
                 top: 32,
                 left: 32,
-                width: window.innerWidth - 64,
-                height: window.innerHeight - 64,
+                width: curImage.vw - 64,
+                height: curImage.vh - 64,
                 borderRadius: 12,
               }}
               exit={{

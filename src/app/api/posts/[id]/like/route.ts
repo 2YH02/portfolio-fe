@@ -29,3 +29,32 @@ export async function POST(
 
   return res;
 }
+
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params;
+
+  const backendRes = await fetch(`${BASE_URL}/posts/${id}/like`, {
+    method: "DELETE",
+    headers: {
+      Cookie: req.headers.get("cookie") || "",
+    },
+  });
+
+  if (backendRes.status === 204) {
+    return new NextResponse(null, { status: 204 });
+  }
+
+  const text = await backendRes.text();
+  const data = text ? JSON.parse(text) : null;
+  const res = NextResponse.json(data, { status: backendRes.status });
+
+  const setCookie = backendRes.headers.get("set-cookie");
+  if (setCookie) {
+    res.headers.set("set-cookie", setCookie);
+  }
+
+  return res;
+}

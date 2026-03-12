@@ -3,6 +3,8 @@ import { create } from "zustand";
 interface SelectedImage {
   src: string;
   rect: DOMRect;
+  vw: number;
+  vh: number;
 }
 
 interface ImageState {
