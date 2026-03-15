@@ -77,6 +77,10 @@ export default async function PostDetail({
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": `https://www.yonghun.me/posts/${id}`,
+    },
     headline: data.title,
     description: createMetaDescription(data.description, data.body),
     image: data.thumbnail,
@@ -84,6 +88,11 @@ export default async function PostDetail({
     keywords: data.tags.join(", "),
     url: `https://www.yonghun.me/posts/${id}`,
     author: {
+      "@type": "Person",
+      name: "이용훈",
+      url: "https://www.yonghun.me",
+    },
+    publisher: {
       "@type": "Person",
       name: "이용훈",
       url: "https://www.yonghun.me",
