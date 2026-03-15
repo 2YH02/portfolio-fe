@@ -55,5 +55,28 @@ export default async function Page({
     notFound();
   }
 
-  return <DetailClient project={project} />;
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CreativeWork",
+    name: project.title,
+    description: project.description,
+    url: `https://www.yonghun.me/projects/${id}`,
+    image: project.images[0],
+    keywords: project.techStack.join(", "),
+    author: {
+      "@type": "Person",
+      name: "이용훈",
+      url: "https://www.yonghun.me",
+    },
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <DetailClient project={project} />
+    </>
+  );
 }
