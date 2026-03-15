@@ -22,7 +22,7 @@ export const generateMetadata = async ({
   return {
     title: `프로젝트 - ${project.title}`,
     description: project.description,
-    keywords: "포트폴리오, 프로젝트",
+    keywords: `${project.techStack.join(", ")}, 포트폴리오, 프로젝트`,
     alternates: {
       canonical: `https://www.yonghun.me/projects/${id}`,
     },
