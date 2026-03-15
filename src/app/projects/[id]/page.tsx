@@ -23,6 +23,9 @@ export const generateMetadata = async ({
     title: `프로젝트 - ${project.title}`,
     description: project.description,
     keywords: "포트폴리오, 프로젝트",
+    alternates: {
+      canonical: `https://www.yonghun.me/projects/${id}`,
+    },
     openGraph: {
       type: "website",
       url: `https://www.yonghun.me/projects/${id}`,

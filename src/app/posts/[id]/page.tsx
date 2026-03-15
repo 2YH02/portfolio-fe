@@ -47,6 +47,9 @@ export const generateMetadata = async ({
     title: data.title,
     description: metaDescription,
     keywords: data.tags.join(", "),
+    alternates: {
+      canonical: `https://www.yonghun.me/posts/${id}`,
+    },
     openGraph: {
       type: "article",
       url: `https://www.yonghun.me/posts/${id}`,
