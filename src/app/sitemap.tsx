@@ -8,14 +8,21 @@ const sitemap = async (): Promise<MetadataRoute.Sitemap> => {
 
   const postsMap = posts.map((post) => ({
     url: `https://www.yonghun.me/posts/${post.id}`,
+    lastModified: post.created_at,
+    changeFrequency: "monthly" as const,
+    priority: 0.8,
   }));
 
   const projectsMap = projects.map((project) => ({
     url: `https://www.yonghun.me/projects/${project.id}`,
+    changeFrequency: "yearly" as const,
+    priority: 0.7,
   }));
 
-  const routesMap = ["", "/about"].map((route) => ({
+  const routesMap = ["", "/about", "/posts"].map((route) => ({
     url: `https://www.yonghun.me${route}`,
+    changeFrequency: "weekly" as const,
+    priority: route === "" ? 1.0 : 0.9,
   }));
 
   return [...postsMap, ...projectsMap, ...routesMap];
