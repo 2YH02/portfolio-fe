@@ -8,7 +8,7 @@ const sitemap = async (): Promise<MetadataRoute.Sitemap> => {
 
   const postsMap = posts.map((post) => ({
     url: `https://www.yonghun.me/posts/${post.id}`,
-    lastModified: post.created_at,
+    lastModified: new Date(post.created_at),
     changeFrequency: "monthly" as const,
     priority: 0.8,
   }));
