@@ -3,8 +3,8 @@ import { getAllPosts } from "@/lib/api/blog";
 import type { MetadataRoute } from "next";
 
 const sitemap = async (): Promise<MetadataRoute.Sitemap> => {
-  const result = await getAllPosts();
-  const posts = result?.posts ?? [];
+  const result = await getAllPosts({ pageSize: 1000 });
+  const posts = result?.posts ?? []; 
 
   const postsMap = posts.map((post) => ({
     url: `https://www.yonghun.me/posts/${post.id}`,
