@@ -131,15 +131,13 @@ jobs:
               );
             }
 
-            if (diffLines.length > 0) {
-              lines.push(
+            lines.push(
                 '<details>',
                 '<summary>SSR vs CSR 차이</summary>',
                 '',
-                ...diffLines,
+                ...(diffLines.length > 0 ? diffLines : ['모든 페이지의 SEO 태그가 SSR과 CSR에서 일치합니다.', '']),
                 '</details>',
               );
-            }
 
             github.rest.issues.createComment({
               issue_number: context.issue.number,
