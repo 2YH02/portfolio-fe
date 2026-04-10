@@ -7,57 +7,14 @@ on:
   pull_request:
 
 jobs:
-  seo-audit:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout portfolio
-        uses: actions/checkout@v4
-
-      - name: Checkout seo-better
-        uses: actions/checkout@v4
-        with:
-          repository: 2YH02/seo-better
-          path: seo-better
-          token: ${{ secrets.SEO_BETTER_TOKEN }}
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: pnpm
-          cache-dependency-path: seo-better/pnpm-lock.yaml
-
-      - name: Install dependencies
-        working-directory: seo-better
-        run: pnpm install
-
-      - name: Build seo-better
-        working-directory: seo-better
-        run: |
-          pnpm run build:core
-          pnpm run build:cli
-
-      - name: Run SEO audit
-        shell: bash
-        run: |
-          set -o pipefail
-          node seo-better/packages/cli/dist/cli.js \
-            --fail-on fail \
-            --json \
-            https://www.yonghun.me \
-            https://www.yonghun.me/posts \
-            https://www.yonghun.me/projects/1 \
-            | tee seo-report.json
-
-      - name: Upload SEO report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: seo-report
-          path: seo-report.json
+  seo:
+    uses: 2YH02/seo-better/.github/workflows/reusable-audit.yml@main
+    with:
+      urls: >-
+        https://www.yonghun.me
+        https://www.yonghun.me/posts
+        https://www.yonghun.me/projects/1
+    secrets:
+      token: ${{ secrets.SEO_BETTER_TOKEN }}
+    permissions:
+      pull-requests: write
