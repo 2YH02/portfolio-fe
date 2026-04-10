@@ -35,10 +35,15 @@ jobs:
         working-directory: seo-better
         run: pnpm install && pnpm run build:core && pnpm run build:cli
 
+      - name: Install Playwright Chromium
+        working-directory: seo-better
+        run: npx playwright install chromium --with-deps
+
       - name: Run SEO audit
         run: |
           node seo-better/packages/cli/dist/cli.js \
             --fail-on fail \
+            --diff \
             --json \
             https://www.yonghun.me \
             https://www.yonghun.me/posts \
@@ -86,6 +91,23 @@ jobs:
               ];
             });
 
+            const diffLines = results.flatMap(r => {
+              const entries = r.diff?.entries ?? [];
+              const notable = entries.filter(e =>
+                e.diffType === 'dom-only' || e.diffType === 'ssr-only' || e.diffType === 'mismatch'
+              );
+              if (notable.length === 0) return [];
+              return [
+                `**${r.url}**`,
+                ...notable.map(e => {
+                  if (e.diffType === 'dom-only') return `- ${e.name}: SSR 없음 → CSR 추가됨 (검색봇 미인식 가능)`;
+                  if (e.diffType === 'ssr-only') return `- ${e.name}: SSR 있음 → CSR 제거됨`;
+                  return `- ${e.name}: SSR \`${e.ssrValue}\` → CSR \`${e.domValue}\``;
+                }),
+                ''
+              ];
+            });
+
             const lines = [
               header,
               '',
@@ -105,6 +127,16 @@ jobs:
                 '<summary>WARN 목록</summary>',
                 '',
                 ...warnLines,
+                '</details>',
+              );
+            }
+
+            if (diffLines.length > 0) {
+              lines.push(
+                '<details>',
+                '<summary>SSR vs CSR 차이</summary>',
+                '',
+                ...diffLines,
                 '</details>',
               );
             }
