@@ -6,6 +6,9 @@ on:
       - main
   pull_request:
 
+permissions:
+  pull-requests: write
+
 jobs:
   seo:
     uses: 2YH02/seo-better/.github/workflows/reusable-audit.yml@main
@@ -16,5 +19,3 @@ jobs:
         https://www.yonghun.me/projects/1
     secrets:
       token: ${{ secrets.SEO_BETTER_TOKEN }}
-    permissions:
-      pull-requests: write
