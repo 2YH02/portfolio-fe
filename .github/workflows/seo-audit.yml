@@ -48,7 +48,7 @@ jobs:
             https://www.yonghun.me \
             https://www.yonghun.me/posts \
             https://www.yonghun.me/projects/1 \
-            | tee seo-report.json || true
+            2>/dev/null | tee seo-report.json || true
 
       - name: Comment PR
         if: github.event_name == 'pull_request'
