@@ -37,7 +37,7 @@ jobs:
 
       - name: Install Playwright Chromium
         working-directory: seo-better
-        run: npx playwright install chromium --with-deps
+        run: pnpm exec playwright install chromium --with-deps
 
       - name: Run SEO audit
         run: |
