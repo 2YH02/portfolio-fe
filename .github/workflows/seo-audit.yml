@@ -10,12 +10,128 @@ permissions:
   pull-requests: write
 
 jobs:
-  seo:
-    uses: 2YH02/seo-better/.github/workflows/reusable-audit.yml@main
-    with:
-      urls: >-
-        https://www.yonghun.me
-        https://www.yonghun.me/posts
-        https://www.yonghun.me/projects/1
-    secrets:
-      token: ${{ secrets.SEO_BETTER_TOKEN }}
+  audit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout seo-better
+        uses: actions/checkout@v4
+        with:
+          repository: 2YH02/seo-better
+          path: seo-better
+          token: ${{ secrets.SEO_BETTER_TOKEN }}
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+          cache-dependency-path: seo-better/pnpm-lock.yaml
+
+      - name: Install & Build
+        working-directory: seo-better
+        run: pnpm install && pnpm run build:core && pnpm run build:cli
+
+      - name: Run SEO audit
+        run: |
+          node seo-better/packages/cli/dist/cli.js \
+            --fail-on fail \
+            --json \
+            https://www.yonghun.me \
+            https://www.yonghun.me/posts \
+            https://www.yonghun.me/projects/1 \
+            | tee seo-report.json || true
+
+      - name: Comment PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const report = JSON.parse(fs.readFileSync('seo-report.json', 'utf8'));
+            const results = Array.isArray(report) ? report : [report];
+
+            const totalFails = results.reduce((s, r) => s + (r.audit?.summary?.failed ?? 0), 0);
+
+            const header = totalFails > 0
+              ? '## SEO Audit — 수정 필요'
+              : '## SEO Audit — 통과';
+
+            const summaryRows = results.map(r => {
+              const s = r.audit?.summary;
+              const status = (s?.failed ?? 0) > 0 ? 'FAIL' : (s?.warnings ?? 0) > 0 ? 'WARN' : 'PASS';
+              return `| ${status} | ${r.url} | ${s?.score ?? '-'} | ${s?.failed ?? '-'} | ${s?.warnings ?? '-'} |`;
+            }).join('\n');
+
+            const failLines = results.flatMap(r => {
+              const fails = (r.audit?.checks ?? []).filter(c => c.status === 'fail');
+              if (fails.length === 0) return [];
+              return [
+                `**${r.url}**`,
+                ...fails.map(c => `- ${c.name}: ${c.message}${c.details ? `\n  > ${c.details}` : ''}`),
+                ''
+              ];
+            });
+
+            const warnLines = results.flatMap(r => {
+              const warns = (r.audit?.checks ?? []).filter(c => c.status === 'warn');
+              if (warns.length === 0) return [];
+              return [
+                `**${r.url}**`,
+                ...warns.map(c => `- ${c.name}: ${c.message}`),
+                ''
+              ];
+            });
+
+            const lines = [
+              header,
+              '',
+              '| 결과 | URL | 점수 | FAIL | WARN |',
+              '|------|-----|:----:|:----:|:----:|',
+              summaryRows,
+              '',
+            ];
+
+            if (failLines.length > 0) {
+              lines.push('### FAIL', '', ...failLines);
+            }
+
+            if (warnLines.length > 0) {
+              lines.push(
+                '<details>',
+                '<summary>WARN 목록</summary>',
+                '',
+                ...warnLines,
+                '</details>',
+              );
+            }
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: lines.join('\n')
+            });
+
+      - name: Fail if audit failed
+        shell: bash
+        run: |
+          FAILS=$(node -e "
+            const r = require('./seo-report.json');
+            const a = Array.isArray(r) ? r : [r];
+            console.log(a.reduce((s, x) => s + (x.audit?.summary?.failed ?? 0), 0));
+          ")
+          if [ "$FAILS" -gt 0 ]; then
+            echo "SEO audit failed with $FAILS issue(s)"
+            exit 1
+          fi
+
+      - name: Upload SEO report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: seo-report
+          path: seo-report.json
