@@ -19,6 +19,7 @@ jobs:
         with:
           repository: 2YH02/seo-better
           path: seo-better
+          token: ${{ secrets.SEO_BETTER_TOKEN }}
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
