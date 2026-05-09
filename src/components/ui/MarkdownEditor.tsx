@@ -34,6 +34,8 @@ const TOOLBAR_ITEMS: ToolbarItem[] = [
   { label: "코드블록", before: "```\n", after: "\n```", placeholder: "코드" },
   { label: "인용", before: "> ", after: "", placeholder: "인용문" },
   { label: "링크", before: "[", after: "](url)", placeholder: "텍스트" },
+  { type: "divider" },
+  { label: "표", before: "\n| 헤더1 | 헤더2 | 헤더3 |\n|-------|-------|-------|\n| 내용  | 내용  | 내용  |\n", after: "", placeholder: "" },
 ];
 
 const MarkdownEditor = ({ value, onChange }: MarkdownEditorProps) => {
