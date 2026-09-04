@@ -1,0 +1,54 @@
+<svg width="1600" height="900" viewBox="0 0 1600 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="80" y1="60" x2="1510" y2="840" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0A0A0A"/>
+      <stop offset="1" stop-color="#11152D"/>
+    </linearGradient>
+    <linearGradient id="line" x1="420" y1="450" x2="1180" y2="450" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#6470FF"/>
+      <stop offset="1" stop-color="#60A5FA"/>
+    </linearGradient>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="16" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <circle cx="1360" cy="120" r="190" fill="#3943D4" fill-opacity="0.12" filter="url(#glow)"/>
+  <circle cx="190" cy="780" r="220" fill="#2563EB" fill-opacity="0.10" filter="url(#glow)"/>
+
+  <text x="120" y="145" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="58" font-weight="700">MyAccount React MFE 전환</text>
+  <text x="124" y="202" fill="#A5B4FC" font-family="Inter, Arial, sans-serif" font-size="25">사용자 흐름을 유지하며 화면과 데이터의 경계를 다시 설계하다</text>
+
+  <rect x="110" y="315" width="350" height="270" rx="28" fill="#FFFFFF" fill-opacity="0.06" stroke="#FFFFFF" stroke-opacity="0.14"/>
+  <text x="155" y="380" fill="#CBD5E1" font-family="Inter, Arial, sans-serif" font-size="23" font-weight="600">LEGACY</text>
+  <text x="155" y="448" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="42" font-weight="700">JSP</text>
+  <text x="155" y="500" fill="#94A3B8" font-family="Inter, Arial, sans-serif" font-size="22">JavaScript · Controller</text>
+  <text x="155" y="542" fill="#94A3B8" font-family="Inter, Arial, sans-serif" font-size="22">서버 렌더링 데이터 흐름</text>
+
+  <path d="M500 450H685" stroke="url(#line)" stroke-width="8" stroke-linecap="round"/>
+  <path d="M650 416L689 450L650 484" stroke="#6D7BFF" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="517" y="405" fill="#A5B4FC" font-family="Inter, Arial, sans-serif" font-size="19" font-weight="600">흐름 분석</text>
+
+  <rect x="715" y="315" width="350" height="270" rx="28" fill="#FFFFFF" fill-opacity="0.08" stroke="#818CF8" stroke-opacity="0.55"/>
+  <text x="760" y="380" fill="#A5B4FC" font-family="Inter, Arial, sans-serif" font-size="23" font-weight="600">BOUNDARY</text>
+  <text x="760" y="448" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="38" font-weight="700">UI ↔ API</text>
+  <text x="760" y="500" fill="#CBD5E1" font-family="Inter, Arial, sans-serif" font-size="22">컴포넌트와 데이터 경계</text>
+  <text x="760" y="542" fill="#CBD5E1" font-family="Inter, Arial, sans-serif" font-size="22">UX 동등성 · 점진 전환</text>
+
+  <path d="M1105 450H1245" stroke="url(#line)" stroke-width="8" stroke-linecap="round"/>
+  <path d="M1210 416L1249 450L1210 484" stroke="#60A5FA" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="1115" y="405" fill="#93C5FD" font-family="Inter, Arial, sans-serif" font-size="19" font-weight="600">점진 전환</text>
+
+  <rect x="1275" y="315" width="215" height="270" rx="28" fill="#2563EB" fill-opacity="0.14" stroke="#60A5FA" stroke-opacity="0.6"/>
+  <text x="1315" y="380" fill="#93C5FD" font-family="Inter, Arial, sans-serif" font-size="23" font-weight="600">NEW</text>
+  <text x="1315" y="448" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="38" font-weight="700">React</text>
+  <text x="1315" y="496" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="31" font-weight="700">MFE</text>
+  <text x="1315" y="542" fill="#BFDBFE" font-family="Inter, Arial, sans-serif" font-size="20">JSON API</text>
+
+  <rect x="120" y="690" width="1360" height="88" rx="22" fill="#FFFFFF" fill-opacity="0.05" stroke="#FFFFFF" stroke-opacity="0.1"/>
+  <text x="165" y="745" fill="#CBD5E1" font-family="Inter, Arial, sans-serif" font-size="22">Review UI · Compound Components · Storybook · Accessibility · Migration Assistant MCP</text>
+</svg>
