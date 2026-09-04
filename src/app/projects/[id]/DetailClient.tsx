@@ -54,26 +54,30 @@ export default function DetailClient({ project }: { project: Project }) {
             {project.period && (
               <DetailRow label="개발 기간">{project.period}</DetailRow>
             )}
-            <DetailRow label="개발 인원">
-              {formatMembers(project.members)}
-            </DetailRow>
+            {project.members !== null && (
+              <DetailRow label="개발 인원">
+                {formatMembers(project.members)}
+              </DetailRow>
+            )}
             <DetailRow label="담당 역할">{project.role}</DetailRow>
-            <DetailRow label="깃허브 저장소">
-              {project.repository.map((url) => {
-                return (
-                  <div key={url}>
-                    <a
-                      href={url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-[rgb(0,123,255)] hover:underline"
-                    >
-                      {url}
-                    </a>
-                  </div>
-                );
-              })}
-            </DetailRow>
+            {project.repository.length > 0 && (
+              <DetailRow label="깃허브 저장소">
+                {project.repository.map((url) => {
+                  return (
+                    <div key={url}>
+                      <a
+                        href={url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[rgb(0,123,255)] hover:underline"
+                      >
+                        {url}
+                      </a>
+                    </div>
+                  );
+                })}
+              </DetailRow>
+            )}
             {project.deployUrl && (
               <DetailRow label="배포 주소">
                 <a
@@ -146,47 +150,51 @@ export default function DetailClient({ project }: { project: Project }) {
                     <h3 className="text-lg font-semibold text-indigo-200 mb-4">
                       {curCard === i ? sec.title : sec.titleSum || sec.title}
                     </h3>
-                    <ul className="list-disc list-inside space-y-1 text-white md:text-gray-300 md:group-hover:text-white">
+                    <div className="text-white md:text-gray-300 md:group-hover:text-white">
                       {curCard === i ? (
-                        <>
+                        <div>
                           {sec.content.text ? (
-                            <>
+                            <ul className="list-disc list-inside space-y-1">
                               {sec.content.text?.map((b, j) => (
                                 <li key={j} className="my-2">
                                   {b}
                                 </li>
                               ))}
-                            </>
+                            </ul>
                           ) : (
-                            <>
-                              <p className="text-lg font-bold text-white">
-                                문제
-                              </p>
-                              {sec.content.problem?.map((b, j) => (
-                                <li key={j} className="my-2">
-                                  {b}
-                                </li>
-                              ))}
-                              <div className="my-4" />
-                              <p className="text-lg font-bold text-white">
-                                해결
-                              </p>
-                              {sec.content.solution?.map((b, j) => (
-                                <li key={j} className="my-2">
-                                  {b}
-                                </li>
-                              ))}
-                            </>
+                            <div className="space-y-4">
+                              {[
+                                ["배경", sec.content.background],
+                                ["문제", sec.content.problem],
+                                ["해결", sec.content.solution],
+                                ["결과", sec.content.result],
+                              ].map(([label, items]) =>
+                                items ? (
+                                  <section key={label as string}>
+                                    <p className="text-lg font-bold text-white mb-2">
+                                      {label as string}
+                                    </p>
+                                    <ul className="list-disc list-inside space-y-1">
+                                      {(items as string[]).map((item, j) => (
+                                        <li key={j} className="my-2">
+                                          {item}
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  </section>
+                                ) : null
+                              )}
+                            </div>
                           )}
-                        </>
+                        </div>
                       ) : (
-                        <>
+                        <ul className="list-disc list-inside space-y-1">
                           {sec.summary.map((b, j) => (
                             <li key={j}>{b}</li>
                           ))}
-                        </>
+                        </ul>
                       )}
-                    </ul>
+                    </div>
                   </GlassBox>
                 </motion.div>
               ))}
@@ -234,29 +242,31 @@ export default function DetailClient({ project }: { project: Project }) {
         )}
 
         {/* 이미지 */}
-        <div className="mb-10">
-          <h3 className="text-left text-2xl text-indigo-400 font-bold my-6">
-            구현 이미지
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {project.images.map((src) => (
-              <div
-                key={src}
-                className={cn(
-                  "relative w-full rounded-lg overflow-hidden aspect-[4/3] cursor-zoom-in"
-                )}
-                onClick={() => setCurImage(src)}
-              >
-                <Image
-                  src={src}
-                  alt={`${project.title} screenshot`}
-                  fill
-                  className={cn("object-cover")}
-                />
-              </div>
-            ))}
+        {project.images.length > 0 && (
+          <div className="mb-10">
+            <h3 className="text-left text-2xl text-indigo-400 font-bold my-6">
+              구현 이미지
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {project.images.map((src) => (
+                <div
+                  key={src}
+                  className={cn(
+                    "relative w-full rounded-lg overflow-hidden aspect-[4/3] cursor-zoom-in"
+                  )}
+                  onClick={() => setCurImage(src)}
+                >
+                  <Image
+                    src={src}
+                    alt={`${project.title} screenshot`}
+                    fill
+                    className={cn("object-cover")}
+                  />
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </motion.div>
 
       {/* 이미지 모달 */}
