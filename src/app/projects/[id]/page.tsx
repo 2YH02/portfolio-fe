@@ -31,13 +31,13 @@ export const generateMetadata = async ({
       url: `https://www.yonghun.me/projects/${id}`,
       title: `프로젝트 - ${project.title}`,
       description: project.description,
-      images: project.images[0],
+      images: project.images[0] || project.thumbnail,
     },
     twitter: {
       card: "summary_large_image",
       title: `프로젝트 - ${project.title}`,
       description: project.description,
-      images: project.images[0],
+      images: project.images[0] || project.thumbnail,
     },
   };
 };
@@ -61,7 +61,7 @@ export default async function Page({
     name: project.title,
     description: project.description,
     url: `https://www.yonghun.me/projects/${id}`,
-    image: project.images[0],
+    image: project.images[0] || project.thumbnail,
     keywords: project.techStack.join(", "),
     author: {
       "@type": "Person",
