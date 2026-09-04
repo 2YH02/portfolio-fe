@@ -6,8 +6,10 @@ export type Members = {
 };
 
 export type SectionContent = {
+  background?: string[];
   problem?: string[];
   solution?: string[];
+  result?: string[];
   text?: string[];
 };
 
@@ -36,6 +38,100 @@ export interface Project {
 }
 
 export const projects: Project[] = [
+  {
+    id: 5,
+    title: "MyAccount React MFE 전환",
+    thumbnail: "/myaccount-migration.svg",
+    members: null,
+    role: "프론트엔드 · 마이그레이션",
+    repository: [],
+    techStack: [
+      "React",
+      "TypeScript",
+      "Module Federation",
+      "Storybook",
+      "JSP",
+      "Spring MVC",
+    ],
+    images: [],
+    description:
+      "운영 중인 JSP 서버 렌더링 MyAccount를 React MFE로 점진적으로 전환한 프로젝트입니다. 사용자가 전환을 눈치채지 못하는 UX 동등성을 유지하면서, 레거시 데이터 흐름을 분석해 React 컴포넌트와 API의 경계를 설계하고 재사용 가능한 공통 UI를 구축했습니다.",
+    sections: [
+      {
+        title: "화면만이 아니라 데이터 창구부터",
+        titleSum: "React 화면과 API 경계 설계",
+        summary: [
+          "JSP·JavaScript·Controller에 분산된 데이터 흐름 역추적",
+          "작성 가능 리뷰 화면 및 조회 API 1종 운영 배포",
+        ],
+        content: {
+          background: [
+            "JSP로 서버 렌더링되던 MyAccount를 기존 사용자 경험을 유지하면서 React MFE로 점진적으로 전환했습니다.",
+          ],
+          problem: [
+            "기존 구조는 서버가 데이터 조회부터 HTML 렌더링까지 담당해 React에서 독립적으로 사용할 JSON API가 없었습니다.",
+            "화면 로직과 데이터 의존성이 JSP·JavaScript·Controller에 흩어져 있어, 구현에 앞서 기존 동작을 코드에서 역추적해야 했습니다.",
+          ],
+          solution: [
+            "기존 사용자 흐름과 데이터 전달 구조를 분석해 React 컴포넌트와 API의 경계를 먼저 확정한 뒤 양쪽을 구현했습니다.",
+            "React에서는 작성 가능 리뷰 목록과 페이지네이션, Context 기반 리뷰 작성 모달, 제출 중복 방지를 구현하고 Spring에서는 조회 JSON API 4종을 직접 개발했습니다.",
+          ],
+          result: [
+            "작성 가능 리뷰 화면과 조회 API 1종을 운영 배포했습니다.",
+            "추가 조회 API 3종은 구현을 완료했으며 프로젝트 종료로 배포되지 않았습니다. 배포되고 검증된 범위와 구현 완료 범위를 구분해 성과를 정리했습니다.",
+          ],
+        },
+      },
+      {
+        title: "React 전환을 위한 공통 UI 자산",
+        titleSum: "재사용 가능한 공통 UI",
+        summary: [
+          "Context 기반 Tab 컴파운드 컴포넌트 설계",
+          "PopupLayer 스크롤 복원과 테이블 접근성 개선",
+        ],
+        content: {
+          problem: [
+            "화면별로 UI를 다시 만들면 전환 속도와 일관성이 떨어지고, 기존 PopupLayer는 닫힐 때 페이지 스크롤을 최상단으로 이동시키는 문제가 있었습니다.",
+            "MyEvent의 목록은 div로만 구성돼 스크린리더가 데이터 셀과 열 제목의 관계를 파악하기 어려웠습니다.",
+          ],
+          solution: [
+            "Tab의 List·Item·Panel이 활성 상태를 공유하도록 Context 기반 컴파운드 컴포넌트로 설계하고, variant 체계와 Storybook 문서를 구성했습니다.",
+            "PopupLayer를 열기 전 스크롤 위치를 저장하고 닫을 때 복원하도록 수정했으며, fullHeight variant를 추가했습니다.",
+            "MyEvent는 table·thead·th(scope)를 사용하는 시맨틱 구조로 변경해 스크린리더가 각 셀을 열 제목과 연결해 읽도록 개선했습니다.",
+          ],
+          result: [
+            "Tab·PopupLayer와 Storybook 문서를 이후 MyAccount 또는 다른 화면의 React 전환에서 다시 사용할 수 있는 공통 자산으로 남겼습니다.",
+          ],
+        },
+      },
+      {
+        title: "반복되는 전환 작업을 도구로",
+        titleSum: "Migration Assistant MCP",
+        summary: [
+          "마이그레이션 반복 작업을 지원하는 MCP 도구 7종 설계·개발",
+          "코드 탐색과 전환 계획 수립 과정을 도구 호출로 전환",
+        ],
+        content: {
+          background: [
+            "화면을 옮길 때마다 레거시 데이터 흐름 역추적, 참고 컴포넌트 탐색, 전환 계획 수립, JSP 응답의 JSON API 전환이 반복됐습니다.",
+          ],
+          problem: [
+            "AI를 활용해도 개발자가 매번 관련 파일과 프로젝트 규칙을 찾아 제공해야 해, 구현보다 정확한 맥락을 전달하는 과정이 새로운 병목이 됐습니다.",
+          ],
+          solution: [
+            "에이전트가 코드베이스에서 직접 사실과 맥락을 수집할 수 있도록 Migration Assistant MCP 서버를 설계·개발했습니다.",
+            "레거시 기능 분석, 프로젝트 구조 분석, 참고 컴포넌트 탐색, 전환 계획 생성, JSP→JSON API 변환, React 컴포넌트 생성, 진행 상황 추적의 7개 도구로 구성했습니다.",
+          ],
+          result: [
+            "전환 착수 단계에서 반복되던 코드 탐색과 구현 계획 수립 과정을 도구 호출로 대체했습니다.",
+          ],
+        },
+      },
+    ],
+    reflection: `이 프로젝트를 통해 레거시 화면을 React로 옮기는 일은 UI를 다시 작성하는 것만으로 끝나지 않는다는 점을 배웠습니다. 기존 사용자 흐름과 데이터 의존성을 먼저 이해하고, 화면과 API의 경계를 다시 설계해야 사용자가 전환을 눈치채지 않는 점진적 마이그레이션이 가능했습니다.
+
+또한 구현을 완료한 것과 실제 운영 환경에 배포해 검증한 것은 다른 성과라고 생각하게 됐습니다. 이후에는 배포·검증된 범위와 구현 완료 범위를 구분해 기록하고, 개선 효과를 확인할 수단이 없다면 측정 도구까지 함께 만드는 기준을 갖게 됐습니다.`,
+  },
   {
     id: 1,
     title: "대한민국 철봉 지도",
