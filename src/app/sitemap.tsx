@@ -19,7 +19,7 @@ const sitemap = async (): Promise<MetadataRoute.Sitemap> => {
     priority: 0.7,
   }));
 
-  const routesMap = ["", "/about", "/posts"].map((route) => ({
+  const routesMap = ["", "/about", "/posts", "/games"].map((route) => ({
     url: `https://www.yonghun.me${route}`,
     changeFrequency: "weekly" as const,
     priority: route === "" ? 1.0 : 0.9,

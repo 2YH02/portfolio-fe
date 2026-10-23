@@ -8,6 +8,7 @@ interface NavProps {
   projectsDelay?: number;
   aboutDelay?: number;
   postsDelay?: number;
+  gamesDelay?: number;
   className?: React.ComponentProps<"div">["className"];
 }
 
@@ -16,6 +17,7 @@ const Nav = ({
   projectsDelay = 0,
   aboutDelay = 0,
   postsDelay = 0,
+  gamesDelay = 0,
   className,
 }: NavProps) => {
   return (
@@ -24,27 +26,32 @@ const Nav = ({
       <GlassBox className={cn("py-0 rounded-full hidden sm:block", className)}>
         <ul className="flex">
           <li className="shrink-0">
-            <DelayedLink ms={homeDelay} className="py-4 px-8" href="/">
+            <DelayedLink ms={homeDelay} className="py-4 px-6 md:px-8" href="/">
               HOME
             </DelayedLink>
           </li>
           <li className="shrink-0">
             <DelayedLink
               ms={projectsDelay}
-              className="py-4 px-8"
+              className="py-4 px-6 md:px-8"
               href="/projects"
             >
               PROJECTS
             </DelayedLink>
           </li>
           <li className="shrink-0">
-            <DelayedLink ms={aboutDelay} className="py-4 px-8" href="/about">
+            <DelayedLink ms={aboutDelay} className="py-4 px-6 md:px-8" href="/about">
               ABOUT
             </DelayedLink>
           </li>
           <li className="shrink-0">
-            <DelayedLink ms={postsDelay} className="py-4 px-8" href="/posts">
+            <DelayedLink ms={postsDelay} className="py-4 px-6 md:px-8" href="/posts">
               POSTS
+            </DelayedLink>
+          </li>
+          <li className="shrink-0">
+            <DelayedLink ms={gamesDelay} className="py-4 px-6 md:px-8" href="/games">
+              GAMES
             </DelayedLink>
           </li>
         </ul>

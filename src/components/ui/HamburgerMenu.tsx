@@ -69,6 +69,11 @@ export default function HamburgerMenu() {
                 POSTS
               </DelayedLink>
             </li>
+            <li>
+              <DelayedLink ms={0} className="w-full h-full py-2" href="/games">
+                GAMES
+              </DelayedLink>
+            </li>
           </ul>
         </nav>
       </div>
