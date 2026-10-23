@@ -52,7 +52,7 @@ export default function Games() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={`${game.title} 플레이하기 (새 탭)`}
-                className="block h-full"
+                className="w-full h-full"
               >
                 <GlassBox withAction className="h-full p-0">
                   <div className="relative aspect-video overflow-hidden rounded-t-2xl">
