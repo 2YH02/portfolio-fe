@@ -42,7 +42,7 @@ export default function Projects() {
       <section className="mx-auto max-w-6xl px-6 pt-32 pb-24 sm:pt-36">
         <h1 className="text-xl mb-2">Projects</h1>
         <p className="text-sm text-gray-400 mb-16">
-          직접 기획하고 개발하며 문제를 풀어본 프로젝트들입니다.
+          서비스를 운영하며 마주한 문제와, 해결을 위해 내린 기술적 판단을 담았습니다.
         </p>
 
         <ol className="flex flex-col gap-20 md:gap-28">
@@ -59,7 +59,7 @@ export default function Projects() {
                   >
                     <Image
                       src={project.thumbnail}
-                      alt={`${project.title} 대표 이미지`}
+                      alt={project.thumbnailAlt}
                       fill
                       sizes="(min-width: 768px) 560px, 100vw"
                       priority={i === 0}
@@ -68,8 +68,8 @@ export default function Projects() {
                   </GlassBox>
 
                   <div className="flex flex-col gap-4">
-                    <span className="font-mono text-sm text-blue-500">
-                      {String(i + 1).padStart(2, "0")}
+                    <span className="text-sm text-blue-500">
+                      {String(i + 1).padStart(2, "0")} / {project.category}
                     </span>
                     <h2 className="text-2xl font-bold md:text-3xl group-hover:drop-shadow-glow">
                       {project.title}

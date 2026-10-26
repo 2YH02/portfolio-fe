@@ -99,32 +99,41 @@ export default async function Page({
           </span>
         </Link>
 
-        {/* 대표 이미지 */}
-        <GlassBox className="relative aspect-video p-0 overflow-hidden">
-          <Image
-            src={project.thumbnail}
-            alt={`${project.title} 대표 이미지`}
-            fill
-            sizes="(min-width: 896px) 848px, 100vw"
-            priority
-            className="object-cover"
-          />
-        </GlassBox>
-
         {/* 기본 정보 */}
         <header className="mt-10 mb-12">
+          <p className="mb-3 text-sm text-indigo-200">{project.category}</p>
           <h1 className="text-3xl font-bold md:text-4xl">{project.title}</h1>
           <p className="mt-3 text-lg text-gray-300">{project.tagline}</p>
+          <ul className="mt-6 grid gap-3 sm:grid-cols-3">
+            {project.highlights.map((highlight) => (
+              <li key={highlight} className="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-indigo-200">{highlight}</li>
+            ))}
+          </ul>
+
+          <figure className="mt-8">
+            <GlassBox className="relative aspect-video p-0 overflow-hidden">
+              <Image
+                src={project.thumbnail}
+                alt={project.thumbnailAlt}
+                fill
+                sizes="(min-width: 896px) 848px, 100vw"
+                priority
+                className="object-cover"
+              />
+            </GlassBox>
+            <figcaption className="mt-2 text-xs text-gray-500">실제 서비스 화면을 바탕으로 제작한 이미지</figcaption>
+          </figure>
 
           <GlassBox className="mt-8">
             <dl className="grid grid-cols-1 gap-x-8 gap-y-5 text-sm sm:grid-cols-2">
               <MetaItem label="담당 역할">{project.role}</MetaItem>
               <MetaItem label="개발 인원">
-                {formatMembers(project.members)}
+                {project.teamSize ? `${project.teamSize}명` : formatMembers(project.members)}
               </MetaItem>
               {project.period && (
                 <MetaItem label="개발 기간">{project.period}</MetaItem>
               )}
+              <MetaItem label="직접 담당한 범위" className="sm:col-span-2">{project.contribution}</MetaItem>
               <MetaItem label="링크">
                 <div className="flex flex-col gap-1">
                   {project.deployUrl && (
@@ -137,6 +146,9 @@ export default async function Page({
                       {url.replace("https://github.com/", "GitHub · ")}
                     </ExternalLink>
                   ))}
+                  {project.repositoryPrivate && (
+                    <span className="text-gray-400">GitHub · 비공개 저장소</span>
+                  )}
                 </div>
               </MetaItem>
               <MetaItem label="사용 기술" className="sm:col-span-2">
@@ -157,14 +169,14 @@ export default async function Page({
 
         {/* 개요 */}
         <section className="mb-16">
-          <SectionTitle>개요</SectionTitle>
+          <SectionTitle>어떤 프로젝트인가요</SectionTitle>
           <p className="leading-relaxed text-gray-300">{project.description}</p>
         </section>
 
         {/* 핵심 기능 및 성과 */}
         {project.sections && (
           <section className="mb-16">
-            <SectionTitle>핵심 기능 및 성과</SectionTitle>
+            <SectionTitle>주요 문제와 기술적 판단</SectionTitle>
             <ol className="flex flex-col gap-10">
               {project.sections.map((section, i) => (
                 <SectionItem key={section.title} section={section} index={i} />
@@ -173,9 +185,23 @@ export default async function Page({
           </section>
         )}
 
+        {project.evidenceNote && (
+          <aside className="mb-16 rounded-2xl border border-white/10 bg-white/5 p-5 text-sm leading-relaxed text-gray-400">
+            <p className="mb-2 font-semibold text-indigo-200">검증과 해석 범위</p>
+            {project.evidenceNote}
+          </aside>
+        )}
+
+        <section className="mb-16">
+          <SectionTitle>함께 구현한 것들</SectionTitle>
+          <ul className="flex flex-col gap-3 text-gray-300">
+            {project.additionalWork.map((item) => <li key={item} className="border-l border-white/10 pl-4 leading-relaxed">{item}</li>)}
+          </ul>
+        </section>
+
         {/* 회고 */}
         <section className="mb-20">
-          <SectionTitle>회고</SectionTitle>
+          <SectionTitle>경험 이후 달라진 점</SectionTitle>
           <p className="whitespace-pre-wrap leading-relaxed text-gray-300">
             {project.reflection}
           </p>
@@ -246,8 +272,6 @@ const SectionItem = ({
   section: Section;
   index: number;
 }) => {
-  const { problem, solution, text } = section.content;
-
   return (
     <li className="border-l border-white/10 pl-6">
       <span className="font-mono text-sm text-blue-500">
@@ -255,24 +279,19 @@ const SectionItem = ({
       </span>
       <h3 className="mt-1 mb-4 text-lg font-semibold">{section.title}</h3>
 
-      {text ? (
-        <Paragraphs items={text} />
-      ) : (
-        <div className="flex flex-col gap-5">
-          {problem && (
-            <div>
-              <p className="mb-2 text-sm font-semibold text-red-300">문제</p>
-              <Paragraphs items={problem} />
-            </div>
-          )}
-          {solution && (
-            <div>
-              <p className="mb-2 text-sm font-semibold text-indigo-200">해결</p>
-              <Paragraphs items={solution} />
-            </div>
-          )}
-        </div>
-      )}
+      <dl className="flex flex-col gap-5">
+        {[
+          { label: "상황과 제약", items: [section.context] },
+          { label: "선택과 이유", items: [section.decision] },
+          { label: "구현", items: section.implementation },
+          { label: "결과", items: [section.outcome] },
+        ].map(({ label, items }) => (
+          <div key={label}>
+            <dt className="mb-2 text-sm font-semibold text-indigo-200">{label}</dt>
+            <dd><Paragraphs items={items} /></dd>
+          </div>
+        ))}
+      </dl>
     </li>
   );
 };
