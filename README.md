@@ -2,6 +2,14 @@
 
 > 기술 블로그 및 프로젝트 회고, 개인 작업물을 정리하며 기록하는 포트폴리오 사이트 입니다.
 
+## 검증
+
+- `npm test`: Markdown·Quill HTML 정제와 JSON-LD 안전 출력 회귀 테스트
+- `npm run lint`: ESLint 검사
+- `npx tsc --noEmit`: 타입 검사
+
+본문 정제는 서버와 브라우저에서 같은 DOMPurify 정책을 사용합니다. 기존 CI의 Node.js 20과 호환되는 `isomorphic-dompurify` 3.19.x를 사용하며, Node.js 20에서는 20.19 이상, 22에서는 22.13 이상이 필요합니다.
+
 ## 🌐 사이트 주소
 
 👉 [https://www.yonghun.me](https://www.yonghun.me)

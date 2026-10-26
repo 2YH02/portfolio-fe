@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { serializeJsonLd } from "@/lib/content/jsonLd";
 import AboutClient from "./AboutClient";
 
 export const dynamic = "force-static";
@@ -39,7 +40,7 @@ export default function About() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(personJsonLd) }}
       />
       <AboutClient />
     </>

@@ -1,6 +1,7 @@
 import Nav from "@/components/common/Nav";
 import { GlassBox } from "@/components/ui/GlassBox";
 import { projects, type Members, type Section } from "@/data";
+import { serializeJsonLd } from "@/lib/content/jsonLd";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -85,7 +86,7 @@ export default async function Page({
     <main className="relative w-screen h-screen overflow-y-auto overflow-x-hidden">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
       />
       <Nav className="bg-black/40" />
 

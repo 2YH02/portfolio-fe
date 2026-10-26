@@ -1,5 +1,6 @@
 import GoogleAnalytics from "@/components/provider/GoogleAnalytics";
 import PathListener from "@/components/provider/PathListener";
+import { serializeJsonLd } from "@/lib/content/jsonLd";
 import NoiseBackground from "@/components/ui/NoiseBackground";
 import { Spotlight } from "@/components/ui/Spotlight";
 import type { Metadata } from "next";
@@ -70,7 +71,7 @@ export default function RootLayout({
       >
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+          dangerouslySetInnerHTML={{ __html: serializeJsonLd(websiteJsonLd) }}
         />
         {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS ? (
           <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS} />

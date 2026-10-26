@@ -1,4 +1,5 @@
 import { getPostById } from "@/lib/api/blog";
+import { serializeJsonLd } from "@/lib/content/jsonLd";
 import { notFound } from "next/navigation";
 import PostDetailClient from "./PostDetailClient";
 
@@ -106,7 +107,7 @@ export default async function PostDetail({
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
       />
       <PostDetailClient post={data} />
     </>
