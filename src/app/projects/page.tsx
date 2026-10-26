@@ -42,7 +42,7 @@ export default function Projects() {
       <section className="mx-auto max-w-6xl px-6 pt-32 pb-24 sm:pt-36">
         <h1 className="project-list-intro text-xl mb-2">Projects</h1>
         <p className="project-list-intro text-sm text-gray-400 mb-16">
-          서비스를 운영하며 마주한 문제와, 해결을 위해 내린 기술적 판단을 담았습니다.
+          직접 개발하고 운영한 서비스와 라이브러리입니다.
         </p>
 
         <ol className="flex flex-col gap-20 md:gap-28">

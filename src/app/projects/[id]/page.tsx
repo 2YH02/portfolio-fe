@@ -127,7 +127,6 @@ export default async function Page({
                 />
               </GlassBox>
             </ProjectImageTarget>
-            <figcaption className="project-detail-copy mt-2 text-xs text-gray-500">실제 서비스 화면을 바탕으로 제작한 이미지</figcaption>
           </figure>
 
           <GlassBox className="project-detail-copy mt-8">
@@ -139,7 +138,7 @@ export default async function Page({
               {project.period && (
                 <MetaItem label="개발 기간">{project.period}</MetaItem>
               )}
-              <MetaItem label="직접 담당한 범위" className="sm:col-span-2">{project.contribution}</MetaItem>
+              <MetaItem label="담당 작업" className="sm:col-span-2">{project.contribution}</MetaItem>
               <MetaItem label="링크">
                 <div className="flex flex-col gap-1">
                   {project.deployUrl && (
@@ -175,14 +174,14 @@ export default async function Page({
 
         {/* 개요 */}
         <section className="project-detail-copy mb-16">
-          <SectionTitle>어떤 프로젝트인가요</SectionTitle>
+          <SectionTitle>프로젝트 소개</SectionTitle>
           <p className="leading-relaxed text-gray-300">{project.description}</p>
         </section>
 
         {/* 핵심 기능 및 성과 */}
         {project.sections && (
           <section className="project-detail-copy mb-16">
-            <SectionTitle>주요 문제와 기술적 판단</SectionTitle>
+            <SectionTitle>주요 작업</SectionTitle>
             <ol className="flex flex-col gap-10">
               {project.sections.map((section, i) => (
                 <SectionItem key={section.title} section={section} index={i} />
@@ -191,27 +190,14 @@ export default async function Page({
           </section>
         )}
 
-        {project.evidenceNote && (
-          <aside className="project-detail-copy mb-16 rounded-2xl border border-white/10 bg-white/5 p-5 text-sm leading-relaxed text-gray-400">
-            <p className="mb-2 font-semibold text-indigo-200">검증과 해석 범위</p>
-            {project.evidenceNote}
-          </aside>
+        {project.additionalWork.length > 0 && (
+          <section className="project-detail-copy mb-20">
+            <SectionTitle>그 외 작업</SectionTitle>
+            <ul className="flex flex-col gap-3 text-gray-300">
+              {project.additionalWork.map((item) => <li key={item} className="border-l border-white/10 pl-4 leading-relaxed">{item}</li>)}
+            </ul>
+          </section>
         )}
-
-        <section className="project-detail-copy mb-16">
-          <SectionTitle>함께 구현한 것들</SectionTitle>
-          <ul className="flex flex-col gap-3 text-gray-300">
-            {project.additionalWork.map((item) => <li key={item} className="border-l border-white/10 pl-4 leading-relaxed">{item}</li>)}
-          </ul>
-        </section>
-
-        {/* 회고 */}
-        <section className="project-detail-copy mb-20">
-          <SectionTitle>경험 이후 달라진 점</SectionTitle>
-          <p className="whitespace-pre-wrap leading-relaxed text-gray-300">
-            {project.reflection}
-          </p>
-        </section>
 
         {/* 다음 프로젝트 */}
         {next.id !== project.id && (
@@ -285,30 +271,19 @@ const SectionItem = ({
       </span>
       <h3 className="mt-1 mb-4 text-lg font-semibold">{section.title}</h3>
 
-      <dl className="flex flex-col gap-5">
-        {[
-          { label: "상황과 제약", items: [section.context] },
-          { label: "선택과 이유", items: [section.decision] },
-          { label: "구현", items: section.implementation },
-          { label: "결과", items: [section.outcome] },
-        ].map(({ label, items }) => (
-          <div key={label}>
-            <dt className="mb-2 text-sm font-semibold text-indigo-200">{label}</dt>
-            <dd><Paragraphs items={items} /></dd>
-          </div>
+      <p className="mb-4 leading-relaxed text-gray-300">{section.description}</p>
+      <ul className="flex flex-col gap-2 text-gray-300">
+        {section.items.map((item) => (
+          <li key={item} className="flex gap-3 leading-relaxed">
+            <span aria-hidden="true" className="text-gray-500">·</span>
+            <span>{item}</span>
+          </li>
         ))}
-      </dl>
+      </ul>
+      {section.result && <p className="mt-4 leading-relaxed text-indigo-200">{section.result}</p>}
     </li>
   );
 };
-
-const Paragraphs = ({ items }: { items: string[] }) => (
-  <div className="flex flex-col gap-2 leading-relaxed text-gray-300">
-    {items.map((item) => (
-      <p key={item}>{item.trim().replace(/\s+/g, " ")}</p>
-    ))}
-  </div>
-);
 
 function formatMembers(members: Members | null = {}): string {
   if (!members) return "1명";
