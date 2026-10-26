@@ -4,8 +4,8 @@ import { projects } from "@/data";
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
 import { BsArrowRightShort } from "react-icons/bs";
+import { ProjectTransitionLink } from "./components/ProjectTransition";
 
 export const dynamic = "force-static";
 
@@ -36,36 +36,38 @@ export const metadata: Metadata = {
 
 export default function Projects() {
   return (
-    <main className="relative w-screen h-screen overflow-y-auto overflow-x-hidden">
+    <main data-project-list className="relative w-screen h-screen overflow-y-auto overflow-x-hidden">
       <Nav />
 
       <section className="mx-auto max-w-6xl px-6 pt-32 pb-24 sm:pt-36">
-        <h1 className="text-xl mb-2">Projects</h1>
-        <p className="text-sm text-gray-400 mb-16">
+        <h1 className="project-list-intro text-xl mb-2">Projects</h1>
+        <p className="project-list-intro text-sm text-gray-400 mb-16">
           서비스를 운영하며 마주한 문제와, 해결을 위해 내린 기술적 판단을 담았습니다.
         </p>
 
         <ol className="flex flex-col gap-20 md:gap-28">
           {projects.map((project, i) => (
-            <li key={project.id}>
-              <Link href={`/projects/${project.id}`} className="group w-full">
+            <li key={project.id} className="project-card-enter" style={{ animationDelay: `${i * 65}ms` }}>
+              <ProjectTransitionLink href={`/projects/${project.id}`} className="group w-full">
                 <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-2 md:gap-12">
-                  <GlassBox
-                    withAction
+                  <div
+                    data-project-image
                     className={cn(
-                      "relative aspect-video p-0",
+                      "rounded-2xl",
                       i % 2 === 1 && "md:order-2",
                     )}
                   >
-                    <Image
-                      src={project.thumbnail}
-                      alt={project.thumbnailAlt}
-                      fill
-                      sizes="(min-width: 768px) 560px, 100vw"
-                      priority={i === 0}
-                      className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                  </GlassBox>
+                    <GlassBox withAction className="relative aspect-video p-0">
+                      <Image
+                        src={project.thumbnail}
+                        alt={project.thumbnailAlt}
+                        fill
+                        sizes="(min-width: 768px) 560px, 100vw"
+                        priority={i === 0}
+                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                    </GlassBox>
+                  </div>
 
                   <div className="flex flex-col gap-4">
                     <span className="text-sm text-blue-500">
@@ -102,7 +104,7 @@ export default function Projects() {
                     </span>
                   </div>
                 </div>
-              </Link>
+              </ProjectTransitionLink>
             </li>
           ))}
         </ol>

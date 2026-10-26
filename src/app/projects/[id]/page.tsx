@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BsArrowLeftShort, BsArrowRightShort } from "react-icons/bs";
+import { ProjectImageTarget } from "../components/ProjectTransition";
 
 export const dynamic = "force-static";
 
@@ -91,7 +92,7 @@ export default async function Page({
       <article className="mx-auto max-w-4xl px-6 pt-32 pb-24 sm:pt-36">
         <Link
           href="/projects"
-          className="mb-6 text-sm text-gray-400 hover:text-white"
+          className="project-detail-copy mb-6 text-sm text-gray-400 hover:text-white"
         >
           <span className="flex items-center">
             <BsArrowLeftShort size={22} />
@@ -101,30 +102,34 @@ export default async function Page({
 
         {/* 기본 정보 */}
         <header className="mt-10 mb-12">
-          <p className="mb-3 text-sm text-indigo-200">{project.category}</p>
-          <h1 className="text-3xl font-bold md:text-4xl">{project.title}</h1>
-          <p className="mt-3 text-lg text-gray-300">{project.tagline}</p>
-          <ul className="mt-6 grid gap-3 sm:grid-cols-3">
-            {project.highlights.map((highlight) => (
-              <li key={highlight} className="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-indigo-200">{highlight}</li>
-            ))}
-          </ul>
+          <div className="project-detail-copy">
+            <p className="mb-3 text-sm text-indigo-200">{project.category}</p>
+            <h1 className="text-3xl font-bold md:text-4xl">{project.title}</h1>
+            <p className="mt-3 text-lg text-gray-300">{project.tagline}</p>
+            <ul className="mt-6 grid gap-3 sm:grid-cols-3">
+              {project.highlights.map((highlight) => (
+                <li key={highlight} className="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-indigo-200">{highlight}</li>
+              ))}
+            </ul>
+          </div>
 
           <figure className="mt-8">
-            <GlassBox className="relative aspect-video p-0 overflow-hidden">
-              <Image
-                src={project.thumbnail}
-                alt={project.thumbnailAlt}
-                fill
-                sizes="(min-width: 896px) 848px, 100vw"
-                priority
-                className="object-cover"
-              />
-            </GlassBox>
-            <figcaption className="mt-2 text-xs text-gray-500">실제 서비스 화면을 바탕으로 제작한 이미지</figcaption>
+            <ProjectImageTarget id={project.id}>
+              <GlassBox className="relative aspect-video p-0 overflow-hidden">
+                <Image
+                  src={project.thumbnail}
+                  alt={project.thumbnailAlt}
+                  fill
+                  sizes="(min-width: 896px) 848px, 100vw"
+                  priority
+                  className="object-cover"
+                />
+              </GlassBox>
+            </ProjectImageTarget>
+            <figcaption className="project-detail-copy mt-2 text-xs text-gray-500">실제 서비스 화면을 바탕으로 제작한 이미지</figcaption>
           </figure>
 
-          <GlassBox className="mt-8">
+          <GlassBox className="project-detail-copy mt-8">
             <dl className="grid grid-cols-1 gap-x-8 gap-y-5 text-sm sm:grid-cols-2">
               <MetaItem label="담당 역할">{project.role}</MetaItem>
               <MetaItem label="개발 인원">
@@ -168,14 +173,14 @@ export default async function Page({
         </header>
 
         {/* 개요 */}
-        <section className="mb-16">
+        <section className="project-detail-copy mb-16">
           <SectionTitle>어떤 프로젝트인가요</SectionTitle>
           <p className="leading-relaxed text-gray-300">{project.description}</p>
         </section>
 
         {/* 핵심 기능 및 성과 */}
         {project.sections && (
-          <section className="mb-16">
+          <section className="project-detail-copy mb-16">
             <SectionTitle>주요 문제와 기술적 판단</SectionTitle>
             <ol className="flex flex-col gap-10">
               {project.sections.map((section, i) => (
@@ -186,13 +191,13 @@ export default async function Page({
         )}
 
         {project.evidenceNote && (
-          <aside className="mb-16 rounded-2xl border border-white/10 bg-white/5 p-5 text-sm leading-relaxed text-gray-400">
+          <aside className="project-detail-copy mb-16 rounded-2xl border border-white/10 bg-white/5 p-5 text-sm leading-relaxed text-gray-400">
             <p className="mb-2 font-semibold text-indigo-200">검증과 해석 범위</p>
             {project.evidenceNote}
           </aside>
         )}
 
-        <section className="mb-16">
+        <section className="project-detail-copy mb-16">
           <SectionTitle>함께 구현한 것들</SectionTitle>
           <ul className="flex flex-col gap-3 text-gray-300">
             {project.additionalWork.map((item) => <li key={item} className="border-l border-white/10 pl-4 leading-relaxed">{item}</li>)}
@@ -200,7 +205,7 @@ export default async function Page({
         </section>
 
         {/* 회고 */}
-        <section className="mb-20">
+        <section className="project-detail-copy mb-20">
           <SectionTitle>경험 이후 달라진 점</SectionTitle>
           <p className="whitespace-pre-wrap leading-relaxed text-gray-300">
             {project.reflection}
@@ -209,7 +214,7 @@ export default async function Page({
 
         {/* 다음 프로젝트 */}
         {next.id !== project.id && (
-          <Link href={`/projects/${next.id}`} className="w-full">
+          <Link href={`/projects/${next.id}`} className="project-detail-copy w-full">
             <GlassBox withAction className="flex items-center justify-between">
               <div>
                 <p className="text-xs text-gray-400">다음 프로젝트</p>
