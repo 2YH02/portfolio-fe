@@ -10,12 +10,12 @@ import { ProjectTransitionLink } from "./components/ProjectTransition";
 export const dynamic = "force-static";
 
 const description =
-  "개발 프로젝트 목록입니다. Next.js, React, Rust 등 다양한 기술 스택을 활용한 프로젝트를 확인해 보세요.";
+  "Next.js, React, Rust, Three.js로 만든 웹 서비스, 라이브러리와 브라우저 게임을 소개합니다.";
 
 export const metadata: Metadata = {
   title: "Yonghun - 프로젝트",
   description,
-  keywords: "웹개발,프론트엔드,프로젝트,포트폴리오,Next.js,React,Rust",
+  keywords: "웹개발,프론트엔드,프로젝트,포트폴리오,Next.js,React,Rust,Three.js,WebGL",
   alternates: {
     canonical: "https://www.yonghun.me/projects",
   },
@@ -42,7 +42,7 @@ export default function Projects() {
       <section className="mx-auto max-w-6xl px-6 pt-32 pb-24 sm:pt-36">
         <h1 className="project-list-intro text-xl mb-2">Projects</h1>
         <p className="project-list-intro text-sm text-gray-400 mb-16">
-          직접 개발하고 운영한 서비스와 라이브러리입니다.
+          직접 개발한 서비스, 라이브러리와 게임입니다.
         </p>
 
         <ol className="flex flex-col gap-20 md:gap-28">
