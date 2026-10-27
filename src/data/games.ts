@@ -14,6 +14,17 @@ export interface Game {
 
 export const games: Game[] = [
   {
+    slug: "tiny-wizard",
+    title: "Tiny Wizard · 작은 마법사",
+    url: "https://wizard.yonghun.me/",
+    thumbnail: "/projects/tiny-wizard-cover.webp",
+    thumbnailAlt: "픽셀 3D 정원에서 마법사가 불꽃 마법으로 몬스터를 상대하는 Tiny Wizard",
+    description: "마법을 조합하고 적의 공격을 피하며 살아남는 픽셀 3D 액션 로그라이크.",
+    genres: ["액션", "로그라이크", "생존"],
+    techStack: ["TypeScript", "React Three Fiber", "Three.js", "Vite"],
+    status: "playable",
+  },
+  {
     slug: "castmorrow",
     title: "Castmorrow",
     url: "https://castmorrow.yonghun.me/",

@@ -8,6 +8,7 @@ export type Section = {
 };
 
 export interface Project {
+  kind: "service" | "game";
   id: number;
   title: string;
   category: string;
@@ -31,7 +32,59 @@ export interface Project {
 
 export const projects: Project[] = [
   {
+    id: 7,
+    kind: "game",
+    title: "Tiny Wizard · 작은 마법사",
+    category: "픽셀 3D 액션 로그라이크",
+    thumbnail: "/projects/tiny-wizard-cover.webp",
+    thumbnailAlt: "픽셀 3D 정원에서 마법사가 불꽃 마법으로 몬스터를 상대하는 Tiny Wizard",
+    teamSize: 1,
+    role: "1인 개발",
+    contribution: "게임 규칙과 전투 로직, 3D 장면, UI와 모바일 조작, 사운드, 저장과 밸런스 검증을 개발했습니다.",
+    repository: [],
+    deployUrl: "https://wizard.yonghun.me/",
+    techStack: ["TypeScript", "React", "React Three Fiber", "Three.js", "Vite", "Web Audio API"],
+    tagline: "마법을 조합하고 적의 공격을 피하며 살아남는 픽셀 3D 액션 로그라이크",
+    highlights: [
+      "12종 마법과 10종 조합, 원소 반응을 통한 빌드 구성",
+      "전투 시뮬레이션과 3D 렌더링 분리",
+      "자동 플레이 봇으로 생존 시간과 빌드별 승률 비교",
+    ],
+    description: "자동으로 발사되는 마법으로 적을 처치하고, 레벨업마다 강화와 새 마법을 선택하는 웹 게임입니다. 정원을 탐험하며 조합과 유물을 모으고, 보스를 쓰러뜨려 다음 지역으로 진행합니다. 키보드와 모바일 터치로 플레이할 수 있습니다.",
+    sections: [
+      {
+        title: "렌더링과 분리한 전투 시뮬레이션",
+        description: "전투 규칙을 Game 클래스에 모으고, 시간 간격과 이동 입력으로 게임을 진행하도록 구성했습니다.",
+        items: [
+          "마법 성장·조합·원소 반응과 적의 이동·충돌·보스 패턴을 전투 시뮬레이션에서 처리합니다.",
+          "장면과 HUD는 같은 게임 인스턴스를 읽고, 위치는 React state 밖에서 갱신합니다.",
+          "HUD는 80ms 간격으로 갱신하고 3D 캔버스는 메모이제이션해 UI 갱신이 장면 전체로 이어지지 않도록 했습니다.",
+        ],
+      },
+      {
+        title: "자동 플레이로 확인하는 밸런스",
+        description: "강화를 아무렇게나 골라도 쉽게 이기는 문제를 확인하기 위해 브라우저 없이 한 판을 끝까지 진행하는 봇을 만들었습니다.",
+        items: [
+          "입력이 없는 봇, 회피하며 무작위로 강화하는 봇, 조합을 우선하는 봇의 결과를 비교합니다.",
+          "회피 판단에 0.2초 반응 간격을 두고 승률, 사망 시점, 성장 속도와 첫 조합 시점을 기록합니다.",
+          "측정 결과를 보며 적의 성장과 마법 수치를 조정하고, 전투 규칙은 별도 단위 테스트로 확인합니다.",
+        ],
+      },
+      {
+        title: "픽셀 3D 장면과 모바일 조작",
+        description: "쿼터뷰 정사영 카메라와 낮은 내부 해상도로 픽셀 느낌을 만들고, 시간대에 따라 조명과 그림자를 바꿨습니다.",
+        items: [
+          "반복되는 오브젝트는 인스턴스 배치로 표현하고, 적·투사체·효과의 동시 개수를 제한합니다.",
+          "모바일 조이스틱과 대시 버튼을 제공하고, 창이 비활성화되면 자동으로 일시정지합니다.",
+          "Web Audio로 효과음을 합성하고 기록·영구 성장·설정을 localStorage에 저장합니다. 움직임 감소 설정에 따라 화면 흔들림과 일부 효과를 생략합니다.",
+        ],
+      },
+    ],
+    additionalWork: [],
+  },
+  {
     id: 5,
+    kind: "service",
     title: "PagerWho",
     category: "인시던트 대응 서비스",
     thumbnail: "/projects/pagerwho-refined-cover.webp",
@@ -93,6 +146,7 @@ export const projects: Project[] = [
   },
   {
     id: 1,
+    kind: "service",
     title: "대한민국 철봉 지도",
     category: "지도 서비스",
     thumbnail: "/projects/pullup-refined-cover.webp",
@@ -138,6 +192,7 @@ export const projects: Project[] = [
   },
   {
     id: 6,
+    kind: "game",
     title: "Castmorrow",
     category: "픽셀 3D 웹 게임",
     thumbnail: "/projects/castmorrow-cover.webp",
@@ -194,6 +249,7 @@ export const projects: Project[] = [
   },
   {
     id: 4,
+    kind: "service",
     title: "img-toolkit",
     category: "이미지 처리 라이브러리",
     thumbnail: "/projects/img-toolkit-refined-cover.webp",
@@ -233,6 +289,7 @@ export const projects: Project[] = [
   },
   {
     id: 0,
+    kind: "service",
     title: "포트폴리오 및 블로그",
     category: "개인 웹사이트",
     thumbnail: "/projects/portfolio-refined-cover.webp",
