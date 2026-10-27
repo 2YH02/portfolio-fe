@@ -21,7 +21,7 @@ export const generateMetadata = async ({
 }) => {
   const { id } = await params;
 
-  const project = projects.find((project) => project.id === ~~id);
+  const project = /^\d+$/.test(id) ? projects.find((project) => String(project.id) === id) : undefined;
 
   if (!project) {
     return {
@@ -59,7 +59,7 @@ export default async function Page({
 }) {
   const { id } = await params;
 
-  const index = projects.findIndex((project) => project.id === ~~id);
+  const index = /^\d+$/.test(id) ? projects.findIndex((project) => String(project.id) === id) : -1;
   const project = projects[index];
 
   if (!project) {

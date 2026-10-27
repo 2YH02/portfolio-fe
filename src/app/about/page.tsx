@@ -6,6 +6,7 @@ export const dynamic = "force-static";
 
 export const metadata: Metadata = {
   title: "Yonghun - About",
+  alternates: { canonical: "https://www.yonghun.me/about" },
   description:
     "기억에 남는 순간을 만들고 싶은 웹 개발자 이용훈입니다. JavaScript, TypeScript, React, Next.js, Rust 등을 다룹니다.",
   keywords: "웹개발자,프론트엔드,이용훈,포트폴리오,소개",

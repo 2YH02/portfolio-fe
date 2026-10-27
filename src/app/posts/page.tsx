@@ -5,7 +5,7 @@ import PostClient from "./PostClient";
 
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
 const DEFAULT_DESCRIPTION =
-  "프론트엔드/백엔드 개발 경험, 성능 최적화, 프로젝트 회고를 기록하는 개발 블로그입니다.";
+  "웹 개발자 이용훈의 개발 블로그입니다. 프론트엔드와 백엔드 구현 과정, 성능 최적화, 직접 만든 서비스와 게임의 개발 경험을 기록합니다.";
 
 const parsePage = (value: string | string[] | undefined) => {
   const raw = Array.isArray(value) ? value[0] : value;

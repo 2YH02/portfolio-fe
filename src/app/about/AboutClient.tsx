@@ -20,7 +20,7 @@ export default function AboutClient() {
         transition={{ duration: 0.6, ease: "easeOut" }}
       >
         <div className="flex justify-center items-center gap-4 text-4xl font-bold text-indigo-400">
-          {about.name}
+          <h1>{about.name}</h1>
           <GlassBox className="relative w-12 h-12 p-1">
             <a
               href="https://github.com/2YH02"
@@ -38,16 +38,16 @@ export default function AboutClient() {
           </GlassBox>
         </div>
         <div className="mb-10">
-          <h3 className="text-left text-2xl text-indigo-400 font-bold my-6">
+          <h2 className="text-left text-2xl text-indigo-400 font-bold my-6">
             About Me
-          </h3>
+          </h2>
           <div className="whitespace-pre-wrap text-gray-300">{about.text}</div>
         </div>
 
         <div className="mb-10">
-          <h3 className="text-left text-2xl text-indigo-400 font-bold my-6">
+          <h2 className="text-left text-2xl text-indigo-400 font-bold my-6">
             My Skills
-          </h3>
+          </h2>
           <motion.ul
             className="space-y-4 text-gray-300"
             initial="hidden"

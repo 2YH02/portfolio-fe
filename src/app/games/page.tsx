@@ -4,15 +4,19 @@ import { ProjectLike } from "@/components/ui/ProjectLike";
 import { games } from "@/data/games";
 import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
+import { serializeJsonLd } from "@/lib/content/jsonLd";
 import { BsArrowUpRight } from "react-icons/bs";
 
 export const dynamic = "force-static";
 
 const description =
-  "직접 만든 웹 게임 모음입니다. 브라우저에서 바로 플레이해 보세요.";
+  "Tiny Wizard의 마법 조합 액션과 Castmorrow의 픽셀 바다 낚시를 즐겨보세요. 웹 개발자 이용훈이 직접 만든 무료 브라우저 게임을 설치 없이 플레이할 수 있습니다.";
+
+const title = "무료 브라우저 게임 | Tiny Wizard·Castmorrow - Yonghun";
 
 export const metadata: Metadata = {
-  title: "Yonghun - 게임",
+  title,
   description,
   keywords: "웹게임,인디게임,브라우저게임,Three.js,WebGL,포트폴리오",
   alternates: {
@@ -21,13 +25,13 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     url: "https://www.yonghun.me/games",
-    title: "Yonghun - 게임",
+    title,
     description,
     images: games[0]?.thumbnail ?? "/metaimg.png",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Yonghun - 게임",
+    title,
     description,
     images: games[0]?.thumbnail ?? "/metaimg.png",
   },
@@ -36,10 +40,25 @@ export const metadata: Metadata = {
 export default function Games() {
   return (
     <main className="relative w-screen h-screen overflow-y-auto overflow-x-hidden">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd({
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        name: title,
+        description,
+        url: "https://www.yonghun.me/games",
+        mainEntity: {
+          "@type": "ItemList",
+          itemListElement: games.map((game, index) => ({
+            "@type": "ListItem",
+            position: index + 1,
+            item: { "@type": "VideoGame", name: game.title, url: game.url, description: game.description, image: `https://www.yonghun.me${game.thumbnail}`, genre: game.genres, gamePlatform: "Web browser" },
+          })),
+        },
+      }) }} />
       <Nav />
 
       <section className="mx-auto max-w-5xl px-6 pt-32 pb-20 sm:pt-36">
-        <h1 className="text-xl mb-2">Games</h1>
+        <h1 className="text-xl mb-2">브라우저 게임</h1>
         <p className="text-sm text-gray-400 mb-8">
           개인 프로젝트로 만든 게임들입니다. 이미지나 플레이를 누르면 새 탭에서 바로
           플레이할 수 있어요.
@@ -88,6 +107,9 @@ export default function Games() {
                       </a>
                     </div>
                     <p className="text-sm text-gray-300">{game.description}</p>
+                    <Link href={`/projects/${game.projectId}`} className="text-xs text-[#7c86ff] hover:text-white">
+                      {game.title} 개발 이야기 →
+                    </Link>
                     <div className="flex flex-wrap gap-2 text-xs">
                       {game.genres.map((genre) => (
                         <span key={genre} className="text-indigo-200">

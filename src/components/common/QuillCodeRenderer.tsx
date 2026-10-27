@@ -2,21 +2,22 @@
 
 import hljs from "@/lib/highlight/hljs";
 import { sanitizePostHtml } from "@/lib/content/sanitizeHtml";
-import { useEffect, useRef } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 
 interface QuillCodeRendererProps {
   htmlString: string;
 }
 
-export default function QuillCodeRenderer({
+function QuillCodeRenderer({
   htmlString,
 }: QuillCodeRendererProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const html = useMemo(() => sanitizePostHtml(htmlString), [htmlString]);
 
   useEffect(() => {
     if (containerRef.current) {
       const prevEl = document.createElement("div");
-      prevEl.innerHTML = sanitizePostHtml(htmlString);
+      prevEl.innerHTML = html;
       prevEl
         .querySelectorAll(".ql-ui, .ql-picker, .ql-picker-options, option")
         .forEach((el) => el.remove());
@@ -57,7 +58,9 @@ export default function QuillCodeRenderer({
         hljs.highlightElement(block as HTMLElement);
       });
     }
-  }, [htmlString]);
+  }, [html]);
 
-  return <div ref={containerRef} className="whitespace-pre-wrap" />;
+  return <div ref={containerRef} className="whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: html }} />;
 }
+
+export default React.memo(QuillCodeRenderer);

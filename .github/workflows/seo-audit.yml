@@ -5,21 +5,25 @@ on:
     branches:
       - main
   pull_request:
+  workflow_dispatch:
 
 permissions:
+  contents: read
   pull-requests: write
 
 jobs:
   audit:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      NEXT_PUBLIC_API_BASE_URL: http://127.0.0.1:8086
+      NEXT_PUBLIC_SUPABASE_URL: https://seo-fixture.supabase.co
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: seo-fixture-public-key
+      SEO_FIXTURE: "1"
 
     steps:
-      - name: Checkout seo-better
+      - name: Checkout portfolio
         uses: actions/checkout@v4
-        with:
-          repository: 2YH02/seo-better
-          path: seo-better
-          token: ${{ secrets.SEO_BETTER_TOKEN }}
 
       - uses: pnpm/action-setup@v4
         with:
@@ -28,30 +32,74 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: pnpm
-          cache-dependency-path: seo-better/pnpm-lock.yaml
+          cache: npm
+
+      - name: Install portfolio dependencies
+        run: npm ci
+
+      - name: Verify code and initial blog HTML
+        run: npm run lint && npm test
+
+      - name: Start read-only fixture API
+        run: |
+          node scripts/seo-fixture.mjs > seo-fixture.log 2>&1 &
+          for attempt in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:8086/posts > /dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat seo-fixture.log
+          exit 1
+
+      - name: Build this commit
+        run: npm run build
+
+      - name: Start production app
+        run: |
+          npm run start > seo-app.log 2>&1 &
+          for attempt in {1..60}; do
+            if curl --fail --silent http://localhost:3000 > /dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat seo-app.log
+          exit 1
+
+      - name: Check canonical, sitemap and crawlable content
+        run: npm run seo:check
+
+      - name: Checkout seo-better
+        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.fork == false
+        uses: actions/checkout@v4
+        with:
+          repository: 2YH02/seo-better
+          ref: 8bed493e01f18a0e3687236aa70e7397db5dac1c
+          path: seo-better
+          token: ${{ secrets.SEO_BETTER_TOKEN }}
 
       - name: Install & Build
+        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.fork == false
         working-directory: seo-better
-        run: pnpm install && pnpm run build:core && pnpm run build:cli
+        run: pnpm install --frozen-lockfile && pnpm run build:core && pnpm run build:cli
 
       - name: Install Playwright Chromium
+        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.fork == false
         working-directory: seo-better
         run: pnpm --filter @seo-better/cli exec playwright install chromium --with-deps
 
       - name: Run SEO audit
+        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.fork == false
+        id: seo
+        continue-on-error: true
         run: |
+          mapfile -t URLS < <(node -e "fetch('http://localhost:3000/sitemap.xml').then(r => { if (!r.ok) throw new Error('sitemap failed'); return r.text(); }).then(xml => { for (const match of xml.matchAll(/<loc>(.*?)<\/loc>/g)) console.log(match[1].replace('https://www.yonghun.me', 'http://localhost:3000')); }).catch(e => { console.error(e); process.exitCode = 1; })")
+          if [ "${#URLS[@]}" -eq 0 ]; then echo "No audit URLs"; exit 1; fi
           node seo-better/packages/cli/dist/cli.js \
             --fail-on fail \
             --diff \
             --json \
-            https://www.yonghun.me \
-            https://www.yonghun.me/posts \
-            https://www.yonghun.me/projects/1 \
-            2>/dev/null | tee seo-report.json || true
+            "${URLS[@]}" | tee seo-report.json
 
       - name: Comment PR
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == false && hashFiles('seo-report.json') != ''
         uses: actions/github-script@v7
         with:
           script: |
@@ -147,21 +195,18 @@ jobs:
             });
 
       - name: Fail if audit failed
+        if: always() && steps.seo.outcome == 'failure'
         shell: bash
         run: |
-          FAILS=$(node -e "
-            const r = require('./seo-report.json');
-            const a = Array.isArray(r) ? r : [r];
-            console.log(a.reduce((s, x) => s + (x.audit?.summary?.failed ?? 0), 0));
-          ")
-          if [ "$FAILS" -gt 0 ]; then
-            echo "SEO audit failed with $FAILS issue(s)"
-            exit 1
-          fi
+          echo "SEO audit failed. Inspect the report and command logs."
+          exit 1
 
       - name: Upload SEO report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: seo-report
-          path: seo-report.json
+          path: |
+            seo-report.json
+            seo-app.log
+            seo-fixture.log

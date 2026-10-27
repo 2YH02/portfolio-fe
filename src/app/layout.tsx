@@ -29,19 +29,19 @@ const geistNanum = Nanum_Pen_Script({
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.yonghun.me"),
   title: "Yonghun - 포트폴리오",
-  description: "기억에 남는 순간을 만들고 싶은 웹 개발자 이용훈입니다.",
+  description: "웹 개발자 이용훈의 포트폴리오입니다. 직접 만든 웹 서비스와 개발 도구, 브라우저 게임을 소개하고 구현 과정과 성능 개선 경험을 기록합니다.",
   keywords: "웹개발,프론트엔드,백엔드,포트폴리오,개발자,블로그",
   openGraph: {
     type: "website",
     url: "https://www.yonghun.me",
     title: "웹 개발자 이용훈 포트폴리오",
-    description: "기억에 남는 순간을 만들고 싶은 웹 개발자 이용훈입니다.",
+    description: "웹 개발자 이용훈의 포트폴리오입니다. 직접 만든 웹 서비스와 개발 도구, 브라우저 게임을 소개하고 구현 과정과 성능 개선 경험을 기록합니다.",
     images: "/metaimg.png",
   },
   twitter: {
     card: "summary_large_image",
     title: "웹 개발자 이용훈 포트폴리오",
-    description: "기억에 남는 순간을 만들고 싶은 웹 개발자 이용훈입니다.",
+    description: "웹 개발자 이용훈의 포트폴리오입니다. 직접 만든 웹 서비스와 개발 도구, 브라우저 게임을 소개하고 구현 과정과 성능 개선 경험을 기록합니다.",
     images: "/metaimg.png",
   },
   verification: {
@@ -56,7 +56,7 @@ const websiteJsonLd = {
   "@type": "WebSite",
   name: "Yonghun - 포트폴리오",
   url: "https://www.yonghun.me",
-  description: "기억에 남는 순간을 만들고 싶은 웹 개발자 이용훈입니다.",
+  description: "웹 개발자 이용훈이 만든 웹 서비스, 개발 도구와 브라우저 게임을 소개하는 포트폴리오입니다.",
 };
 
 export default function RootLayout({

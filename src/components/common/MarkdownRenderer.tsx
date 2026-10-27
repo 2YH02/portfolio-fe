@@ -3,7 +3,7 @@
 import hljs from "@/lib/highlight/hljs";
 import { sanitizePostHtml } from "@/lib/content/sanitizeHtml";
 import { marked } from "marked";
-import { useEffect, useRef } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 
 marked.use({ gfm: true });
 
@@ -11,16 +11,15 @@ interface MarkdownRendererProps {
   markdown: string;
 }
 
-export default function MarkdownRenderer({ markdown }: MarkdownRendererProps) {
+function MarkdownRenderer({ markdown }: MarkdownRendererProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const html = useMemo(() => sanitizePostHtml(marked.parse(markdown, { async: false })), [markdown]);
 
   useEffect(() => {
     if (!containerRef.current) return;
 
-    const html = marked.parse(markdown) as string;
-
     const div = document.createElement("div");
-    div.innerHTML = sanitizePostHtml(html);
+    div.innerHTML = html;
 
     div.querySelectorAll("img").forEach((img) => {
       if (!img.getAttribute("alt")) img.setAttribute("alt", "");
@@ -34,7 +33,9 @@ export default function MarkdownRenderer({ markdown }: MarkdownRendererProps) {
     containerRef.current.querySelectorAll("pre code").forEach((block) => {
       hljs.highlightElement(block as HTMLElement);
     });
-  }, [markdown]);
+  }, [html]);
 
-  return <div ref={containerRef} />;
+  return <div ref={containerRef} dangerouslySetInnerHTML={{ __html: html }} />;
 }
+
+export default React.memo(MarkdownRenderer);
