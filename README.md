@@ -36,6 +36,10 @@
 
 ### 🔹 사용자 경험 개선
 
+- 프로젝트 상세와 Games 카드에서 블로그와 같은 하트 애니메이션을 사용합니다. `games.ts`의 `projectId`로 같은 게임의 좋아요를 공유합니다.
+- 좋아요 API는 `GET /api/projects/{id}/likes`, `POST`·`DELETE /api/projects/{id}/like`입니다. 백엔드의 project 모듈과 migration 2를 먼저 배포해야 합니다. 새 프로젝트 추가 시 백엔드의 허용 ID도 추가합니다.
+- `portfolio_like_client` 쿠키의 브라우저 식별자로 중복을 방지하며, 쿠키를 지우거나 다른 브라우저를 쓰면 다른 방문자로 취급됩니다.
+
 - Framer Motion을 활용한 부드러운 페이지 전환 애니메이션
 - 주요 콘텐츠 이미지에 Blur Placeholder 적용 (LCP 최적화)
 - Skeleton UI 적용

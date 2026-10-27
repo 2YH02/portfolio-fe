@@ -1,5 +1,6 @@
 import Nav from "@/components/common/Nav";
 import { GlassBox } from "@/components/ui/GlassBox";
+import { ProjectLike } from "@/components/ui/ProjectLike";
 import { projects, type Members, type Section } from "@/data";
 import { serializeJsonLd } from "@/lib/content/jsonLd";
 import Image from "next/image";
@@ -200,6 +201,8 @@ export default async function Page({
         )}
 
         {/* 다음 프로젝트 */}
+        <ProjectLike projectId={project.id} />
+
         {next.id !== project.id && (
           <Link href={`/projects/${next.id}`} className="project-detail-copy w-full">
             <GlassBox withAction className="flex items-center justify-between">

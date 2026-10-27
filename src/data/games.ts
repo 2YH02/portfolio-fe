@@ -1,6 +1,7 @@
 export type GameStatus = "playable" | "developing";
 
 export interface Game {
+  projectId: number;
   slug: string;
   title: string;
   url: string;
@@ -15,6 +16,7 @@ export interface Game {
 export const games: Game[] = [
   {
     slug: "tiny-wizard",
+    projectId: 7,
     title: "Tiny Wizard · 작은 마법사",
     url: "https://wizard.yonghun.me/",
     thumbnail: "/projects/tiny-wizard-cover.webp",
@@ -26,6 +28,7 @@ export const games: Game[] = [
   },
   {
     slug: "castmorrow",
+    projectId: 6,
     title: "Castmorrow",
     url: "https://castmorrow.yonghun.me/",
     thumbnail: "/projects/castmorrow-cover.webp",

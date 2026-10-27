@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence, useAnimationControls } from "motion/react";
-import { useEffect, useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 
 const MAX_CLICKS = 7;
 
@@ -74,9 +74,11 @@ interface LikeButtonProps {
   onUnlike?: () => Promise<unknown>;
   initialDone?: boolean;
   initialLikeCount?: number;
+  prompt?: string;
+  compact?: boolean;
 }
 
-export function LikeButton({ onLike, onUnlike, initialDone, initialLikeCount }: LikeButtonProps) {
+export function LikeButton({ onLike, onUnlike, initialDone, initialLikeCount, prompt = "글이 도움됐나요?", compact = false }: LikeButtonProps) {
   const uid = useId();
   const gradId = `lk-grad${uid}`;
   const clipId = `lk-clip${uid}`;
@@ -91,6 +93,7 @@ export function LikeButton({ onLike, onUnlike, initialDone, initialLikeCount }: 
   const [hasUnliked, setHasUnliked] = useState(false);
   const [likeOffset, setLikeOffset] = useState(0);
   const controls = useAnimationControls();
+  const saving = useRef(false);
 
   useEffect(() => {
     if (initialDone && !done && !hasUnliked) {
@@ -104,6 +107,7 @@ export function LikeButton({ onLike, onUnlike, initialDone, initialLikeCount }: 
   const inUnlikeWarn = done && pokeCount > UNLIKE_WARN_START;
 
   const handleClick = async () => {
+    if (saving.current) return;
     if (done) {
       const next = pokeCount + 1;
       setPokeCount(next);
@@ -111,6 +115,7 @@ export function LikeButton({ onLike, onUnlike, initialDone, initialLikeCount }: 
       if (next > UNLIKE_WARN_START + UNLIKE_WARN_MESSAGES.length) {
         // 좋아요 취소 실행
         try {
+          saving.current = true;
           await onUnlike?.();
           setDone(false);
           setBurst(false);
@@ -125,6 +130,7 @@ export function LikeButton({ onLike, onUnlike, initialDone, initialLikeCount }: 
             transition: { duration: 0.5, ease: "easeInOut" },
           });
         }
+        saving.current = false;
         return;
       }
 
@@ -161,6 +167,7 @@ export function LikeButton({ onLike, onUnlike, initialDone, initialLikeCount }: 
       setDone(true);
       setLikeOffset((prev) => prev + 1);
       try {
+        saving.current = true;
         await onLike?.();
       } catch {
         setBurst(false);
@@ -178,6 +185,7 @@ export function LikeButton({ onLike, onUnlike, initialDone, initialLikeCount }: 
           setClicks(0);
         }, 900);
       }
+      saving.current = false;
     }
   };
 
@@ -185,11 +193,12 @@ export function LikeButton({ onLike, onUnlike, initialDone, initialLikeCount }: 
     initialLikeCount !== undefined ? initialLikeCount + likeOffset : undefined;
 
   return (
-    <div className="flex flex-col items-center gap-2 select-none">
+    <div className={`relative flex flex-col items-center gap-2 select-none ${compact ? "[&>span]:absolute [&>span]:right-0 [&>span]:top-full [&>span]:mt-2 [&>span]:whitespace-nowrap [&>span]:rounded-lg [&>span]:bg-black/90 [&>span]:px-2 [&>span]:py-1" : ""}`}>
       <motion.button
         onClick={handleClick}
         aria-label={done ? "이미 좋아요 누름" : `좋아요 ${clicks}/${MAX_CLICKS}`}
-        className="relative w-14 h-14 cursor-pointer focus-visible:outline-none overflow-visible"
+        type="button"
+        className={`relative ${compact ? "w-11 h-11 p-2" : "w-14 h-14"} cursor-pointer rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-indigo-300 overflow-visible`}
         animate={controls}
         whileHover={{ scale: done ? 1.05 : 1.1 }}
         transition={{ type: "spring", stiffness: 400, damping: 20 }}
@@ -383,7 +392,7 @@ export function LikeButton({ onLike, onUnlike, initialDone, initialLikeCount }: 
 
       {/* label */}
       <AnimatePresence mode="wait">
-        {error ? (
+        {compact && !error && !isPoked && !inUnlikeWarn && (clicks === 0 || (done && likeOffset === 0)) ? null : error ? (
           <motion.span
             key="error"
             className="text-xs text-red-400"
@@ -436,7 +445,7 @@ export function LikeButton({ onLike, onUnlike, initialDone, initialLikeCount }: 
             exit={{ opacity: 0, y: 4 }}
             transition={{ duration: 0.2 }}
           >
-            {clicks === 0 ? "글이 도움됐나요?" : PROGRESS_MESSAGES[clicks - 1]}
+            {clicks === 0 ? prompt : PROGRESS_MESSAGES[clicks - 1]}
           </motion.span>
         )}
       </AnimatePresence>

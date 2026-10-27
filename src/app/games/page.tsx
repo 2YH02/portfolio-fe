@@ -1,5 +1,6 @@
 import Nav from "@/components/common/Nav";
 import { GlassBox } from "@/components/ui/GlassBox";
+import { ProjectLike } from "@/components/ui/ProjectLike";
 import { games } from "@/data/games";
 import type { Metadata } from "next";
 import Image from "next/image";
@@ -40,21 +41,22 @@ export default function Games() {
       <section className="mx-auto max-w-5xl px-6 pt-32 pb-20 sm:pt-36">
         <h1 className="text-xl mb-2">Games</h1>
         <p className="text-sm text-gray-400 mb-8">
-          개인 프로젝트로 만든 게임들입니다. 카드를 누르면 새 탭에서 바로
+          개인 프로젝트로 만든 게임들입니다. 이미지나 플레이를 누르면 새 탭에서 바로
           플레이할 수 있어요.
         </p>
 
         <ul className="grid grid-cols-1 gap-6 md:grid-cols-2">
           {games.map((game, i) => (
             <li key={game.slug}>
-              <a
+              <GlassBox withAction className="h-full p-0">
+                <div className="relative">
+                <a
                 href={game.url}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={`${game.title} 플레이하기 (새 탭)`}
-                className="w-full h-full"
+                className="block w-full rounded-t-2xl focus-visible:outline focus-visible:outline-indigo-300"
               >
-                <GlassBox withAction className="h-full p-0">
                   <div className="relative aspect-video overflow-hidden rounded-t-2xl">
                     <Image
                       src={game.thumbnail}
@@ -70,16 +72,20 @@ export default function Games() {
                       </span>
                     )}
                   </div>
-
+                </a>
+                  <ProjectLike projectId={game.projectId} compact />
+                </div>
                   <div className="flex flex-col gap-3 p-6">
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between gap-3">
                       <h2 className="text-lg font-semibold group-hover:drop-shadow-glow">
                         {game.title}
                       </h2>
-                      <span className="flex items-center gap-1 text-sm text-blue-500">
-                        플레이
-                        <BsArrowUpRight />
-                      </span>
+                      <a href={game.url} target="_blank" rel="noopener noreferrer" aria-label={`${game.title} 플레이하기 (새 탭)`} className="flex shrink-0 items-center gap-1 whitespace-nowrap rounded-lg px-2 py-2 text-sm text-blue-500 hover:text-white focus-visible:outline focus-visible:outline-indigo-300">
+                        <span className="inline-flex items-center gap-1">
+                          플레이
+                          <BsArrowUpRight className="shrink-0" />
+                        </span>
+                      </a>
                     </div>
                     <p className="text-sm text-gray-300">{game.description}</p>
                     <div className="flex flex-wrap gap-2 text-xs">
@@ -100,8 +106,7 @@ export default function Games() {
                       ))}
                     </div>
                   </div>
-                </GlassBox>
-              </a>
+              </GlassBox>
             </li>
           ))}
         </ul>
