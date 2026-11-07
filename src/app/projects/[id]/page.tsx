@@ -171,6 +171,27 @@ export default async function Page({
               </MetaItem>
             </dl>
           </GlassBox>
+          {project.appStore && (
+            <GlassBox className="project-detail-copy mt-6 flex flex-col items-start gap-6 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="mb-2 text-xs text-indigo-200">App Store 출시</p>
+                <h2 className="text-lg font-semibold">{project.title}을 iPhone에서 만나보세요</h2>
+                <p className="mt-2 text-sm leading-relaxed text-gray-400">
+                  QR 코드를 스캔하거나 아래 링크로 설치 페이지를 열 수 있습니다.
+                </p>
+                <a href={project.appStore.url} target="_blank" rel="noopener noreferrer"
+                  className="mt-4 inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/10 px-4 py-3 text-sm text-white transition-colors hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-indigo-300">
+                  App Store에서 보기
+                </a>
+              </div>
+              <a href={project.appStore.url} target="_blank" rel="noopener noreferrer"
+                aria-label={`${project.title} App Store 설치 페이지 열기`}
+                className="shrink-0 overflow-hidden rounded-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-indigo-300">
+                <Image src={project.appStore.qrImage} alt={`${project.title} App Store 설치 페이지 QR 코드`}
+                  width={144} height={144} className="h-36 w-36" unoptimized />
+              </a>
+            </GlassBox>
+          )}
         </header>
 
         {/* 개요 */}

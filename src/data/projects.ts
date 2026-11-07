@@ -21,6 +21,7 @@ export interface Project {
   repository: string[];
   repositoryPrivate?: boolean;
   deployUrl?: string;
+  appStore?: { url: string; qrImage: string };
   techStack: string[];
   tagline: string;
   highlights: string[];
@@ -31,6 +32,75 @@ export interface Project {
 }
 
 export const projects: Project[] = [
+  {
+    id: 8,
+    kind: "service",
+    title: "Pinnned",
+    category: "여행 기록 서비스 · 모바일 앱",
+    thumbnail: "/projects/pinnned-cover.webp",
+    thumbnailAlt: "Pinnned 로고와 여행 지도·앨범을 보여주는 두 대의 모바일 화면",
+    members: { ui: 2, fe: 2, be: 3 },
+    role: "프론트엔드 · 앱 · 분석 서버 개발",
+    contribution: "팀 프로젝트에서 여행 지도와 기록·리캡 UI를 개발하고, Expo 앱과 Go 기반 분석 서버를 구현했습니다.",
+    repository: [],
+    deployUrl: "https://www.pinnned.co.kr",
+    appStore: {
+      url: "https://apps.apple.com/kr/app/pinnned/id6826485099",
+      qrImage: "/projects/pinnned-app-store-qr.png",
+    },
+    period: "2026.05 ~ 2026.11",
+    techStack: ["React", "TypeScript", "TanStack Start", "TanStack Query", "GraphQL", "Google Maps", "Zustand", "Expo", "React Native", "Go"],
+    tagline: "함께 다녀온 여행을 지도 위에 사진과 키워드로 기록하는 서비스",
+    highlights: [
+      "여행팟 기반 공동 기록과 지도·앨범·리캡",
+      "Expo 앱 개발 및 App Store 출시",
+      "Go 기반 이벤트 수집·분석 대시보드 구현",
+    ],
+    description: "여행팟을 만들고 초대 링크나 코드로 동행자를 초대해, 함께 방문한 지역의 사진과 키워드·코멘트를 남기는 여행 기록 서비스입니다. 지도와 지역별 앨범에서 추억을 확인하고, 여행 통계를 리캡 이미지로 저장·공유할 수 있습니다. 웹과 iOS·Android 앱을 개발했으며 App Store에 출시했습니다.",
+    sections: [
+      {
+        title: "여행 지도와 렌더링 개선",
+        description: "Google Maps 위에 지역 경계와 여행 기록을 표시하고, 지도 확대 단계에 따라 집계 마커·키워드 스티커·기록 진입 UI를 전환했습니다.",
+        items: [
+          "화면 밖 마커의 DOM 생성을 제한하고 마커 레이어를 메모이제이션해 지도 이동 중 불필요한 렌더링을 줄였습니다.",
+          "Canvas 오버레이로 지역 경계 안에 사진을 채우고, 지역별 좌표·경계와 이미지를 캐시했습니다.",
+          "같은 프레임의 그리기 요청은 requestAnimationFrame으로 합치고, 캔버스 크기가 바뀔 때만 버퍼를 다시 할당하도록 개선했습니다.",
+        ],
+      },
+      {
+        title: "공동 여행 기록과 리캡",
+        description: "여행팟 생성·참여부터 지역 선택, 사진과 키워드 등록, 앨범 조회까지 이어지는 화면과 서버 연동을 구현했습니다.",
+        items: [
+          "GraphQL API와 TanStack Query로 사용자·여행팟·지도 집계 데이터를 연결하고, Zustand로 기록 단계의 입력 상태를 관리했습니다.",
+          "사진 상세의 수정 동작을 기록 플로우에 연결하고 모바일 바텀시트·온보딩·뒤로가기 동작을 보정했습니다.",
+          "여행 통계 API를 리캡 화면에 연결하고, 공유할 이미지를 스토리 규격에 맞춰 저장하도록 개선했습니다.",
+        ],
+      },
+      {
+        title: "웹과 네이티브 앱 연결 · App Store 출시",
+        description: "기존 웹 서비스를 Expo·React Native WebView 앱으로 확장하고, 모바일 앱에서 필요한 로그인·공유·초대 링크 동작을 연결했습니다.",
+        items: [
+          "Apple·Google·카카오 네이티브 로그인 결과를 서버 인증과 웹 세션에 연결하고, 취소·시간 초과·응답 오류를 처리했습니다.",
+          "웹의 navigator.share를 네이티브 공유 시트로 연결해 초대 링크와 리캡 이미지를 공유하도록 구현했습니다.",
+          "초대 링크 딥링크, 외부 URL 처리, Android 뒤로가기와 safe area·로딩·오류 화면을 구성하고 스토어 빌드·제출 환경을 준비했습니다.",
+        ],
+        result: "App Store 출시를 완료했습니다.",
+      },
+      {
+        title: "Go 기반 이벤트 수집과 분석 대시보드",
+        description: "방문부터 지도·앨범 조회, 여행 기록 생성까지의 흐름을 확인하기 위해 Go 표준 라이브러리 기반 수집·집계 서버와 관리자 화면을 만들었습니다.",
+        items: [
+          "웹에서 페이지 조회·로그인·팟 생성과 참여·기록 생성 이벤트를 전송하고, 수집 실패가 서비스 사용을 막지 않도록 분리했습니다.",
+          "JSONL 원본 이벤트를 저장하고 방문자·세션·DAU·최근 30일 MAU, 유입 경로와 방문→조회→기록 생성 퍼널을 집계했습니다.",
+          "재전송 중복 방지, 개인정보성 메타데이터 제거, 관리자 API 토큰 인증과 원본 이벤트 90일 보관 정책을 적용했습니다.",
+        ],
+      },
+    ],
+    additionalWork: [
+      "Storybook과 PR별 미리보기 배포 환경을 구성하고 공통 UI 컴포넌트를 개발했습니다.",
+      "검색 노출 설정과 GA4를 연결하고, 로그인 콜백 완료 후 분석을 초기화해 일회용 인증 코드가 수집되지 않도록 했습니다.",
+    ],
+  },
   {
     id: 7,
     kind: "game",
