@@ -20,7 +20,7 @@ export default function AboutClient({ featuredProjects }: { featuredProjects: Fe
       {/* 소개 */}
       <motion.div
         className="mx-auto max-w-5xl px-6 pt-32 pb-24 sm:px-10 sm:pt-36"
-        initial={{ opacity: 0, y: 30 }}
+        initial={false}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
       >
@@ -84,7 +84,7 @@ export default function AboutClient({ featuredProjects }: { featuredProjects: Fe
           <h2 id="skills-heading" className="mb-6 text-2xl font-bold text-blue-500">기술과 도구</h2>
           <motion.ul
             className="grid gap-4 sm:grid-cols-2"
-            initial="hidden"
+            initial={false}
             animate="visible"
             variants={{
               visible: { transition: { staggerChildren: 0.2 } },

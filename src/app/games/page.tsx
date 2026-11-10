@@ -13,7 +13,7 @@ export const dynamic = "force-static";
 const description =
   "Tiny Wizard의 마법 조합 액션과 Castmorrow의 픽셀 바다 낚시를 즐겨보세요. 웹 개발자 이용훈이 직접 만든 무료 브라우저 게임을 설치 없이 플레이할 수 있습니다.";
 
-const title = "무료 브라우저 게임 | Tiny Wizard·Castmorrow - Yonghun";
+const title = "무료 브라우저 게임 | 이용훈의 Tiny Wizard·Castmorrow";
 
 export const metadata: Metadata = {
   title,

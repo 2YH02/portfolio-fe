@@ -11,10 +11,10 @@ import { ProjectTransitionLink } from "./components/ProjectTransition";
 export const dynamic = "force-static";
 
 const description =
-  "Next.js, React, Rust, Three.js로 만든 웹 서비스, 라이브러리와 브라우저 게임을 소개합니다.";
+  "개발자 이용훈이 만든 웹 서비스, 모바일 앱, 라이브러리와 브라우저 게임입니다. 프로젝트별 구현 과정과 성능·사용성 개선 내용을 소개합니다.";
 
 export const metadata: Metadata = {
-  title: "Yonghun - 프로젝트",
+  title: "이용훈 프로젝트 | 서비스·앱·라이브러리·게임",
   description,
   keywords: "웹개발,프론트엔드,프로젝트,포트폴리오,Next.js,React,Rust,Three.js,WebGL",
   alternates: {
@@ -23,13 +23,13 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     url: "https://www.yonghun.me/projects",
-    title: "Yonghun - 프로젝트",
+    title: "이용훈 프로젝트 | 서비스·앱·라이브러리·게임",
     description,
     images: "/metaimg.png",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Yonghun - 프로젝트",
+    title: "이용훈 프로젝트 | 서비스·앱·라이브러리·게임",
     description,
     images: "/metaimg.png",
   },

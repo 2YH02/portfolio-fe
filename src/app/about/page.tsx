@@ -6,7 +6,7 @@ import AboutClient from "./AboutClient";
 export const dynamic = "force-static";
 
 export const metadata: Metadata = {
-  title: "Yonghun - About",
+  title: "이용훈 소개 | Yonghun",
   alternates: { canonical: "https://www.yonghun.me/about" },
   description:
     "서비스 기획과 구현부터 출시·운영 개선, 개발 도구와 자동화 환경 구축까지 경험한 개발자 이용훈입니다.",
@@ -14,14 +14,14 @@ export const metadata: Metadata = {
   openGraph: {
     type: "profile",
     url: "https://www.yonghun.me/about",
-    title: "Yonghun - About",
+    title: "이용훈 소개 | Yonghun",
     description:
       "서비스 기획과 구현부터 출시·운영 개선, 개발 도구와 자동화 환경 구축까지 경험한 개발자 이용훈입니다.",
     images: "/metaimg.png",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Yonghun - About",
+    title: "이용훈 소개 | Yonghun",
     description:
       "서비스 기획과 구현부터 출시·운영 개선, 개발 도구와 자동화 환경 구축까지 경험한 개발자 이용훈입니다.",
     images: "/metaimg.png",
@@ -32,8 +32,10 @@ const personJsonLd = {
   "@context": "https://schema.org",
   "@type": "Person",
   name: "이용훈",
+  alternateName: "Yonghun",
   url: "https://www.yonghun.me",
   jobTitle: "개발자",
+  sameAs: ["https://github.com/2YH02"],
   description: "서비스 기획과 구현부터 출시·운영 개선, 개발 도구와 자동화 환경 구축까지 경험한 개발자입니다.",
 };
 

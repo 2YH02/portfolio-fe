@@ -28,20 +28,24 @@ const geistNanum = Nanum_Pen_Script({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.yonghun.me"),
-  title: "Yonghun - 포트폴리오",
-  description: "웹 개발자 이용훈의 포트폴리오입니다. 직접 만든 웹 서비스와 개발 도구, 브라우저 게임을 소개하고 구현 과정과 성능 개선 경험을 기록합니다.",
-  keywords: "웹개발,프론트엔드,백엔드,포트폴리오,개발자,블로그",
+  title: "개발자 이용훈 | Yonghun 포트폴리오",
+  description: "개발자 이용훈의 포트폴리오입니다. 서비스와 앱, 개발 도구와 게임의 구현 과정, 성능과 사용성 개선 경험을 소개합니다.",
+  authors: [{ name: "이용훈", url: "https://www.yonghun.me/about" }],
+  creator: "이용훈",
+  keywords: "이용훈,Yonghun,개발자,웹개발,프론트엔드,백엔드,포트폴리오,블로그",
   openGraph: {
+    locale: "ko_KR",
+    siteName: "개발자 이용훈 포트폴리오",
     type: "website",
     url: "https://www.yonghun.me",
-    title: "웹 개발자 이용훈 포트폴리오",
-    description: "웹 개발자 이용훈의 포트폴리오입니다. 직접 만든 웹 서비스와 개발 도구, 브라우저 게임을 소개하고 구현 과정과 성능 개선 경험을 기록합니다.",
+    title: "개발자 이용훈 | Yonghun 포트폴리오",
+    description: "개발자 이용훈의 포트폴리오입니다. 서비스와 앱, 개발 도구와 게임의 구현 과정, 성능과 사용성 개선 경험을 소개합니다.",
     images: "/metaimg.png",
   },
   twitter: {
     card: "summary_large_image",
-    title: "웹 개발자 이용훈 포트폴리오",
-    description: "웹 개발자 이용훈의 포트폴리오입니다. 직접 만든 웹 서비스와 개발 도구, 브라우저 게임을 소개하고 구현 과정과 성능 개선 경험을 기록합니다.",
+    title: "개발자 이용훈 | Yonghun 포트폴리오",
+    description: "개발자 이용훈의 포트폴리오입니다. 서비스와 앱, 개발 도구와 게임의 구현 과정, 성능과 사용성 개선 경험을 소개합니다.",
     images: "/metaimg.png",
   },
   verification: {
@@ -54,9 +58,11 @@ export const metadata: Metadata = {
 const websiteJsonLd = {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  name: "Yonghun - 포트폴리오",
+  name: "개발자 이용훈 | Yonghun 포트폴리오",
   url: "https://www.yonghun.me",
-  description: "웹 개발자 이용훈이 만든 웹 서비스, 개발 도구와 브라우저 게임을 소개하는 포트폴리오입니다.",
+  inLanguage: "ko-KR",
+  author: { "@type": "Person", name: "이용훈", url: "https://www.yonghun.me/about" },
+  description: "개발자 이용훈이 만든 서비스와 앱, 개발 도구와 게임을 소개하는 포트폴리오입니다.",
 };
 
 export default function RootLayout({

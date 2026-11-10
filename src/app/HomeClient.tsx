@@ -11,7 +11,7 @@ export default function HomeClient() {
 
   return (
     <motion.main
-      initial={{ opacity: 0 }}
+      initial={false}
       animate={{
         opacity: active ? 0 : 1,
         transition: {

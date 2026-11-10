@@ -29,7 +29,7 @@ export const generateMetadata = async ({
 
   const canonicalPath = page === 1 ? "/posts" : `/posts?page=${page}`;
   const title =
-    page === 1 ? "Yonghun - 개발 블로그" : `Yonghun - 개발 블로그 | ${page}페이지`;
+    page === 1 ? "이용훈 개발 블로그 | Yonghun" : `이용훈 개발 블로그 | ${page}페이지`;
   const description =
     page === 1
       ? DEFAULT_DESCRIPTION

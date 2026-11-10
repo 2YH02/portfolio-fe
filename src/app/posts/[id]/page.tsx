@@ -6,7 +6,7 @@ import PostDetailClient from "./PostDetailClient";
 export const dynamic = "force-static";
 export const revalidate = 3600;
 
-const DEFAULT_DESCRIPTION = "Yonghun 개발 블로그의 게시글 상세 페이지입니다.";
+const DEFAULT_DESCRIPTION = "개발자 이용훈이 구현 과정과 기술 경험을 기록하는 개발 블로그입니다.";
 
 const stripHtml = (value: string) =>
   value
@@ -37,7 +37,7 @@ export const generateMetadata = async ({
 
   if (!data) {
     return {
-      title: `Yonghun - 개발 블로그`,
+      title: "이용훈 개발 블로그 | Yonghun",
       description: DEFAULT_DESCRIPTION,
     };
   }
@@ -45,7 +45,7 @@ export const generateMetadata = async ({
   const metaDescription = createMetaDescription(data.description, data.body);
 
   return {
-    title: data.title,
+    title: `${data.title} | 이용훈 개발 블로그`,
     description: metaDescription,
     keywords: data.tags.join(", "),
     alternates: {
@@ -54,13 +54,13 @@ export const generateMetadata = async ({
     openGraph: {
       type: "article",
       url: `https://www.yonghun.me/posts/${id}`,
-      title: data.title,
+      title: `${data.title} | 이용훈 개발 블로그`,
       description: metaDescription,
       images: data.thumbnail,
     },
     twitter: {
       card: "summary_large_image",
-      title: data.title,
+      title: `${data.title} | 이용훈 개발 블로그`,
       description: metaDescription,
       images: data.thumbnail,
     },

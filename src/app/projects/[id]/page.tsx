@@ -25,12 +25,12 @@ export const generateMetadata = async ({
 
   if (!project) {
     return {
-      title: "프로젝트",
+      title: "프로젝트 | 개발자 이용훈",
     };
   }
 
   return {
-    title: `프로젝트 - ${project.title}`,
+    title: `${project.title} | 이용훈 프로젝트`,
     description: project.description,
     keywords: `${project.techStack.join(", ")}, 포트폴리오, 프로젝트`,
     alternates: {
@@ -39,13 +39,13 @@ export const generateMetadata = async ({
     openGraph: {
       type: "website",
       url: `https://www.yonghun.me/projects/${id}`,
-      title: `프로젝트 - ${project.title}`,
+      title: `${project.title} | 이용훈 프로젝트`,
       description: project.description,
       images: project.thumbnail,
     },
     twitter: {
       card: "summary_large_image",
-      title: `프로젝트 - ${project.title}`,
+      title: `${project.title} | 이용훈 프로젝트`,
       description: project.description,
       images: project.thumbnail,
     },
