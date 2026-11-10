@@ -40,8 +40,8 @@ export const projects: Project[] = [
     thumbnail: "/projects/pinnned-cover.webp",
     thumbnailAlt: "Pinnned 로고와 여행 지도·앨범을 보여주는 두 대의 모바일 화면",
     members: { ui: 2, fe: 2, be: 3 },
-    role: "프론트엔드 · 앱 · 분석 서버 개발",
-    contribution: "팀 프로젝트에서 여행 지도와 기록·리캡 UI를 개발하고, Expo 앱과 Go 기반 분석 서버를 구현했습니다.",
+    role: "서비스 기획 · 웹/앱 프론트엔드 · AI 개발 환경",
+    contribution: "서비스 기획과 UX 개선에 함께 참여하고 웹 프론트엔드 전반을 담당했습니다. 별도 Expo 앱과 Go 분석 서버를 개발하고, AI 개발 하네스와 PR 자동화 환경도 구축했습니다.",
     repository: [],
     deployUrl: "https://www.pinnned.co.kr",
     appStore: {
@@ -52,9 +52,9 @@ export const projects: Project[] = [
     techStack: ["React", "TypeScript", "TanStack Start", "TanStack Query", "GraphQL", "Google Maps", "Zustand", "Expo", "React Native", "Go"],
     tagline: "함께 다녀온 여행을 지도 위에 사진과 키워드로 기록하는 서비스",
     highlights: [
-      "여행팟 기반 공동 기록과 지도·앨범·리캡",
-      "Expo 앱 개발 및 App Store 출시",
-      "Go 기반 이벤트 수집·분석 대시보드 구현",
+      "서비스 기획·UX 개선부터 웹 프론트엔드 전반 담당",
+      "별도 Expo 앱 개발·App Store 출시 및 Go 분석 서버 구현",
+      "AI 개발 하네스와 PR별 Storybook 미리보기 자동화",
     ],
     description: "여행팟을 만들고 초대 링크나 코드로 동행자를 초대해, 함께 방문한 지역의 사진과 키워드·코멘트를 남기는 여행 기록 서비스입니다. 지도와 지역별 앨범에서 추억을 확인하고, 여행 통계를 리캡 이미지로 저장·공유할 수 있습니다. 웹과 iOS·Android 앱을 개발했으며 App Store에 출시했습니다.",
     sections: [
@@ -69,10 +69,11 @@ export const projects: Project[] = [
       },
       {
         title: "공동 여행 기록과 리캡",
-        description: "여행팟 생성·참여부터 지역 선택, 사진과 키워드 등록, 앨범 조회까지 이어지는 화면과 서버 연동을 구현했습니다.",
+        description: "서비스 기획 논의에 참여해 여행팟 생성·참여부터 지역 기록, 앨범과 리캡까지 사용자 흐름을 구체화하고 웹 프론트엔드 전반을 개발했습니다.",
         items: [
           "GraphQL API와 TanStack Query로 사용자·여행팟·지도 집계 데이터를 연결하고, Zustand로 기록 단계의 입력 상태를 관리했습니다.",
           "사진 상세의 수정 동작을 기록 플로우에 연결하고 모바일 바텀시트·온보딩·뒤로가기 동작을 보정했습니다.",
+          "Figma 시안과 사용자 테스트 결과를 반영해 지도·기록·앨범의 모바일 UX와 상호작용을 반복 개선했습니다.",
           "여행 통계 API를 리캡 화면에 연결하고, 공유할 이미지를 스토리 규격에 맞춰 저장하도록 개선했습니다.",
         ],
       },
@@ -87,6 +88,16 @@ export const projects: Project[] = [
         result: "App Store 출시를 완료했습니다.",
       },
       {
+        title: "AI 개발 하네스와 PR 자동화",
+        description: "여러 AI 코딩 도구가 프로젝트 규칙을 따르며 계획·구현·검토할 수 있도록 공용 개발 지침과 자동 검증 흐름을 구성했습니다.",
+        items: [
+          "Planner·Implementer·Reviewer 역할을 정의하고, 작업 계획과 범위 확인부터 구현 결과 검토까지 이어지는 에이전트 하네스를 만들었습니다.",
+          "프로젝트 규칙·작업별 스킬·도메인 가이드를 정리하고, 편집 후 Hook이 변경된 TypeScript 파일의 타입 검사와 ESLint를 실행하도록 연결했습니다.",
+          "PR에 storybook 라벨을 달면 해당 변경의 Storybook을 GitHub Pages에 배포해 미리보기 링크를 남기고, 라벨 제거나 PR 종료 때 정리하도록 자동화했습니다.",
+          "GitHub Actions에서 PR lint·typecheck·build를 실행하고 Gemini 코드 리뷰를 연결했습니다.",
+        ],
+      },
+      {
         title: "Go 기반 이벤트 수집과 분석 대시보드",
         description: "방문부터 지도·앨범 조회, 여행 기록 생성까지의 흐름을 확인하기 위해 Go 표준 라이브러리 기반 수집·집계 서버와 관리자 화면을 만들었습니다.",
         items: [
@@ -97,7 +108,7 @@ export const projects: Project[] = [
       },
     ],
     additionalWork: [
-      "Storybook과 PR별 미리보기 배포 환경을 구성하고 공통 UI 컴포넌트를 개발했습니다.",
+      "공통 UI 컴포넌트를 개발하고 Storybook으로 상태별 화면을 문서화했습니다.",
       "검색 노출 설정과 GA4를 연결하고, 로그인 콜백 완료 후 분석을 초기화해 일회용 인증 코드가 수집되지 않도록 했습니다.",
     ],
   },
@@ -341,8 +352,8 @@ export const projects: Project[] = [
     thumbnail: "/projects/img-toolkit-refined-cover.webp",
     thumbnailAlt: "img-toolkit의 이미지 업로드와 변환 옵션",
     members: null,
-    role: "라이브러리 개발",
-    contribution: "Canvas 기반 이미지 처리, Rust·WebAssembly 구현과 npm 배포를 담당했습니다.",
+    role: "1인 개발",
+    contribution: "철봉 지도에서 사용하던 이미지 처리 기능을 독립 라이브러리로 발전시켰습니다. Canvas API 구현부터 Rust·WebAssembly 확장과 npm 배포까지 진행했습니다.",
     repository: ["https://github.com/2YH02/img-toolkit", "https://github.com/2YH02/img-toolkit-rust"],
     deployUrl: "https://2yh02.github.io/img-toolkit",
     techStack: ["TypeScript", "Canvas API", "Rust", "WebAssembly", "Vite"],
