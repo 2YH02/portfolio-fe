@@ -3,7 +3,9 @@
 import MarkdownRenderer from "@/components/common/MarkdownRenderer";
 import { optimizeImage } from "@/lib/imageOptimizer";
 import { supabase } from "@/lib/supabase/supabasClient";
-import { useRef, useState } from "react";
+import { sanitizePostHtml } from "@/lib/content/sanitizeHtml";
+import { marked } from "marked";
+import { useMemo, useRef, useState } from "react";
 
 export type MarkdownEditorProps = {
   value: string;
@@ -43,6 +45,11 @@ const MarkdownEditor = ({ value, onChange }: MarkdownEditorProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [message, setMessage] = useState("");
+  // The editor is loaded with `ssr: false`, so the browser sanitizer is available.
+  const previewHtml = useMemo(
+    () => sanitizePostHtml(marked.parse(value, { async: false, gfm: true })),
+    [value]
+  );
 
   const insertSnippet = (before: string, after: string, placeholder: string) => {
     const el = textareaRef.current;
@@ -151,7 +158,7 @@ const MarkdownEditor = ({ value, onChange }: MarkdownEditorProps) => {
         <div className="flex-1 flex flex-col min-h-0">
           <span className="text-xs text-gray-400 mb-1">Preview</span>
           <div className="blog-post flex-1 overflow-auto rounded-lg p-4 bg-black/10 border border-white/10 glass-scroll">
-            <MarkdownRenderer markdown={value} />
+            <MarkdownRenderer html={previewHtml} />
           </div>
         </div>
       </div>

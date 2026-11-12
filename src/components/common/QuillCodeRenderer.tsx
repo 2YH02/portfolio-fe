@@ -1,18 +1,15 @@
 "use client";
 
 import hljs from "@/lib/highlight/hljs";
-import { sanitizePostHtml } from "@/lib/content/sanitizeHtml";
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 
 interface QuillCodeRendererProps {
-  htmlString: string;
+  /** Quill HTML that has already been sanitized. */
+  html: string;
 }
 
-function QuillCodeRenderer({
-  htmlString,
-}: QuillCodeRendererProps) {
+function QuillCodeRenderer({ html }: QuillCodeRendererProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const html = useMemo(() => sanitizePostHtml(htmlString), [htmlString]);
 
   useEffect(() => {
     if (containerRef.current) {

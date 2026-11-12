@@ -74,7 +74,16 @@ const focusDialog = (dialog: HTMLDivElement | null) => {
   (firstFocusable ?? dialog).focus();
 };
 
-export default function PostDetailClient({ post }: { post: Post }) {
+export default function PostDetailClient({
+  post,
+  bodyHtml,
+  bodyFormat,
+}: {
+  post: Post;
+  /** Post body rendered to sanitized HTML on the server. */
+  bodyHtml: string;
+  bodyFormat: "quill" | "markdown";
+}) {
   const router = useRouter();
   const { curImage, setCurImage } = useImageStore();
   const { setSpotlightColor, setSpotlightOpacity } = useMaskRevealStore();
@@ -360,10 +369,10 @@ export default function PostDetailClient({ post }: { post: Post }) {
           "justify-center xl:justify-start"
         )}>
           <article ref={articleRef} className="blog-post min-w-0 max-w-[720px] w-full">
-            {post.body.trimStart().startsWith("<") ? (
-              <QuillCodeRenderer htmlString={post.body} />
+            {bodyFormat === "quill" ? (
+              <QuillCodeRenderer html={bodyHtml} />
             ) : (
-              <MarkdownRenderer markdown={post.body} />
+              <MarkdownRenderer html={bodyHtml} />
             )}
 
             {isAdmin && (

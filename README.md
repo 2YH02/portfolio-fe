@@ -8,7 +8,7 @@
 - `npm run lint`: ESLint 검사
 - `npx tsc --noEmit`: 타입 검사
 
-본문 정제는 서버와 브라우저에서 같은 DOMPurify 정책을 사용합니다. 기존 CI의 Node.js 20과 호환되는 `isomorphic-dompurify` 3.19.x를 사용하며, Node.js 20에서는 20.19 이상, 22에서는 22.13 이상이 필요합니다.
+본문 정제는 `src/lib/content/sanitizePolicy.ts`의 같은 허용 목록을 사용합니다. 글 상세는 서버에서 jsdom 없는 `sanitize-html`로 정제하고(`sanitizeHtml.server.ts`), 글쓰기 미리보기는 브라우저에서 DOMPurify로 정제합니다(`sanitizeHtml.ts`). 서버 렌더링에 jsdom을 쓰면 Vercel 서버리스 환경에서 글 상세가 500으로 실패할 수 있으므로 사용하지 않습니다.
 
 ## 🌐 사이트 주소
 

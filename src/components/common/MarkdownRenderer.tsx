@@ -1,19 +1,15 @@
 "use client";
 
 import hljs from "@/lib/highlight/hljs";
-import { sanitizePostHtml } from "@/lib/content/sanitizeHtml";
-import { marked } from "marked";
-import React, { useEffect, useMemo, useRef } from "react";
-
-marked.use({ gfm: true });
+import React, { useEffect, useRef } from "react";
 
 interface MarkdownRendererProps {
-  markdown: string;
+  /** HTML converted from Markdown and already sanitized. */
+  html: string;
 }
 
-function MarkdownRenderer({ markdown }: MarkdownRendererProps) {
+function MarkdownRenderer({ html }: MarkdownRendererProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const html = useMemo(() => sanitizePostHtml(marked.parse(markdown, { async: false })), [markdown]);
 
   useEffect(() => {
     if (!containerRef.current) return;

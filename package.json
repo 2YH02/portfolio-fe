@@ -13,8 +13,8 @@
   "dependencies": {
     "@supabase/supabase-js": "^2.49.6",
     "clsx": "^2.1.1",
+    "dompurify": "^3.4.17",
     "highlight.js": "^11.11.1",
-    "isomorphic-dompurify": "~3.19.0",
     "marked": "^17.0.3",
     "motion": "^12.9.4",
     "next": "^15.5.12",
@@ -23,6 +23,7 @@
     "react-dom": "^19.0.0",
     "react-icons": "^5.5.0",
     "react-syntax-highlighter": "^15.6.1",
+    "sanitize-html": "^2.18.2",
     "tailwind-merge": "^3.2.0",
     "zustand": "^5.0.5"
   },
@@ -33,6 +34,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/react-syntax-highlighter": "^15.5.13",
+    "@types/sanitize-html": "^2.16.2",
     "eslint": "^9",
     "eslint-config-next": "^15.5.12",
     "tailwindcss": "^4",

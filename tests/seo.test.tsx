@@ -4,12 +4,13 @@ import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import MarkdownRenderer from "../src/components/common/MarkdownRenderer";
 import QuillCodeRenderer from "../src/components/common/QuillCodeRenderer";
+import { renderPostBodyHtml } from "../src/lib/content/sanitizeHtml.server";
 import { createSitemap } from "../src/lib/seo/sitemap";
 import sitemap from "../src/app/sitemap";
 
 test("blog bodies exist before client JavaScript runs and remain sanitized", () => {
-  const markdown = renderToStaticMarkup(createElement(MarkdownRenderer, { markdown: "## 검색 가능한 본문\n\n내용입니다. <script>alert(1)</script>" }));
-  const quill = renderToStaticMarkup(createElement(QuillCodeRenderer, { htmlString: '<p>이전 글 본문</p><div class="ql-code-block" data-language="js">const value = 1;</div><img src="x" onerror="alert(1)">' }));
+  const markdown = renderToStaticMarkup(createElement(MarkdownRenderer, { html: renderPostBodyHtml("## 검색 가능한 본문\n\n내용입니다. <script>alert(1)</script>") }));
+  const quill = renderToStaticMarkup(createElement(QuillCodeRenderer, { html: renderPostBodyHtml('<p>이전 글 본문</p><div class="ql-code-block" data-language="js">const value = 1;</div><img src="x" onerror="alert(1)">') }));
   assert.match(markdown, /<h2>검색 가능한 본문<\/h2>/);
   assert.match(quill, /<p>이전 글 본문<\/p>/);
   assert.match(quill, /const value = 1;/);

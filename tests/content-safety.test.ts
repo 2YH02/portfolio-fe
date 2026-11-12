@@ -1,7 +1,8 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { marked } from "marked";
-import { sanitizePostHtml } from "../src/lib/content/sanitizeHtml";
+// Public post pages are sanitized on the server, so the policy is verified there.
+import { sanitizePostHtmlOnServer as sanitizePostHtml } from "../src/lib/content/sanitizeHtml.server";
 import { serializeJsonLd } from "../src/lib/content/jsonLd";
 
 test("removes executable elements, event handlers and embedded documents", () => {
